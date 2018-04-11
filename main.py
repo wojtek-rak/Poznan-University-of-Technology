@@ -115,7 +115,49 @@ def main():
         if counter == 12:
             break
     print(lst_results_all)
-    
+
+
+
+# ?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    try:
+        plik = open('data_macierz.txt')
+        lst = plik.read()
+        lst = lst.replace("]]", "]")
+        lst = lst.replace("[", "")
+        lst = lst.replace("\n", "")
+        lst = lst.split("next")
+    finally:
+        plik.close()
+
+    mac_list = []
+    temp_list = []
+    for i in lst:
+        temp = i.split("]")
+        for j in temp:
+            temp2 = j.split(" ")
+            temp2 = list(filter(None, temp2))
+            temp2 = list(map(int, temp2))
+            temp_list.append(temp2)
+        temp_list = list(filter(None, temp_list))
+        mac_list.append(temp_list)
+        temp_list = []
+    print(mac_list)
+    #for i in mac_list:
+    #    for j in i:
+    #        print(j)
+
+
+    keys = list(range(0,len(mac_list[0][0])))
+    print(keys)
+    mac = dict(zip(keys, zip(*mac_list[0])))
+    print(mac)
+
+
+
+
+
     #print(lst[0])
 
     #for j in temp:
