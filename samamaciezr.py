@@ -26,14 +26,15 @@ def main():
     nas = 0.7
     break_point = False
     for kp in range(2):
-        for i in range(5):
+        for i in range(6):
+            print(it)
             x = np.zeros((size, size)).astype(int)
             while (it < size):
                 for j in range(size - it):
                     if calc(x, size) / (size * size) > nas:
                         break_point = True
                         break
-                    ran = 1# random.randint(1, 1000)
+                    ran = random.randint(1, 1000)
                     x[j][j + it] = ran
                     x[j + it][j] = ran
                 if (break_point):
@@ -56,7 +57,7 @@ def main():
     print(x)
 
     text_file = open("data_macierz.txt", "w")
-    for j in range(10):
+    for j in range(12):
         text_file.write("".join(lst[j]))
         text_file.write("\nnext\n")
 
