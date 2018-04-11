@@ -71,8 +71,51 @@ def main():
     for i in mac_list:
         for j in i:
             print(j)
+    lst_results_all = []
+    lst_results = []
+    it_x = 0
+    it_y = 0
+    sum = 1001
 
+    counter = 0
 
+    it_x_temp = 0
+    it_y_temp = 0
+
+    for te in mac_list:
+        it_x = 0
+        it_y = 0
+        sum = 1001
+
+        it_x_temp = 0
+        it_y_temp = 0
+
+        lst_results.append(0)
+        while(True):
+            for j in range(0,len(te[0])):#it_y, len(te[0]), 1):
+                if (te[it_x][j] < sum and te[it_x][j] != 0):
+                    sum = te[it_x][j]
+                    it_x_temp = j * 1
+                    it_y_temp = it_y * 1
+            it_y = it_x * 1
+            it_x = it_x_temp * 1
+            lst_results.append(it_x_temp)
+            sum = 1001
+            for j in range(0, len(te[0])):
+                te[it_y][j] = 0
+            for j in range(0, len(te[0])):
+                te[j][it_y] = 0
+            #print(len(lst_results))
+            if len(lst_results) >= len(te[0]):
+                counter += 1
+                lst_results_all.append(lst_results)
+                lst_results = []
+                print("done")
+                break
+        if counter == 12:
+            break
+    print(lst_results_all)
+    
     #print(lst[0])
 
     #for j in temp:
