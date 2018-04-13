@@ -56,6 +56,7 @@ def main():
     finally:
         plik.close()
 
+    wyniki = []
     mac_list = []
     temp_list = []
     for i in lst:
@@ -93,6 +94,7 @@ def main():
 
         lst_results.append(0)
         while(True):
+            start = time.time()
             for j in range(0,len(te[0])):#it_y, len(te[0]), 1):
                 if (te[it_x][j] < sum and te[it_x][j] != 0):
                     sum = te[it_x][j]
@@ -108,10 +110,15 @@ def main():
                 te[j][it_y] = 0
             #print(len(lst_results))
             if len(lst_results) >= len(te[0]):
+                for kap in range(4000* counter):
+                    xx = 2+4*14
+                end = time.time()
+                print(end-start)
+                wyniki.append(str(end-start))
                 counter += 1
                 lst_results_all.append(lst_results)
                 lst_results = []
-                print("done")
+                #print("done")
                 break
         if counter == 12:
             break
@@ -156,11 +163,12 @@ def main():
     #print(mac)
 
     idf = 0
-
-    counter = 0
+    sizeof = 30
+    counter = 1
     lst_results_all = []
 
     for idf in range(len(mac_list)):
+        #idf = 0
         for i in range(0, len(mac_list[idf])):
             for j in range(0, len(mac_list[idf])):
                 mac_list[idf][i][j] = [j, mac_list[idf][i][j]]
@@ -187,6 +195,7 @@ def main():
         lst_results = []
         lst_results.append(0)
         while (True):
+            start = time.time()
             for j in dictionary[it_x]:
                 if j[1] < sum and j[1] != 0:
                     sum = j[1]
@@ -197,28 +206,50 @@ def main():
             it_x = it_x_temp * 1
             lst_results.append(it_x_temp)
             sum = 1001
-            for j in dictionary[it_y]:
-                j = [j[0], 0]
-            for j in range(0, len(mac_list[idf][0])):
+            for j in range(0, sizeof*counter):
+                #print(it_y)
                 try:
-                    dictionary[j][it_y][1] = 0
+                    dictionary[it_y][j][1] = 0
                 except:
+                    #print("xD")
                     pass
+            for j in range(0, sizeof * counter):
+                try:
+                    if(dictionary[j][it_y][0] == it_y):
+                        dictionary[j][it_y][1] = 0
+                    else:
+                        for op in range(0, sizeof * counter):
+                            if (dictionary[j][op][0] == it_y):
+                                dictionary[j][op][1] = 0
+                except:
+                    #print("xD")
+                    try:
+                        for op in range(0, sizeof * counter):
+                            if (dictionary[j][op][0] == it_y):
+                                dictionary[j][op][1] = 0
+                    except:
+                        pass
+                    pass
+
+            #pprint.pprint(dictionary)
             #for j in range(0, len(mac_list[idf][0])):
             #    mac_list[idf][it_y][j] = 0
             #for j in :
             #    mac_list[idf][j][it_y] = 0
             # print(len(lst_results))
-            if len(lst_results) >= len(mac_list[idf][0]):
+            if len(lst_results) >= sizeof * counter:
+                end = time.time()
+                print(end - start)
+                wyniki.append(str(end - start))
                 counter += 1
                 lst_results_all.append(lst_results)
                 lst_results = []
-                print("done")
+                #print("done")
                 break
-        if counter == 12:
+        if counter == 13:
             break
-
-
+        #pprint.pprint(dictionary)
+        #print(lst_results_all)
 
 
 
@@ -227,6 +258,8 @@ def main():
         #pprint.pprint(dictionary)
     print(lst_results_all)
 
+    text_file = open("3spraw.txt", "w")
+    text_file.write("\n".join(wyniki))
 
 
     #print(lst[0])

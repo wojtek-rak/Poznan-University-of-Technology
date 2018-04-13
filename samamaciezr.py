@@ -19,7 +19,7 @@ def main():
 
     lst = []
 
-    sizeof = 10
+    sizeof = 30
 
     size = sizeof
     it = 1
