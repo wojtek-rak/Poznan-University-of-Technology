@@ -2,6 +2,7 @@ import time
 import random
 import sys
 sys.setrecursionlimit(1500000000)
+import pprint
 
 def partition(tab, st, en):
     #x = tab[int((st + en) // 2)]
@@ -143,18 +144,88 @@ def main():
         temp_list = list(filter(None, temp_list))
         mac_list.append(temp_list)
         temp_list = []
-    print(mac_list)
+    #print(mac_list)
     #for i in mac_list:
     #    for j in i:
     #        print(j)
 
 
     keys = list(range(0,len(mac_list[0][0])))
-    print(keys)
+    #print(keys)
     mac = dict(zip(keys, zip(*mac_list[0])))
-    print(mac)
+    #print(mac)
+
+    idf = 0
+
+    counter = 0
+    lst_results_all = []
+
+    for idf in range(len(mac_list)):
+        for i in range(0, len(mac_list[idf])):
+            for j in range(0, len(mac_list[idf])):
+                mac_list[idf][i][j] = [j, mac_list[idf][i][j]]
+
+        keys = range(0, len(mac_list[idf]))
+        dictionary = dict(zip(keys, mac_list[idf]))
+
+        for i in range(len(mac_list[idf])):
+            for j in range(len(mac_list[idf])):
+                for kp in range(len(mac_list[idf])):
+                    try:
+                        if dictionary[i][j][1] == 0:
+                            dictionary[i].pop(j)
+                    except:
+                        pass
+
+        it_x = 0
+        it_y = 0
+        sum = 1001
+
+        it_x_temp = 0
+        it_y_temp = 0
+
+        lst_results = []
+        lst_results.append(0)
+        while (True):
+            for j in dictionary[it_x]:
+                if j[1] < sum and j[1] != 0:
+                    sum = j[1]
+                    it_x_temp = j[0] * 1
+                    it_y_temp = it_y * 1
+                #print(j)
+            it_y = it_x * 1
+            it_x = it_x_temp * 1
+            lst_results.append(it_x_temp)
+            sum = 1001
+            for j in dictionary[it_y]:
+                j = [j[0], 0]
+            for j in range(0, len(mac_list[idf][0])):
+                try:
+                    dictionary[j][it_y][1] = 0
+                except:
+                    pass
+            #for j in range(0, len(mac_list[idf][0])):
+            #    mac_list[idf][it_y][j] = 0
+            #for j in :
+            #    mac_list[idf][j][it_y] = 0
+            # print(len(lst_results))
+            if len(lst_results) >= len(mac_list[idf][0]):
+                counter += 1
+                lst_results_all.append(lst_results)
+                lst_results = []
+                print("done")
+                break
+        if counter == 12:
+            break
 
 
+
+
+
+
+        #print(dictionary)
+        #pprint.pprint(dictionary)
+    print(lst_results_all)
 
 
 
