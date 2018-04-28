@@ -5,19 +5,20 @@ using UnityEngine;
 public class AtomSpawner : MonoBehaviour {
 
     public float atoms;
-    public GameObject atom;
+    public int num_attoms; // (9 / numofatoms )^2
+    public GameObject atomCreate;
 
 	// Use this for initialization
 	void Start () {
         float sum_i;
         float sum_j;
-        for (int j = -4; j <= 4 ; j += 1)
+        for (float j = 1; j <= num_attoms * 2 ; j += 2)
         { 
-            for (int i = -4; i <= 4; i += 1)
+            for (float i = 1; i <= num_attoms; i += 1)
             {
-                sum_i = j / atoms * 3.5f;
-                sum_j = i / atoms * 3.5f;
-                Instantiate(atom, new Vector3(sum_i, sum_j, 0f), Quaternion.identity);
+                sum_i = i / num_attoms * 1f;
+                sum_j = j / num_attoms * 4f;
+                Instantiate(atomCreate, new Vector3(sum_i, sum_j, 0f), Quaternion.identity);
             }
 
         }

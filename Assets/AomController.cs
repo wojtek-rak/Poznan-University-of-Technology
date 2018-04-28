@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AomController : MonoBehaviour {
 
+
+    //public Vector2 atomPosition;
     public Rigidbody2D rb;
 	// Use this for initialization
 	void Start () 
@@ -13,7 +15,7 @@ public class AomController : MonoBehaviour {
         Vector2 dir = new Vector2(Mathf.Cos(radAngle), Mathf.Sin(radAngle));
         float xSpin = Random.Range(0, 360);
         float ySpin = Random.Range(0, 360);
-        Debug.Log(xSpin);
+        //Debug.Log(xSpin);
         rb = gameObject.GetComponent<Rigidbody2D>();
         //rb.velocity = new Vector2(5, 0);
         rb.velocity = dir * 4f;
@@ -21,6 +23,12 @@ public class AomController : MonoBehaviour {
 
 	}
 	
+    public Vector3 getAtomPosition(GameObject atom)
+    {
+        return atom.transform.position;
+    }
+
+
 	// Update is called once per frame
 	void Update () 
     {
