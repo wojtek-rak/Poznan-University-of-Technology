@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+using UnityEngine; 
 using System.IO;
 
 public class EntropyController : MonoBehaviour
@@ -72,7 +71,7 @@ public class EntropyController : MonoBehaviour
                 atomCounter[i][j] = 0;
             }
         }
-        string path = "Assets/Resources/kappa.txt";
+        string path = "Assets/Resources/atom_demo.txt";
 
         //Write some text to the test.txt file
         if (Time.time < 5f)
