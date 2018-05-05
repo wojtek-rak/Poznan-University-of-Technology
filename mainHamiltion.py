@@ -34,13 +34,17 @@ def find_all_paths(graph, start, end, path=[]):
 
 kp = 1
 
-def zapis(lists):
+def zapis(wyn):
     global  kp
     print(kp)
-    print(lists)
+    print(wyn)
     print("done")
     print()
     kp += 1
+
+    text_file = open("hamilton_wyn3.txt", "w")
+    text_file.write("\n".join(wyn))
+    text_file.close()
 
 def main():
     #try:
@@ -78,11 +82,11 @@ def main():
     #for i in mac_list:
     #    for j in i:
     #        print(j)
-
+    wyn = []
     lst_sums = []
     sum_ham = 0
     for mac_ham in mac_list:
-        start = time.time()
+
         keys = list(range(0, len(mac_ham[0])))
         #print(keys)
         mac = dict(zip(keys, zip(*zip(*mac_ham))))
@@ -99,14 +103,14 @@ def main():
             #    pass
             # print(type(mac[dic]))
         #print(mac)
-
+        start = time.time()
         for st in mac[0]:
             lst = find_all_paths(mac, st, 0)
             for k in lst:
                 if (len(k) == len(keys)):
                     sum_ham += 1
-
-
+        end = time.time() - start
+        wyn.append(str(end))
         #for ke in keys:
         #    lst = find_all_paths(mac, 0, ke)
         #    for k in lst:
@@ -116,8 +120,11 @@ def main():
         sum_ham = 0
         #[0, 4, 16, 8, 20, 482]
 
+        print(len(mac_ham))
         print(time.time() - start)
-        zapis(lst_sums)
+        zapis(wyn)
+        if len(mac_ham) == 15:
+            break
 
 
 
