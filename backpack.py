@@ -55,6 +55,7 @@ def dyn(x,b):
 
     return (wypelnienie,cena,wybrane)
 
+def main():
 
 #testy Machowiaka
 tst=[[3,5],[2,3],[4,4],[3,4],[1,2]]
@@ -80,7 +81,8 @@ print(tst)
 print(dyn(tst,8))
 
 
-
+if __name__ == "__main__":
+    main()
 """
 5 - n
 3 2 4 3 1 - rozmiar
