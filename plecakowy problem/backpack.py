@@ -13,7 +13,7 @@ def greedy(x,b):
         cena=0
         wypelnienie=0
         wybrane=[]
-        while 1:
+        while x:
             tmp=x.pop()
             wypelnienie+=tmp[0]
             cena+=tmp[1]
