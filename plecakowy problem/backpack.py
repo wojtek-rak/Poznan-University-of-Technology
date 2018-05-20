@@ -63,45 +63,57 @@ def main():
     # testy Machowiaka
     tst = [[3, 5], [2, 3], [4, 4], [3, 4], [1, 2]] # [a, c]  a - wielkość, c - cena
 
+
+    num_of_test = 50
+    difference = [0] * num_of_test
+    print(difference)
     time_lst = []
 
     list_plecaki = []
 
     pojemnosc = 40
 
-    try:
-        plik = open('plecaki.txt')
-        x = plik.read()
-        lst = ast.literal_eval(x)
-        #lst = lst.replace("]]", "]")
-        #lst = lst.replace("[", "")
-        #lst = lst.replace("\n", "")
-        #lst = lst.split("\n")
-    finally:
-        plik.close()
+    #for index in range(num_of_test):
+    for index in range(1):
+        pojemnosc = 11
+        try:
+            plik = open('plecaki.txt')
+            x = plik.read()
+            lst = ast.literal_eval(x)
+            # lst = lst.replace("]]", "]")
+            # lst = lst.replace("[", "")
+            # lst = lst.replace("\n", "")
+            # lst = lst.split("\n")
+        finally:
+            plik.close()
 
+        for plecaki in lst:
+            uzupelnij(plecaki)
+            print()
 
-    for plecaki in lst:
-        uzupelnij(plecaki)
-        print()
+            start = time.time()
 
-        start = time.time()
+            gre_v = greedy(plecaki, pojemnosc)
 
-        gre_v = greedy(plecaki, pojemnosc)
+            end_g = time.time() - start
+            start = time.time()
 
-        end_g = time.time() - start
-        start = time.time()
+            dyn_v = dyn(plecaki, pojemnosc)
 
-        dyn_v = dyn(plecaki, pojemnosc)
+            end_d = time.time() - start
 
-        end_d = time.time() - start
+            print("Zach: " + str(end_g) + "\t\t" + "Dyn: " + str(end_d))
+            print("Zach: " + str(gre_v) + "\t\t" + "Dyn: " + str(dyn_v))
+            if dyn_v != gre_v:
+                difference[index] += (dyn_v - gre_v)
+                # print((dyn_v - gre_v ) / dyn_v)
+            else:
+                difference[index] += 0
+                # print(1)
 
-        print("Zach: " + str(end_g) + "\t\t" + "Dyn: " + str(end_d))
-        print("Zach: " + str(gre_v) + "\t\t" + "Dyn: " + str(dyn_v))
-        if dyn_v != gre_v:
-            print((dyn_v - gre_v ) / dyn_v)
-        else:
-            print(1)
+    for i in range(num_of_test):
+        print("rozmiar "+ str(i) +" \t różnica: " + str(difference[i]))
+
 
     # funkcja dopisuje do tablicy wage dla zachlannego i index
     #uzupelnij(tst)
