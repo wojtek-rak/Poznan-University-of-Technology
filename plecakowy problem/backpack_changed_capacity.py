@@ -64,24 +64,23 @@ def main():
     tst = [[3, 5], [2, 3], [4, 4], [3, 4], [1, 2]] # [a, c]  a - wielkość, c - cena
 
 
-    num_of_test = 50
+    num_of_test = 140
     difference = [0] * num_of_test
     print(difference)
     time_lst = []
 
     list_plecaki = []
 
-    pojemnosc = 40
+    pojemnosc = 1
 
     gred_time = []
     dyn_time = []
     blad_wzg = []
 
     #for index in range(num_of_test):
-    for index in range(1):
-        pojemnosc = 11
+    for index in range(num_of_test):
         try:
-            plik = open('plecaki.txt')
+            plik = open('plecaki_capacity.txt')
             x = plik.read()
             lst = ast.literal_eval(x)
             # lst = lst.replace("]]", "]")
@@ -121,15 +120,18 @@ def main():
                 difference[index] += 0
                 print(0)
                 blad_wzg.append(str(0))
-    text_file = open("backpack_wyn_blad.txt", "w")
+
+        pojemnosc += 1
+
+    text_file = open("backpack_wyn_blad_capacity.txt", "w")
     text_file.write("\n".join(blad_wzg))
     text_file.close()
 
-    text_file = open("backpack_wyn_greed.txt", "w")
+    text_file = open("backpack_wyn_greed_capacity.txt", "w")
     text_file.write("\n".join(gred_time))
     text_file.close()
 
-    text_file = open("backpack_wyn_dyn.txt", "w")
+    text_file = open("backpack_wyn_dyn_capacity.txt", "w")
     text_file.write("\n".join(dyn_time))
     text_file.close()
 

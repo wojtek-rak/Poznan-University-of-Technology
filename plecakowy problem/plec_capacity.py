@@ -8,8 +8,8 @@ import pprint
 def main():
 
     plecakiOstat = []
-    num_of_test = 25
-    num_of_items = 5
+    num_of_test = 1
+    num_of_items = 20
     range_of_random = 15
 
     for i in range(num_of_test):
@@ -25,7 +25,7 @@ def main():
         num_of_items += 1
 
     print(plecakiOstat)
-    text_file = open("plecaki2.txt", "w")
+    text_file = open("plecaki_capacity.txt", "w")
     text_file.write(str(plecakiOstat))
 
 
