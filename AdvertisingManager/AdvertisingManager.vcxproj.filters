@@ -52,5 +52,8 @@
     <Text Include="data.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="dataEvent.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
