@@ -64,10 +64,12 @@ void View::PrintPriceList(PriceList priceList)
 		SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		for (int j = 0; j < 7; j++)
 		{
-			if(!priceList.advert[i].free[j]) SetConsoleTextAttribute(console, BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			if(priceList.advert[i].free[j] > 330) SetConsoleTextAttribute(console, BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 			if (priceList.advert[i].price[j] > 9999) cout << priceList.advert[i].price[j] << "\t\t";
 			else  if (priceList.advert[i].price[j] > 999) cout << priceList.advert[i].price[j] << " " << "\t\t";
-			else cout << priceList.advert[i].price[j] << "  " << "\t\t";
+			else  if (priceList.advert[i].price[j] > 99) cout << priceList.advert[i].price[j] << "  " << "\t\t";
+			else  if (priceList.advert[i].price[j] > 9) cout << priceList.advert[i].price[j] << "   " << "\t\t";
+			else cout << priceList.advert[i].price[j] << "    " << "\t\t";
 			SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		}
 		SetConsoleTextAttribute(console, OriginalColors);
@@ -186,37 +188,71 @@ void View::MenuCustomers(int menu_item)
 	GetConsoleScreenBufferInfo(console, ConsoleInfo);
 	WORD OriginalColors = ConsoleInfo->wAttributes;
 	View::gotoXY(2, heightOfMenu);  cout << "ADD CUSTOMER";
-	View::gotoXY(32, heightOfMenu);  cout << "REMOVE CUSTOMER";
-	View::gotoXY(62, heightOfMenu);  cout << "EDIT CUSTOMER";
-	View::gotoXY(92, heightOfMenu);  cout << "SHOW CUSTOMER";
-	View::gotoXY(122, heightOfMenu);  cout << "RETURN";
+	View::gotoXY(22, heightOfMenu);  cout << "REMOVE CUSTOMER";
+	View::gotoXY(42, heightOfMenu);  cout << "EDIT CUSTOMER";
+	View::gotoXY(62, heightOfMenu);  cout << "SHOW CUSTOMER";
+	View::gotoXY(82, heightOfMenu);  cout << "RETURN";
 	//View::gotoXY(32, heightOfMenu); cout << "4) ...";
 	//View::gotoXY(42, heightOfMenu); cout << "Quit Program";
 	switch (menu_item) {
 	case 0:
 		SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
-		View::gotoXY(2 + menu_item * 30, heightOfMenu);  cout << "ADD CUSTOMER";
+		View::gotoXY(2 + menu_item * 20, heightOfMenu);  cout << "ADD CUSTOMER";
 		SetConsoleTextAttribute(console, OriginalColors);
 		break;
 	case 1:
 		SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
-		View::gotoXY(2 + menu_item * 30, heightOfMenu);  cout << "REMOVE CUSTOMER";
+		View::gotoXY(2 + menu_item * 20, heightOfMenu);  cout << "REMOVE CUSTOMER";
 		SetConsoleTextAttribute(console, OriginalColors);
 		break;
 	case 2:
 		SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
-		View::gotoXY(2 + menu_item * 30, heightOfMenu);  cout << "EDIT CUSTOMER";
+		View::gotoXY(2 + menu_item * 20, heightOfMenu);  cout << "EDIT CUSTOMER";
 		SetConsoleTextAttribute(console, OriginalColors);
 		break;
 	case 3:
 		SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
-		View::gotoXY(2 + menu_item * 30, heightOfMenu);  cout << "SHOW CUSTOMER";
+		View::gotoXY(2 + menu_item * 20, heightOfMenu);  cout << "SHOW CUSTOMER";
 		SetConsoleTextAttribute(console, OriginalColors);
 		break;
 	case 4:
 		SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
-		View::gotoXY(2 + menu_item * 30, heightOfMenu);  cout << "RETURN";
+		View::gotoXY(2 + menu_item * 20, heightOfMenu);  cout << "RETURN";
 		SetConsoleTextAttribute(console, OriginalColors);
 		break;
 	}
+}
+
+void View::EditPriceList(int menu_item, int menu_up_item, PriceList priceList, bool editingList, bool wrongPrice)
+{
+	GetConsoleScreenBufferInfo(console, ConsoleInfo);
+	WORD OriginalColors = ConsoleInfo->wAttributes;
+	if (menu_item == 1 || menu_item == 0)  View::gotoXY(menu_item * 14 + 2, menu_up_item + 1);
+	else  View::gotoXY(menu_item * 16, menu_up_item + 1);
+	SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
+	int j = menu_item;
+	int i = menu_up_item;
+	if (priceList.advert[i].price[j] > 9999) cout << priceList.advert[i].price[j];
+	else  if (priceList.advert[i].price[j] > 999) cout << priceList.advert[i].price[j] << " ";
+	else  if (priceList.advert[i].price[j] > 99) cout << priceList.advert[i].price[j] << "  ";
+	else  if (priceList.advert[i].price[j] > 9) cout << priceList.advert[i].price[j] << "   ";
+	else cout << priceList.advert[i].price[j] << "    ";
+	SetConsoleTextAttribute(console, OriginalColors);
+	if (!wrongPrice) { View::gotoXY(2, heightOfMenu);  cout << "Press enter to edit, escape to return and save"; }
+	if (wrongPrice) { View::gotoXY(2, heightOfMenu);  cout << "Set max 5 numbers price"; }
+	if (editingList)
+	{
+		if (menu_item == 1 || menu_item == 0)  View::gotoXY(menu_item * 14 + 2, menu_up_item + 1);
+		else  View::gotoXY(menu_item * 16, menu_up_item + 1);
+		cout << "     ";
+		if (menu_item == 1 || menu_item == 0)  View::gotoXY(menu_item * 14 + 2, menu_up_item + 1);
+		else  View::gotoXY(menu_item * 16, menu_up_item + 1);
+	}
+	
+	//View::gotoXY(22, heightOfMenu);  cout << "REMOVE CUSTOMER";
+	//View::gotoXY(42, heightOfMenu);  cout << "EDIT CUSTOMER";
+	//View::gotoXY(62, heightOfMenu);  cout << "SHOW CUSTOMER";
+	//View::gotoXY(82, heightOfMenu);  cout << "RETURN";
+	//View::gotoXY(32, heightOfMenu); cout << "4) ...";
+	//View::gotoXY(42, heightOfMenu); cout << "Quit Program";
 }

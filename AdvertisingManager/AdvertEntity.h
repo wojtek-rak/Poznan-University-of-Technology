@@ -4,7 +4,7 @@ class AdvertEntity
 {
 public:
 	int price[7];
-	bool free[7];
+	int free[7];
 	AdvertEntity();
 	~AdvertEntity();
 };

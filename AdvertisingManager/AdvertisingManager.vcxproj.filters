@@ -30,6 +30,9 @@
     <ClInclude Include="View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SaveManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdvertisingManager.cpp">
@@ -47,12 +50,24 @@
     <ClCompile Include="View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SaveManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="dataEvent.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="plik.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataEventTime.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dataTime.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

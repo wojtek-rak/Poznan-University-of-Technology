@@ -5,6 +5,7 @@
 #include "AdvertEntity.h"
 #include "PriceList.h"
 #include "View.h"
+#include "SaveManager.h"
 
 #include <conio.h>
 #include <windows.h>
@@ -22,6 +23,7 @@ using namespace std;
 int main()
 {
 	int heightOfMenu = 26;
+	bool priceListOneActive = true;
 	PriceList priceListOne;
 	PriceList priceListEvent;
 	PriceList priceListToShow;
@@ -33,18 +35,20 @@ int main()
 	cust.days.insert(Monday);
 	cust.days.insert(Tuesday);
 	
-	ifstream infile;
-	infile.open("data.txt");
 	
+	
+	bool wrongPrice = false;
 	int tempX;
+	bool editingList = false;
 	int iteratorDays = 0;
 	int iteratorHours = 0;
 	//cout << "Reading from the file" << endl;
+	ifstream infile;
+	infile.open("data.txt");
 	while (infile >> tempX)
 	{
 		//cout << x <<" ";
 		priceListOne.advert[iteratorHours].price[iteratorDays] = tempX;
-		priceListOne.advert[iteratorHours].free[iteratorDays] = true;
 		iteratorDays++;
 		if (iteratorDays > 6)
 		{
@@ -53,6 +57,26 @@ int main()
 			//cout << "\n";
 		}
 	}
+	infile.close();
+
+	iteratorDays = 0;
+	iteratorHours = 0;
+	ifstream infileTime;
+	infileTime.open("dataTime.txt");
+	while (infileTime >> tempX)
+	{
+		//cout << x <<" ";
+		priceListOne.advert[iteratorHours].free[iteratorDays] = tempX;
+		iteratorDays++;
+		if (iteratorDays > 6)
+		{
+			iteratorDays = 0;
+			iteratorHours++;
+			//cout << "\n";
+		}
+	}
+	infileTime.close();
+
 	iteratorDays = 0;
 	iteratorHours = 0;
 	ifstream infileEvent;
@@ -61,7 +85,6 @@ int main()
 	{
 		//cout << x <<" ";
 		priceListEvent.advert[iteratorHours].price[iteratorDays] = tempX;
-		priceListEvent.advert[iteratorHours].free[iteratorDays] = true;
 		iteratorDays++;
 		if (iteratorDays > 6)
 		{
@@ -70,9 +93,30 @@ int main()
 			//cout << "\n";
 		}
 	}
-	priceListOne.advert[5].free[5] = false;
-	priceListEvent.advert[3].free[3] = false;
-	priceListEvent.advert[3].free[5] = false;
+	infileEvent.close();
+
+	iteratorDays = 0;
+	iteratorHours = 0;
+	ifstream infileEventTime;
+	infileEventTime.open("dataEventTime.txt");
+	while (infileEventTime >> tempX)
+	{
+		//cout << x <<" ";
+		priceListEvent.advert[iteratorHours].free[iteratorDays] = tempX;
+		iteratorDays++;
+		if (iteratorDays > 6)
+		{
+			iteratorDays = 0;
+			iteratorHours++;
+			//cout << "\n";
+		}
+	}
+	infileEventTime.close();
+	
+
+	priceListOne.advert[5].free[5] = 600;
+	priceListEvent.advert[3].free[3] = 300;
+	priceListEvent.advert[3].free[5] = 200;
 	
 
 	//cout << endl << endl << endl << endl;
@@ -89,6 +133,8 @@ int main()
 	//3 CUSTOMER
 	
 	int menu_item = 0, run, x = 0;
+	int y = 0;
+	int menu_up_item = 0;
 	bool running = true;
 
 	View::gotoXY(18, 5); cout << "Main Menu";
@@ -98,6 +144,7 @@ int main()
 
 	while (running)
 	{
+		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VIEW HANDLER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		switch (appState)
 		{
 		case 0:
@@ -117,11 +164,17 @@ int main()
 			break;
 		case 3:
 			View::gotoXY(0, 0);
-			View::PrintPriceList(priceListToShow);
+			View::PrintPriceList(priceListToShow); // TODO
 			View::MenuCustomers(menu_item);
 			break;
+		case 4:
+			//system("cls");
+			View::gotoXY(0, 0);
+			View::PrintPriceList(priceListToShow);
+			View::EditPriceList(x, y, priceListToShow, editingList, wrongPrice);
+			break;
 		}
-		system("pause>nul"); // the >nul bit causes it the print no message
+		if(!editingList) system("pause>nul");
 
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>> START MENU <<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if (appState == 0)
@@ -165,6 +218,10 @@ int main()
 				system("cls");
 				continue;
 			}
+			if (GetAsyncKeyState(VK_ESCAPE))
+			{
+				exit(0);
+			}
 		}
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>> PRICE LIST MENU <<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if (appState == 1) 
@@ -189,13 +246,19 @@ int main()
 				switch (menu_item) {
 				case 0:
 					priceListToShow = priceListOne;
+					priceListOneActive = true;
 					break;
 
 				case 1:
 					priceListToShow = priceListEvent;
+					priceListOneActive = false;
 					break;
 
-				case 2: // IMPLEMENT EDIT ACTUAL PRICELIST
+				case 2: 
+					appState = 4;
+					x = 0;
+					y = 0;
+					menu_item = 0;
 					break;
 				case 3:
 					appState = 0;
@@ -289,6 +352,84 @@ int main()
 				continue;
 
 			}
+		}
+		// >>>>>>>>>>>>>>>>>>>>>>>>>>> EDIT PRICELSIT <<<<<<<<<<<<<<<<<<<<<<<<<<<
+		if (appState == 4)
+		{
+			if (editingList)
+			{
+				int tempV;
+
+				cin >> tempV;
+				if (tempV < 0 || tempV > 99999) wrongPrice = true;
+				else
+				{
+					wrongPrice = false; editingList = false;
+
+					priceListToShow.advert[y].price[x] = tempV;
+
+
+					if (priceListOneActive)
+					{
+						priceListOne.advert[y].price[x] = tempV;
+						SaveManager::SavePriceList(priceListOneActive, priceListToShow);
+					}
+					else
+					{
+						priceListEvent.advert[y].price[x] = tempV;
+						SaveManager::SavePriceList(priceListOneActive, priceListToShow);
+					}
+					appState = 1;
+					x = 0;
+					menu_item = 0;
+				}
+
+				system("cls");
+				continue;
+			}
+
+
+			if (GetAsyncKeyState(VK_RIGHT) && x != 6)
+			{
+				x += 1;
+				menu_item++;
+				continue;
+			}
+
+			if (GetAsyncKeyState(VK_LEFT) && x != 0)
+			{
+				x -= 1;
+				menu_item--;
+				continue;
+			}
+			if (GetAsyncKeyState(VK_UP) && y != 0)
+			{
+				y -= 1;
+				menu_up_item++;
+				continue;
+			}
+
+			if (GetAsyncKeyState(VK_DOWN) && y != 23)
+			{
+				y += 1;
+				menu_up_item--;
+				continue;
+			}
+
+			if (GetAsyncKeyState(VK_ESCAPE))
+			{
+				appState = 1;
+				x = 0;
+				menu_item = 0;
+			}
+
+			
+			if (GetAsyncKeyState(VK_RETURN))
+			{
+				editingList = true;
+			}
+			system("cls");
+
 		}
 
 	}

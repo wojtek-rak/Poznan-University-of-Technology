@@ -119,6 +119,7 @@
     <ClInclude Include="AdvertisingManager.h" />
     <ClInclude Include="Customer.h" />
     <ClInclude Include="PriceList.h" />
+    <ClInclude Include="SaveManager.h" />
     <ClInclude Include="View.h" />
   </ItemGroup>
   <ItemGroup>
@@ -126,11 +127,15 @@
     <ClCompile Include="AdvertisingManager.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="PriceList.cpp" />
+    <ClCompile Include="SaveManager.cpp" />
     <ClCompile Include="View.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data.txt" />
     <Text Include="dataEvent.txt" />
+    <Text Include="dataEventTime.txt" />
+    <Text Include="dataTime.txt" />
+    <Text Include="plik.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
