@@ -11,6 +11,52 @@ SaveManager::~SaveManager()
 {
 }
 
+void SaveManager::SaveCustomers(int numberOfCustomers, Customer cust[100])
+{
+	fstream outFileEvent("customer.txt", ios::out);
+	for (int i = 0; i < numberOfCustomers + 1; i++)
+	{
+		if (outFileEvent.good())
+		{
+			outFileEvent << "n " << cust[i].Name() << " b " << cust[i].Budget() << " l " << cust[i].SpotsLength() << " p " << cust[i].CheapPlan;
+			for (auto f : cust[i].days) {
+				outFileEvent << " d " << f;
+			}
+			for (auto f : cust[i].hours) {
+				outFileEvent << " h " << f;
+			}
+			outFileEvent << "\n";
+			outFileEvent.flush();
+
+		}
+	}
+	outFileEvent.close();
+}
+
+
+void SaveManager::SaveCustomers(int numberOfCustomers, Customer cust[100], bool deadLetter, int id)
+{
+	fstream outFileEvent("customer.txt", ios::out);
+	for (int i = 0; i < numberOfCustomers + 1; i++)
+	{
+		if (outFileEvent.good())
+		{
+			if (deadLetter && id == i) continue;
+			outFileEvent << "n " << cust[i].Name() << " b " << cust[i].Budget() << " l " << cust[i].SpotsLength() << " p " << cust[i].CheapPlan;
+			for (auto f : cust[i].days) {
+				outFileEvent << " d " << f;
+			}
+			for (auto f : cust[i].hours) {
+				outFileEvent << " h " << f;
+			}
+			outFileEvent << "\n";
+			outFileEvent.flush();
+
+		}
+	}
+	outFileEvent.close();
+}
+
 void SaveManager::SavePriceList(bool priceListOneActive, PriceList priceList)
 {
 	if (priceListOneActive)

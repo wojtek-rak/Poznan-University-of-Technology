@@ -17,6 +17,7 @@ public:
 	static void MenuAdvertismentPlan(int menu_item);
 	static void MenuCustomers(int menu_item);
 	static void EditPriceList(int menu_item, int menu_up_item, PriceList priceList, bool editingList, bool wrongPrice);
+	static void PrintCustomerList(Customer cust[100], int numberOfCustomers);
 
 };
 

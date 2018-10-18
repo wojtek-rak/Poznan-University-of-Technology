@@ -51,6 +51,43 @@ void View::PrintHello()
 	cout << hello;
 }
 
+void View::PrintCustomerList(Customer cust[100], int numberOfCustomers)
+{
+	cout << "\n";
+	GetConsoleScreenBufferInfo(console, ConsoleInfo);
+	WORD OriginalColors = ConsoleInfo->wAttributes;
+
+	for (int i = 0; i < numberOfCustomers + 1; i++)
+	{
+		SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+		cout <<"ID: "<<i<< " Customer name: " << cust[i].Name() << ", Customer budget: " << cust[i].Budget() << ", Customer Spots Length:" << cust[i].SpotsLength()<<", Plan: "<< cust[i].CheapPlan<<"\n";
+		cout << "Days: ";
+		for (auto f : cust[i].days) {
+			cout << f<< ", ";
+		}
+		cout << "Hours: ";
+		for (auto f : cust[i].hours) {
+			cout << f << ", ";
+		}
+		cout << "\n";
+		//for (int j = 0; j < 7; j++)
+		//{
+		//	if (priceList.advert[i].free[j] > 330) SetConsoleTextAttribute(console, BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		//	if (priceList.advert[i].price[j] > 9999) cout << priceList.advert[i].price[j] << "\t\t";
+		//	else  if (priceList.advert[i].price[j] > 999) cout << priceList.advert[i].price[j] << " " << "\t\t";
+		//	else  if (priceList.advert[i].price[j] > 99) cout << priceList.advert[i].price[j] << "  " << "\t\t";
+		//	else  if (priceList.advert[i].price[j] > 9) cout << priceList.advert[i].price[j] << "   " << "\t\t";
+		//	else cout << priceList.advert[i].price[j] << "    " << "\t\t";
+		//	SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		//}
+		//SetConsoleTextAttribute(console, OriginalColors);
+		//cout << endl;
+	}
+	SetConsoleTextAttribute(console, OriginalColors);
+
+}
+
 
 void View::PrintPriceList(PriceList priceList)
 {

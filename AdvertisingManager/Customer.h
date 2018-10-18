@@ -48,6 +48,8 @@ public:
 	Customer(int budget, int spotslength, std::string name);
 	~Customer();
 	
+	bool CheapPlan;
+
 	void Budget(int value);
 	int Budget();
 	void SpotsLength(int value);

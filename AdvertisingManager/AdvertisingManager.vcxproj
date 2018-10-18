@@ -131,6 +131,7 @@
     <ClCompile Include="View.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="customer.txt" />
     <Text Include="data.txt" />
     <Text Include="dataEvent.txt" />
     <Text Include="dataEventTime.txt" />

@@ -15,30 +15,93 @@
 #include <fstream>
 #include <cstdlib>
 
-//double
-
 
 using namespace std;
 
+template<class T>
+void operator+= (set<T>& set, T obj)
+{
+	set.insert(obj);
+}
+
+Customer cust[100];
+
+int LoadCustomer()
+{
+	int numberOfCustomers = -1;
+	char selector;
+	int tempX;
+	string name;
+	bool tempPlan;
+	ifstream infileCustomers;
+	infileCustomers.open("customer.txt");
+	while (infileCustomers >> selector)
+	{
+		switch (selector)
+		{
+		case 'n':
+			numberOfCustomers++;
+			infileCustomers >> name;
+			cust[numberOfCustomers].Name(name);
+			break;
+		case 'b':
+			infileCustomers >> tempX;
+			cust[numberOfCustomers].Budget(tempX);
+			break;
+		case 'l':
+			infileCustomers >> tempX;
+			cust[numberOfCustomers].SpotsLength(tempX);
+			break;
+		case 'p':
+			infileCustomers >> tempPlan;
+			cust[numberOfCustomers].CheapPlan = tempPlan;
+			break;
+		case 'd':
+			infileCustomers >> tempX;
+			cust[numberOfCustomers].days += (DayNames)tempX;
+			break;
+		case 'h':
+			infileCustomers >> tempX;
+			cust[numberOfCustomers].hours += (HoursEnums)tempX;
+			break;
+		default:
+			break;
+		}
+	}
+	infileCustomers.close();
+	return numberOfCustomers;
+}
+
+
+
 int main()
 {
+	int posIterator = 66;
 	int heightOfMenu = 26;
 	bool priceListOneActive = true;
 	PriceList priceListOne;
 	PriceList priceListEvent;
 	PriceList priceListToShow;
 
-	Customer cust;
-	cust.Budget(10);
-	cust.SpotsLength(20);
-	cust.days.insert(Monday);
-	cust.days.insert(Monday);
-	cust.days.insert(Tuesday);
+	int numberOfCustomers = LoadCustomer();
 	
-	
-	
-	bool wrongPrice = false;
+	//cust[0].Budget(10);
+	//cust[0].Name("XD");
+	//cust[0].CheapPlan = true;
+	//cust[0].SpotsLength(30);
+	//cust[0].days += Monday;
+	//cust[0].days += Monday;
+	//cust[0].days += Tuesday;
+	char selector;
 	int tempX;
+	bool tempPlan;
+	bool removeCustomer = false;
+	string name;
+
+
+	bool menuCustomer = true;
+	bool wrongPrice = false;
+	
 	bool editingList = false;
 	int iteratorDays = 0;
 	int iteratorHours = 0;
@@ -137,9 +200,6 @@ int main()
 	int menu_up_item = 0;
 	bool running = true;
 
-	View::gotoXY(18, 5); cout << "Main Menu";
-	View::gotoXY(18, 7); cout << "->";
-
 	priceListToShow = priceListOne;
 
 	while (running)
@@ -164,8 +224,8 @@ int main()
 			break;
 		case 3:
 			View::gotoXY(0, 0);
-			View::PrintPriceList(priceListToShow); // TODO
-			View::MenuCustomers(menu_item);
+			View::PrintCustomerList(cust, numberOfCustomers); 
+			if(menuCustomer) View::MenuCustomers(menu_item);
 			break;
 		case 4:
 			//system("cls");
@@ -312,6 +372,19 @@ int main()
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>> CUSTOMERS <<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if (appState == 3)
 		{
+			if (removeCustomer)
+			{
+				View::gotoXY(2, heightOfMenu);  cout << "Type Customer's Id to REMOVE: ";
+				cin >> tempX;
+				SaveManager::SaveCustomers(numberOfCustomers, cust, true, tempX);
+				numberOfCustomers -= 1;
+				menuCustomer = true;
+				removeCustomer = false;
+				editingList = false;
+				numberOfCustomers = LoadCustomer();
+				system("cls");
+				continue;
+			}
 			if (GetAsyncKeyState(VK_RIGHT) && x != 120)
 			{
 				x += 30;
@@ -331,10 +404,41 @@ int main()
 
 				switch (menu_item) {
 				case 0:
-					//ADD CUSTOMER
+					system("cls");
+					numberOfCustomers++;
+					View::gotoXY(2, 2);  cout << "Name: "; cin >> name;
+					cust[numberOfCustomers].Name(name);
+					View::gotoXY(2, 4);  cout << "Budget: "; cin >> tempX;
+					cust[numberOfCustomers].Budget(tempX);
+					View::gotoXY(2, 6);  cout << "SpotsLength: "; cin >> tempX;
+					cust[numberOfCustomers].SpotsLength(tempX);
+					View::gotoXY(2, 8);  cout << "Plan (type 0 for expensive or 1 for cheap): "; cin >> tempPlan;
+					cust[numberOfCustomers].CheapPlan = tempPlan;
+					View::gotoXY(2, 10);  cout << "Type Favourite days (0 Monday, 1 Tuesday ... -1 for go next): ";
+					posIterator = 66;
+					while (cin >> tempX)
+					{
+						if (tempX == -1) break;
+						View::gotoXY(posIterator, 10);
+						if(tempX > -1 && tempX < 7) cust[numberOfCustomers].days += (DayNames)tempX;
+						posIterator += 2;
+					}
+					View::gotoXY(2, 12);  cout << "Favourite hours (0 for 0:01-1:00, 1 for 1:01-2:00... -1 for go next): ";
+					posIterator = 74;
+					while (cin >> tempX)
+					{
+						if (tempX == -1) break;
+						View::gotoXY(posIterator, 12);
+						if (tempX > -1 && tempX < 24) cust[numberOfCustomers].hours += (HoursEnums)tempX;
+						if (tempX > 9) posIterator += 3;
+						else posIterator += 2;
+					}
+					SaveManager::SaveCustomers(numberOfCustomers, cust);
 					break;
 				case 1:
-					//RM CUSTOMER
+					menuCustomer = false;
+					removeCustomer = true;
+					editingList = true;
 					break;
 				case 2:
 					//EDIT CUSTOMER

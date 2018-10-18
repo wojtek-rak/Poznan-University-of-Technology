@@ -70,5 +70,8 @@
     <Text Include="dataTime.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="customer.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
