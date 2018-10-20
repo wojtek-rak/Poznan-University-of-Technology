@@ -7,6 +7,7 @@
 #include "View.h"
 #include "SaveManager.h"
 
+#include<string>
 #include <sstream>
 #include <conio.h>
 #include <windows.h>
@@ -138,6 +139,8 @@ void FillPlan(int index)
 	int custTempB = cust[index].Budget();
 	int priceMinH = -1;
 	int priceMinD = -1;
+	int priceH = -1;
+	int priceD = -1;
 	int countBreak = 0;
 	ZerosCustomerPlan(index);
 	cust[index].SaveString = "";
@@ -155,8 +158,11 @@ void FillPlan(int index)
 						{
 							if (custTempB > priceListEvent.advert[h].price[d] * GetModifier(cust[index].SpotsLength()))
 							{
-								priceMinH = h;
-								priceMinD = d;
+								if ((priceListEvent.advert[h].price[d] * GetModifier(cust[index].SpotsLength()) < priceListEvent.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength())) || priceMinH == -1)
+								{
+									priceMinH = h;
+									priceMinD = d;
+								}
 							}
 						}
 					}
@@ -166,8 +172,11 @@ void FillPlan(int index)
 						{
 							if (custTempB > priceListOne.advert[h].price[d] * GetModifier(cust[index].SpotsLength()))
 							{
-								priceMinH = h;
-								priceMinD = d;
+								if ((priceListOne.advert[h].price[d] * GetModifier(cust[index].SpotsLength()) < priceListOne.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength()))|| priceMinH == -1)
+								{
+									priceMinH = h;
+									priceMinD = d;
+								}
 							}
 						}
 					}
@@ -181,6 +190,13 @@ void FillPlan(int index)
 					custTempB -= priceListEvent.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength());
 
 					cust[index].advert[priceMinH].free[priceMinD] += cust[index].SpotsLength();
+					cust[index].SaveString.append(" a ");
+					cust[index].SaveString.append(to_string(priceMinD));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(priceMinH));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(cust[index].SpotsLength()));
+
 				}
 				else
 				{
@@ -188,6 +204,12 @@ void FillPlan(int index)
 					custTempB -= priceListOne.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength());
 
 					cust[index].advert[priceMinH].free[priceMinD] += cust[index].SpotsLength();
+					cust[index].SaveString.append(" a ");
+					cust[index].SaveString.append(to_string(priceMinD));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(priceMinH));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(cust[index].SpotsLength()));
 				}
 			}
 			else countBreak++;
@@ -197,8 +219,72 @@ void FillPlan(int index)
 	}
 	else
 	{
+		while (countBreak < 10)
+		{
+			for (auto h : cust[index].hours)
+			{
+				for (auto d : cust[index].days)
+				{
+					if (cust[index].EventPriceList)
+					{
+						if (priceListEvent.advert[h].free[d] < 300 - cust[index].SpotsLength())
+						{
+							if (custTempB > priceListEvent.advert[h].price[d] * GetModifier(cust[index].SpotsLength()))
+							{
+								priceH = h;
+								priceD = d;
+							}
+						}
+					}
+					else
+					{
+						if (priceListOne.advert[h].free[d] < 300 - cust[index].SpotsLength())
+						{
+							if (custTempB > priceListOne.advert[h].price[d] * GetModifier(cust[index].SpotsLength()))
+							{
+								priceH = h;
+								priceD = d;
+							}
+						}
+					}
+				}
+			}
+			if (priceH != -1)
+			{
 
+				if (cust[index].EventPriceList)
+				{
+					priceListEvent.advert[priceH].free[priceD] += cust[index].SpotsLength();
+					custTempB -= priceListEvent.advert[priceH].price[priceD] * GetModifier(cust[index].SpotsLength());
+
+					cust[index].advert[priceH].free[priceD] += cust[index].SpotsLength();
+					cust[index].SaveString.append(" a ");
+					cust[index].SaveString.append(to_string(priceD));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(priceH));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(cust[index].SpotsLength()));
+				}
+				else
+				{
+					priceListOne.advert[priceH].free[priceD] += cust[index].SpotsLength();
+					custTempB -= priceListOne.advert[priceH].price[priceD] * GetModifier(cust[index].SpotsLength());
+
+					cust[index].advert[priceH].free[priceD] += cust[index].SpotsLength();
+					cust[index].SaveString.append(" a ");
+					cust[index].SaveString.append(to_string(priceD));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(priceH));
+					cust[index].SaveString.append(" ");
+					cust[index].SaveString.append(to_string(cust[index].SpotsLength()));
+				}
+			}
+			else countBreak++;
+			priceH = -1;
+			priceD = -1;
+		}
 	}
+	
 }
 
 int main()
@@ -548,40 +634,42 @@ int main()
 				case 'b':
 					cin >> tempX;
 					cust[tempCust].Budget(tempX);
+					FillPlan(tempCust);
 					break;
 				case 'l':
 					cin >> tempX;
 					cust[tempCust].SpotsLength(tempX);
+					FillPlan(tempCust);
 					break;
 				case 'p':
 					cin >> tempPlan;
 					cust[tempCust].CheapPlan = tempPlan;
-					FillPlan(numberOfCustomers);
+					FillPlan(tempCust);
 					break;
 				case 'e':
 					cin >> tempPlan;
 					cust[tempCust].EventPriceList = tempPlan;
-					FillPlan(numberOfCustomers);
+					FillPlan(tempCust);
 					break;
 				case 'd':
 					cin >> tempX;
 					cust[tempCust].days += (DayNames)tempX;
-					FillPlan(numberOfCustomers);
+					FillPlan(tempCust);
 					break;
 				case 'h':
 					cin >> tempX;
 					cust[tempCust].hours += (HoursEnums)tempX;
-					FillPlan(numberOfCustomers);
+					FillPlan(tempCust);
 					break;
 				case 'm':
 					cin >> tempX;
 					cust[tempCust].days -= (DayNames)tempX;
-					FillPlan(numberOfCustomers);
+					FillPlan(tempCust);
 					break;
 				case 'r':
 					cin >> tempX;
 					cust[tempCust].hours -= (HoursEnums)tempX;
-					FillPlan(numberOfCustomers);
+					FillPlan(tempCust);
 					break;
 				default:
 					break;
