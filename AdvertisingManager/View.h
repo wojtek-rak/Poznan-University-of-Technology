@@ -2,6 +2,8 @@
 #define VIEW_H
 
 #include "PriceList.h"
+#include "Customer.h"
+
 
 class View
 {
@@ -18,6 +20,7 @@ public:
 	static void MenuCustomers(int menu_item);
 	static void EditPriceList(int menu_item, int menu_up_item, PriceList priceList, bool editingList, bool wrongPrice);
 	static void PrintCustomerList(Customer cust[100], int numberOfCustomers);
+	static void PrintPriceListTime(PriceList priceList);
 
 };
 

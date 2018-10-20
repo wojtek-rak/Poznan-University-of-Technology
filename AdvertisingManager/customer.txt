@@ -1,4 +1,4 @@
-n kolaINC b 5000 l 30 p 1 d 0 d 1 d 3 h 5 h 6 h 8 h 10
-n pepsiKO b 7000 l 45 p 0 d 0 d 2 d 4 h 4 h 9 h 11 h 12
-n pappleINP b 6000 l 60 p 1 d 4 d 5 d 6 h 0 h 1 h 12 h 14 h 23
-n 1 b 1 l 1 p 1 d 1
+n kolaINC b 5000 l 30 p 1 e 1 d 0 d 1 d 3 h 5 h 6 h 8 h 10 a 1 1 45 a 4 3 45
+n pepsiKO b 7000 l 45 p 0 e 0 d 0 d 2 d 4 h 1 h 4 h 9 h 11 h 12 a 3 3 45 a 2 3 45
+n pappleINP b 6000 l 60 p 1 e 0 d 4 d 5 d 6 h 0 h 1 h 12 h 14 h 23 a 2 2 45  a 1 1 45
+n waffle b 1 l 1 p 1 e 1 d 1

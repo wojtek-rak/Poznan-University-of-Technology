@@ -18,13 +18,15 @@ void SaveManager::SaveCustomers(int numberOfCustomers, Customer cust[100])
 	{
 		if (outFileEvent.good())
 		{
-			outFileEvent << "n " << cust[i].Name() << " b " << cust[i].Budget() << " l " << cust[i].SpotsLength() << " p " << cust[i].CheapPlan;
+			cout << "\n SAVE CUST: " << i;
+			outFileEvent << "n " << cust[i].Name() << " b " << cust[i].Budget() << " l " << cust[i].SpotsLength() << " p " << cust[i].CheapPlan << " e " << cust[i].EventPriceList;
 			for (auto f : cust[i].days) {
 				outFileEvent << " d " << f;
 			}
 			for (auto f : cust[i].hours) {
 				outFileEvent << " h " << f;
 			}
+			outFileEvent << cust[i].SaveString;
 			outFileEvent << "\n";
 			outFileEvent.flush();
 
@@ -42,13 +44,14 @@ void SaveManager::SaveCustomers(int numberOfCustomers, Customer cust[100], bool 
 		if (outFileEvent.good())
 		{
 			if (deadLetter && id == i) continue;
-			outFileEvent << "n " << cust[i].Name() << " b " << cust[i].Budget() << " l " << cust[i].SpotsLength() << " p " << cust[i].CheapPlan;
+			outFileEvent << "n " << cust[i].Name() << " b " << cust[i].Budget() << " l " << cust[i].SpotsLength() << " p " << cust[i].CheapPlan << " e " << cust[i].EventPriceList;
 			for (auto f : cust[i].days) {
 				outFileEvent << " d " << f;
 			}
 			for (auto f : cust[i].hours) {
 				outFileEvent << " h " << f;
 			}
+			outFileEvent << cust[i].SaveString;
 			outFileEvent << "\n";
 			outFileEvent.flush();
 

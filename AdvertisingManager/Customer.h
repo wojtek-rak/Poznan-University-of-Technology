@@ -2,6 +2,9 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 
+
+#include "PriceList.h"
+
 #include <string>
 #include <set>
 
@@ -41,7 +44,7 @@ enum HoursEnums {
 	H2301_2400,
 };
 
-class Customer
+class Customer : public PriceList
 {
 public:
 	Customer();
@@ -49,7 +52,9 @@ public:
 	~Customer();
 	
 	bool CheapPlan;
+	bool EventPriceList;
 
+	std::string SaveString;
 	void Budget(int value);
 	int Budget();
 	void SpotsLength(int value);

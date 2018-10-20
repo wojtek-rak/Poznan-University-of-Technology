@@ -2,6 +2,8 @@
 #define SAVEMANAGER_H
 
 #include "PriceList.h"
+#include "Customer.h"
+
 
 class SaveManager
 {

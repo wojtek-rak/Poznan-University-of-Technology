@@ -1,4 +1,5 @@
 #include "View.h"
+#include "Customer.h"
 #include<iostream>
 #include <windows.h>
 
@@ -61,7 +62,7 @@ void View::PrintCustomerList(Customer cust[100], int numberOfCustomers)
 	{
 		SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
-		cout <<"ID: "<<i<< " Customer name: " << cust[i].Name() << ", Customer budget: " << cust[i].Budget() << ", Customer Spots Length:" << cust[i].SpotsLength()<<", Plan: "<< cust[i].CheapPlan<<"\n";
+		cout <<"ID: "<<i<< " Customer name: " << cust[i].Name() << ", Customer budget: " << cust[i].Budget() << ", Customer Spots Length:" << cust[i].SpotsLength()<<", CheapPlan: "<< cust[i].CheapPlan << ", Event PriceList: " << cust[i].EventPriceList <<"\n";
 		cout << "Days: ";
 		for (auto f : cust[i].days) {
 			cout << f<< ", ";
@@ -101,12 +102,40 @@ void View::PrintPriceList(PriceList priceList)
 		SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		for (int j = 0; j < 7; j++)
 		{
+			if (priceList.advert[i].free[j] > 0) SetConsoleTextAttribute(console, BACKGROUND_RED | BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 			if(priceList.advert[i].free[j] > 330) SetConsoleTextAttribute(console, BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 			if (priceList.advert[i].price[j] > 9999) cout << priceList.advert[i].price[j] << "\t\t";
 			else  if (priceList.advert[i].price[j] > 999) cout << priceList.advert[i].price[j] << " " << "\t\t";
 			else  if (priceList.advert[i].price[j] > 99) cout << priceList.advert[i].price[j] << "  " << "\t\t";
 			else  if (priceList.advert[i].price[j] > 9) cout << priceList.advert[i].price[j] << "   " << "\t\t";
 			else cout << priceList.advert[i].price[j] << "    " << "\t\t";
+			SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		}
+		SetConsoleTextAttribute(console, OriginalColors);
+		cout << endl;
+	}
+	SetConsoleTextAttribute(console, OriginalColors);
+}
+
+void View::PrintPriceListTime(PriceList priceList)
+{
+	cout << "\n";
+	GetConsoleScreenBufferInfo(console, ConsoleInfo);
+	WORD OriginalColors = ConsoleInfo->wAttributes;
+
+	for (int i = 0; i < 24; i++)
+	{
+		cout << "  ";
+		SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		for (int j = 0; j < 7; j++)
+		{
+			if (priceList.advert[i].free[j] > 0) SetConsoleTextAttribute(console, BACKGROUND_RED | BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			if (priceList.advert[i].free[j] > 330) SetConsoleTextAttribute(console, BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+			if (priceList.advert[i].free[j] > 9999) cout << priceList.advert[i].free[j] << "\t\t";
+			else  if (priceList.advert[i].free[j] > 999) cout << priceList.advert[i].free[j] << " " << "\t\t";
+			else  if (priceList.advert[i].free[j] > 99) cout << priceList.advert[i].free[j] << "  " << "\t\t";
+			else  if (priceList.advert[i].free[j] > 9) cout << priceList.advert[i].free[j] << "   " << "\t\t";
+			else cout << priceList.advert[i].free[j] << "    " << "\t\t";
 			SetConsoleTextAttribute(console, BACKGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		}
 		SetConsoleTextAttribute(console, OriginalColors);
@@ -198,7 +227,8 @@ void View::MenuAdvertismentPlan(int menu_item)
 	WORD OriginalColors = ConsoleInfo->wAttributes;
 	View::gotoXY(2, heightOfMenu);  cout << "USUAL PRICE LISTS";
 	View::gotoXY(32, heightOfMenu);  cout << "CHRISTMAS PRICE LISTS";
-	View::gotoXY(62, heightOfMenu);  cout << "RETURN";
+	View::gotoXY(62, heightOfMenu);  cout << "SHOW OCCUPANCY";
+	View::gotoXY(92, heightOfMenu);  cout << "RETURN";
 	//View::gotoXY(32, heightOfMenu); cout << "4) ...";
 	//View::gotoXY(42, heightOfMenu); cout << "Quit Program";
 	switch (menu_item) {
@@ -213,6 +243,11 @@ void View::MenuAdvertismentPlan(int menu_item)
 		SetConsoleTextAttribute(console, OriginalColors);
 		break;
 	case 2:
+		SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
+		View::gotoXY(2 + menu_item * 30, heightOfMenu);  cout << "SHOW OCCUPANCY";
+		SetConsoleTextAttribute(console, OriginalColors);
+		break;
+	case 3:
 		SetConsoleTextAttribute(console, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
 		View::gotoXY(2 + menu_item * 30, heightOfMenu);  cout << "RETURN";
 		SetConsoleTextAttribute(console, OriginalColors);

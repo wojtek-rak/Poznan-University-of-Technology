@@ -1,6 +1,7 @@
 #ifndef PRICELIST_H
 #define PRICELIST_H
-#include "Customer.h"
+
+
 #include "AdvertEntity.h"
 #include <iostream>
 #include <set>
