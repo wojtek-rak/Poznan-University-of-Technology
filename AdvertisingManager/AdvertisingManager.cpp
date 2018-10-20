@@ -135,7 +135,7 @@ void ZerosCustomerPlan(int index)
 //" a " << tempDay << " " << tempHour << " " << tempLength;
 void FillPlan(int index)
 {
-	int custTempB = cust[index].Budget;
+	int custTempB = cust[index].Budget();
 	int priceMinH = -1;
 	int priceMinD = -1;
 	int countBreak = 0;
@@ -151,9 +151,9 @@ void FillPlan(int index)
 				{
 					if (cust[index].EventPriceList)
 					{
-						if (priceListEvent.advert[h].free[d] < 300 - cust[index].SpotsLength)
+						if (priceListEvent.advert[h].free[d] < 300 - cust[index].SpotsLength())
 						{
-							if (custTempB > priceListEvent.advert[h].price[d] * GetModifier(cust[index].SpotsLength))
+							if (custTempB > priceListEvent.advert[h].price[d] * GetModifier(cust[index].SpotsLength()))
 							{
 								priceMinH = h;
 								priceMinD = d;
@@ -162,9 +162,9 @@ void FillPlan(int index)
 					}
 					else
 					{
-						if (priceListOne.advert[h].free[d] < 300 - cust[index].SpotsLength)
+						if (priceListOne.advert[h].free[d] < 300 - cust[index].SpotsLength())
 						{
-							if (custTempB > priceListOne.advert[h].price[d] * GetModifier(cust[index].SpotsLength))
+							if (custTempB > priceListOne.advert[h].price[d] * GetModifier(cust[index].SpotsLength()))
 							{
 								priceMinH = h;
 								priceMinD = d;
@@ -177,17 +177,17 @@ void FillPlan(int index)
 			{
 				if (cust[index].EventPriceList)
 				{
-					priceListEvent.advert[priceMinH].free[priceMinD] += cust[index].SpotsLength;
-					custTempB -= priceListEvent.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength);
+					priceListEvent.advert[priceMinH].free[priceMinD] += cust[index].SpotsLength();
+					custTempB -= priceListEvent.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength());
 
-					cust[index].advert[priceMinH].free[priceMinD] += cust[index].SpotsLength;
+					cust[index].advert[priceMinH].free[priceMinD] += cust[index].SpotsLength();
 				}
 				else
 				{
-					priceListOne.advert[priceMinH].free[priceMinD] += cust[index].SpotsLength;
-					custTempB -= priceListOne.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength);
+					priceListOne.advert[priceMinH].free[priceMinD] += cust[index].SpotsLength();
+					custTempB -= priceListOne.advert[priceMinH].price[priceMinD] * GetModifier(cust[index].SpotsLength());
 
-					cust[index].advert[priceMinH].free[priceMinD] += cust[index].SpotsLength;
+					cust[index].advert[priceMinH].free[priceMinD] += cust[index].SpotsLength();
 				}
 			}
 			else countBreak++;
