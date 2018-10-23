@@ -12,6 +12,7 @@ namespace PCmax
     {
         static void Main(string[] args)
         {
+            int time = 0;
             int numberOfThreads;
             int numberOfTasks;
             string line;
@@ -38,7 +39,20 @@ namespace PCmax
                 Console.Write(@"{0} ", task);
             }
 
-
+            while (tasks.Count > 0)
+            { 
+                for (int i = 0; i < taskMachines.Count; i++)
+                {
+                    if (taskMachines[i] <= time)
+                    {
+                        taskMachines[i] += tasks.First();
+                        tasks.Remove(tasks.First());
+                    }
+                }
+                time++;
+            }
+            Console.WriteLine();
+            Console.WriteLine(@"{1}Max time with greedy algorithm: {0}",taskMachines.Max(), Environment.NewLine);
             Thread.Sleep(8000);
         }
     }
