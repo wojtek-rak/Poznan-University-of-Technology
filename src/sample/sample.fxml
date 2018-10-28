@@ -3,6 +3,13 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="sample.Controller"
+<?import javafx.scene.layout.ColumnConstraints?>
+<GridPane fx:controller="sample.SampleController"
+          stylesheets="/sample/sample.css"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" />
+    </columnConstraints>
+    <Button GridPane.rowIndex="1" styleClass="button" text="Hello World" onAction="#SayHelloWorld"/>
+    <Label GridPane.rowIndex="2" fx:id= "helloWorld"/>
 </GridPane>

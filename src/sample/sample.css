@@ -1,0 +1,10 @@
+.root {
+    -fx-background-color: gold;
+}
+.label {
+    -fx-font-size: 20;
+}
+.button{
+    -fx-padding: 10px 10px 10px 10px;
+    -fx-alignment: center;
+}
