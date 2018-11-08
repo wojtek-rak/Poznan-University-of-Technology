@@ -1,10 +1,28 @@
-.root {
-    -fx-background-color: gold;
+/*.root {*/
+    /*-fx-background-color: gold;*/
+/*}*/
+/*.label {*/
+    /*-fx-font-size: 20;*/
+/*}*/
+/*.button{*/
+    /*-fx-padding: 10px 10px 10px 10px;*/
+    /*-fx-end-margin: 300px;*/
+    /*-fx-alignment: center;*/
+
+/*}*/
+/*.gridPane{*/
+    /*-fx-start-margin: 400px;*/
+/*}*/
+/*HBox, VBox {*/
+    /*-fx-alignment: center ;*/
+    /*-fx-padding: 10 ;*/
+/*}*/
+
+.dataLabelRight{
+    -fx-border-color: black;
+    -fx-min-width: 500px;
 }
-.label {
-    -fx-font-size: 20;
-}
-.button{
-    -fx-padding: 10px 10px 10px 10px;
-    -fx-alignment: center;
+.dataLabelLeft {
+    -fx-border-color: black;
+    -fx-min-width: 200px;
 }
