@@ -31,12 +31,30 @@ public class SampleController {
     public TableColumn hyperlinkcol;
     public TableColumn descriptioncol;
     public GridPane gridPane;
+    public CheckBox checkBoxName;
+    public CheckBox checkBoxDescription;
+    public CheckBox checkBoxURL;
+    public CheckBox checkBoxDate;
+    public CheckBox checkBoxClone;
+    public CheckBox checkBoxLanguage;
+    public CheckBox checkBoxMirror;
+    public CheckBox checkBoxOpen;
+    public CheckBox checkBoxWatchers;
+    public CheckBox checkBoxStars;
+    public CheckBox checkBoxForks;
+    public CheckBox checkBoxCheck;
+    public CheckBox checkBoxZero;
+    public TextField username;
+    public TextField repositoryName;
 
-    public void SayHelloWorld(ActionEvent actionEvent)  {
+    public void GetData(ActionEvent actionEvent)  {
         String x = "xD";
         GithubProperties githubProperties;
         try{
-            x = ReadApi.getHTML("https://api.github.com/repos/google/gvisor");
+            //x = ReadApi.getHTML("https://api.github.com/repos/google/gvisor");
+            x = ReadApi.getHTML("https://api.github.com/repos/wojtek-rak/ApiReader");
+            //System.out.println("https://api.github.com/repos/" + username.getText() + "/" + repositoryName.getText());
+            //x = ReadApi.getHTML("https://api.github.com/repos/" + username.getText() + "/" + repositoryName.getText());
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             githubProperties = objectMapper.readValue(x.toString() , GithubProperties.class);
@@ -87,14 +105,14 @@ public class SampleController {
         {
             for (Field field : klazz.getDeclaredFields()) {
                 System.out.print(field.getName() + ": ");
-
-
+                Object value = field.get(container);
+                if(CheckForSkip(field.getName(), value)) continue;
                 Label labelName = new Label(field.getName());
                 GridPane.setRowIndex(labelName, i);
                 GridPane.setColumnIndex(labelName, 0);
 
                 Label labelValue;
-                Object value = field.get(container);
+
                 if(value != null)
                 {
                     labelValue = new Label(value.toString());
@@ -119,5 +137,66 @@ public class SampleController {
             System.out.print(e.toString());
         }
 
+    }
+    private boolean CheckForSkip(String name, Object value)
+    {
+        if(!checkBoxName.isSelected() && name == "full_name") return true;
+        if(!checkBoxDescription.isSelected() && name == "description") return true;
+        if(!checkBoxURL.isSelected() && name == "url") return true;
+        if(!checkBoxDate.isSelected() && name == "created_at") return true;
+        if(!checkBoxClone.isSelected() && name == "clone_url") return true;
+        if(!checkBoxLanguage.isSelected() && name == "language") return true;
+        if(!checkBoxMirror.isSelected() && name == "mirror_url") return true;
+        if(!checkBoxOpen.isSelected() && name == "open_issues_count") return true;
+        if(!checkBoxWatchers.isSelected() && name == "subscribers_count") return true;
+        if(!checkBoxStars.isSelected() && name == "stargazers_count") return true;
+        if(!checkBoxForks.isSelected() && name == "forks_count") return true;
+        if(checkBoxZero.isSelected())
+        {
+            if(value == null)
+            {
+                return true;
+            }
+            else
+            {
+                if(value == "0") return true;
+                if(value.equals(Integer.valueOf(0))) return true;
+
+            }
+        }
+
+        return false;
+    }
+
+    public void CheckBoxes(ActionEvent actionEvent) {
+        System.out.print(checkBoxCheck.isSelected() + "\n");
+        if(checkBoxCheck.isSelected())
+        {
+            checkBoxName.setSelected(true);
+            checkBoxDescription.setSelected(true);
+            checkBoxURL.setSelected(true);
+            checkBoxDate.setSelected(true);
+            checkBoxClone.setSelected(true);
+            checkBoxLanguage.setSelected(true);
+            checkBoxMirror.setSelected(true);
+            checkBoxOpen.setSelected(true);
+            checkBoxWatchers.setSelected(true);
+            checkBoxStars.setSelected(true);
+            checkBoxForks.setSelected(true);
+        }
+        else
+        {
+            checkBoxName.setSelected(false);
+            checkBoxDescription.setSelected(false);
+            checkBoxURL.setSelected(false);
+            checkBoxDate.setSelected(false);
+            checkBoxClone.setSelected(false);
+            checkBoxLanguage.setSelected(false);
+            checkBoxMirror.setSelected(false);
+            checkBoxOpen.setSelected(false);
+            checkBoxWatchers.setSelected(false);
+            checkBoxStars.setSelected(false);
+            checkBoxForks.setSelected(false);
+        }
     }
 }
