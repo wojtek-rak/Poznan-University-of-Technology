@@ -1,5 +1,9 @@
 package sample;
 
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.pattern.Patterns;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.event.ActionEvent;
@@ -7,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
+import sample.Actors.Messages.ReadApiMessage;
+import sample.Actors.ReadApiActor;
 import sample.Models.GithubProperties;
 
 import java.beans.BeanInfo;
@@ -18,18 +24,15 @@ import java.lang.reflect.Modifier;
 import java.net.*;
 import java.util.ResourceBundle;
 
-
 import java.net.URL;
-
 import javafx.collections.FXCollections;
+import scala.concurrent.Await;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
 
 
 public class SampleController {
-    public Label helloWorld;
-    public TableView table;
-    public TableColumn buttoncol;
-    public TableColumn hyperlinkcol;
-    public TableColumn descriptioncol;
+
     public GridPane gridPane;
     public CheckBox checkBoxName;
     public CheckBox checkBoxDescription;
@@ -47,17 +50,27 @@ public class SampleController {
     public TextField username;
     public TextField repositoryName;
 
+    public String dataString;
+    public ActorSystem system;
+    public ActorRef readApiActor;
+    public SampleController()
+    {
+        system = ActorSystem.create("test-system");
+        readApiActor = system.actorOf(Props.create(ReadApiActor.class, this));
+    }
     public void GetData(ActionEvent actionEvent)  {
         String x = "xD";
         GithubProperties githubProperties;
+
+        Future<Object> future = Patterns.ask(readApiActor, new ReadApiMessage(username.getText(), repositoryName.getText()), 5000);
+
+        //readApiActor.tell(new ReadApiMessage(username.getText(), repositoryName.getText()), ActorRef.noSender());
         try{
-            //x = ReadApi.getHTML("https://api.github.com/repos/google/gvisor");
-            x = ReadApi.getHTML("https://api.github.com/repos/wojtek-rak/ApiReader");
-            //System.out.println("https://api.github.com/repos/" + username.getText() + "/" + repositoryName.getText());
-            //x = ReadApi.getHTML("https://api.github.com/repos/" + username.getText() + "/" + repositoryName.getText());
+
+            Await.result(future, Duration.Inf());
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            githubProperties = objectMapper.readValue(x.toString() , GithubProperties.class);
+            githubProperties = objectMapper.readValue(dataString , GithubProperties.class);
             x = githubProperties.full_name;
 
             inspect(GithubProperties.class, githubProperties);
@@ -66,6 +79,7 @@ public class SampleController {
         catch (Exception  e) {
             x = "error";
             x = e.toString();
+            System.out.println(e.toString());
         }
 
 
