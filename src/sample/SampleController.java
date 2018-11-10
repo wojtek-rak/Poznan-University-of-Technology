@@ -25,6 +25,9 @@ import java.net.*;
 import java.util.ResourceBundle;
 
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javafx.collections.FXCollections;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
@@ -58,29 +61,37 @@ public class SampleController {
         system = ActorSystem.create("test-system");
         readApiActor = system.actorOf(Props.create(ReadApiActor.class, this));
     }
-    public void GetData(ActionEvent actionEvent)  {
-        String x = "xD";
-        GithubProperties githubProperties;
 
+    private static Pattern usrNamePtrn = Pattern.compile("^[a-zA-Z0-9-]+$");
+
+    public static boolean validateUserName(String userName){
+
+        Matcher mtch = usrNamePtrn.matcher(userName);
+        if(mtch.matches()){
+            return true;
+        }
+        return false;
+    }
+
+    public void GetData(ActionEvent actionEvent)  {
+        if("".equals(username.getText()) || "".equals(repositoryName.getText()))
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fill all fields!", ButtonType.OK);
+            alert.showAndWait();
+            return;
+        }
+        username.setText(username.getText().replaceAll(" ", "-"));
+        repositoryName.setText(repositoryName.getText().replaceAll(" ", "-"));
+        //repositoryName.setText(repositoryName.getText().replace(' ', '-'));
+        if(!validateUserName(username.getText()))
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Use only alphanumeric, space and '-' characters!", ButtonType.OK);
+            alert.showAndWait();
+            return;
+        }
         Future<Object> future = Patterns.ask(readApiActor, new ReadApiMessage(username.getText(), repositoryName.getText()), 5000);
 
         //readApiActor.tell(new ReadApiMessage(username.getText(), repositoryName.getText()), ActorRef.noSender());
-        try{
-
-            Await.result(future, Duration.Inf());
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            githubProperties = objectMapper.readValue(dataString , GithubProperties.class);
-            x = githubProperties.full_name;
-
-            inspect(GithubProperties.class, githubProperties);
-
-        }
-        catch (Exception  e) {
-            x = "error";
-            x = e.toString();
-            System.out.println(e.toString());
-        }
 
 
         //helloWorld.setText("YOU ARE NOT MY FRIEND YOUE ARE MY BROTHER MY FREIDN!");
@@ -99,6 +110,29 @@ public class SampleController {
 
 
         //helloWorld.setText(x);
+    }
+
+    public void GetDataBlyat()
+    {
+
+        String x ="";
+        try{
+
+            //Await.result(future, Duration.Inf());
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            GithubProperties githubProperties = objectMapper.readValue(dataString , GithubProperties.class);
+            x = githubProperties.full_name;
+
+            inspect(GithubProperties.class, githubProperties);
+
+        }
+        catch (Exception  e) {
+            x = "error";
+            x = e.toString();
+            System.out.println(e.toString());
+        }
+
     }
 
     private <T> void inspect(Class<T> klazz,  Object container) {
@@ -129,7 +163,14 @@ public class SampleController {
 
                 if(value != null)
                 {
-                    labelValue = new Label(value.toString());
+                    if("created_at".equals(field.getName()))
+                    {
+                        labelValue = new Label(value.toString().substring(0, value.toString().length() - value.toString().indexOf("T")));
+                    }
+                    else
+                    {
+                        labelValue = new Label(value.toString());
+                    }
                 }
                 else
                 {
