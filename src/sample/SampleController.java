@@ -8,30 +8,19 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
 import sample.Actors.Messages.ReadApiMessage;
 import sample.Actors.ReadApiActor;
 import sample.Models.GithubProperties;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.net.*;
-import java.util.ResourceBundle;
 
-import java.net.URL;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javafx.collections.FXCollections;
-import scala.concurrent.Await;
 import scala.concurrent.Future;
-import scala.concurrent.duration.Duration;
+
 
 
 public class SampleController {
@@ -91,28 +80,9 @@ public class SampleController {
         }
         Future<Object> future = Patterns.ask(readApiActor, new ReadApiMessage(username.getText(), repositoryName.getText()), 5000);
 
-        //readApiActor.tell(new ReadApiMessage(username.getText(), repositoryName.getText()), ActorRef.noSender());
-
-
-        //helloWorld.setText("YOU ARE NOT MY FRIEND YOUE ARE MY BROTHER MY FREIDN!");
-
-//        gridPane.getChildren().clear();
-//
-//
-//        for (int i = 0, j = 0; i < 10; i++, j++) {
-//            Label label = new Label("Label Number"+i);
-//            GridPane.setRowIndex(label, i);
-//            if(i%2==0) GridPane.setColumnIndex(label, 0);
-//            else GridPane.setColumnIndex(label, 1);
-//
-//            gridPane.getChildren().add(label);
-//        }
-
-
-        //helloWorld.setText(x);
     }
 
-    public void GetDataBlyat()
+    public void ShowData()
     {
 
         String x ="";
@@ -136,16 +106,6 @@ public class SampleController {
     }
 
     private <T> void inspect(Class<T> klazz,  Object container) {
-//        Field[] fields = klazz.getDeclaredFields();
-//        System.out.printf("%d fields:%n", fields.length);
-//        for (Field field : fields) {
-//            System.out.printf("%s %s %s%n",
-//                    Modifier.toString(field.getModifiers()),
-//                    field.getType().getSimpleName(),
-//                    field.getName()
-//            );
-//        }
-//    }
         gridPane.getChildren().clear();
 
         int i = 0;
