@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
+// Class responsible for send request to GithubApi
 public class ReadApi {
     public static String getHTML(String urlToRead) throws Exception {
 

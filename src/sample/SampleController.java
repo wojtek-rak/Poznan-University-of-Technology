@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import scala.concurrent.Future;
 
 
-
+// Class Controller responsible for manage window
 public class SampleController {
 
     public GridPane gridPane;
@@ -45,6 +45,7 @@ public class SampleController {
     public String dataString;
     public ActorSystem system;
     public ActorRef readApiActor;
+    //constructor
     public SampleController()
     {
         system = ActorSystem.create("test-system");
@@ -53,6 +54,7 @@ public class SampleController {
 
     private static Pattern usrNamePtrn = Pattern.compile("^[a-zA-Z0-9-]+$");
 
+    // Validate Username method
     public static boolean validateUserName(String userName){
 
         Matcher mtch = usrNamePtrn.matcher(userName);
@@ -62,6 +64,7 @@ public class SampleController {
         return false;
     }
 
+    // On button Action
     public void GetData(ActionEvent actionEvent)  {
         if("".equals(username.getText()) || "".equals(repositoryName.getText()))
         {
@@ -82,6 +85,7 @@ public class SampleController {
 
     }
 
+    //Map data from json to class
     public void ShowData()
     {
 
@@ -92,9 +96,9 @@ public class SampleController {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             GithubProperties githubProperties = objectMapper.readValue(dataString , GithubProperties.class);
-            x = githubProperties.full_name;
+            //x = githubProperties.full_name;
 
-            inspect(GithubProperties.class, githubProperties);
+            Inject(GithubProperties.class, githubProperties);
 
         }
         catch (Exception  e) {
@@ -105,13 +109,14 @@ public class SampleController {
 
     }
 
-    private <T> void inspect(Class<T> klazz,  Object container) {
+    //Inject data from class to grid Pane
+    private <T> void Inject(Class<T> properties,  Object container) {
         gridPane.getChildren().clear();
 
         int i = 0;
         try
         {
-            for (Field field : klazz.getDeclaredFields()) {
+            for (Field field : properties.getDeclaredFields()) {
                 System.out.print(field.getName() + ": ");
                 Object value = field.get(container);
                 if(CheckForSkip(field.getName(), value)) continue;
@@ -153,6 +158,8 @@ public class SampleController {
         }
 
     }
+
+    //Check for checkboxes
     private boolean CheckForSkip(String name, Object value)
     {
         if(!checkBoxName.isSelected() && name == "full_name") return true;
@@ -183,6 +190,7 @@ public class SampleController {
         return false;
     }
 
+    // Check / Uncheck all
     public void CheckBoxes(ActionEvent actionEvent) {
         System.out.print(checkBoxCheck.isSelected() + "\n");
         if(checkBoxCheck.isSelected())

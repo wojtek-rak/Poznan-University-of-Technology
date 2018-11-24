@@ -8,6 +8,7 @@ import sample.Actors.Messages.ReadApiMessage;
 import sample.ReadApi;
 import sample.SampleController;
 
+// Class Actor responsible for recive username and repository name, get data from request, and inject it to table
 public class ReadApiActor extends AbstractActor {
     private SampleController sampleController;
     public ReadApiActor(SampleController controller)
@@ -19,9 +20,6 @@ public class ReadApiActor extends AbstractActor {
         return receiveBuilder()
                 .match(ReadApiMessage.class, g -> {
                     String x = "";
-                    //x = ReadApi.getHTML("https://api.github.com/repos/google/gvisor");
-                    //x = ReadApi.getHTML("https://api.github.com/repos/wojtek-rak/ApiReader");
-                    //System.out.println("https://api.github.com/repos/" + g.username + "/" +  g.repositoryName);
                     try
                     {
                         x = ReadApi.getHTML("https://api.github.com/repos/" + g.username + "/" +  g.repositoryName);
