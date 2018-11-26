@@ -26,9 +26,7 @@ namespace PCmax
                 }
                 time++;
             }
-            Console.WriteLine();
-            
-            Console.WriteLine(@"{1}Max time with greedy algorithm: {0}", taskMachines.Max(), Environment.NewLine);
+            Console.WriteLine(@"Max time with greedy algorithm: {0}", taskMachines.Max());
             return taskMachines.Max();
         }
     }

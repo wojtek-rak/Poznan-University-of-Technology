@@ -11,9 +11,9 @@ namespace PCmax
     {
         public string _path { get; set; }
 
-        private const int _numOfThreads = 10;
-        private const int _numOfTasks = 150;
-        private const int _randomRange = 50;
+        private const int _numOfThreads = 5; // 5 || 20
+        private const int _numOfTasks = 200; // 200
+        private const int _randomRange = 1000; // 1-1000
 
         public void GenerateInstance()
         {

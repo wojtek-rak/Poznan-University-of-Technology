@@ -12,12 +12,14 @@ namespace PCmax
         //INSTANCE
         private const bool _generate = false;
         private const bool _testPathActive = false;
-        private const string _path = "instance.txt";
+        //private const string _path = "instance.txt";
+        private const string _path = "inst1.txt";
         private const string _testPath = "TestInstance.txt"; // "TestInstance.txt"
+        private const bool additionalInfo = false;
+        private const bool additionalInfoMAX = false;
 
 
-
-        public void Startup()
+        public void Startup(string pathLive)
         {
             int maxValue = -1;
             String path = _path;
@@ -28,6 +30,7 @@ namespace PCmax
             }
             if (_testPathActive) path = _testPath;
 
+            if (pathLive != null) path = pathLive;
 
             int numberOfThreads;
             int numberOfTasks;
@@ -67,18 +70,26 @@ namespace PCmax
             {
                 taskMachines.Add(0);
             }
-            Console.WriteLine(@"Number of Tasks: {0}, Number of Threads {1}", numberOfTasks, numberOfThreads);
-            foreach (var task in tasks)
+            if(additionalInfo)
             {
-                Console.Write(@"{0} ", task);
+                Console.WriteLine(@"Number of Tasks: {0}, Number of Threads {1}", numberOfTasks, numberOfThreads);
+                foreach (var task in tasks)
+                {
+                    Console.Write(@"{0} ", task);
+                }
             }
+
 
             var greedy = new Greedy() {tasks = new List<int>(tasks), taskMachines = new List<int>(taskMachines)};
             var greedyValue = greedy.Calculate();
 
-            Console.WriteLine();
-            Console.WriteLine($"Max PCMAX value: {maxValue}");
-            Thread.Sleep(99999);
+            if(additionalInfoMAX)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Max PCMAX value: {maxValue}");
+            }
+
+
         }
 
         
