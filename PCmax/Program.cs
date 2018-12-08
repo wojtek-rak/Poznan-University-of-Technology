@@ -29,17 +29,17 @@ namespace PCmax
             {
                 foreach (var path in paths)
                 {
+                    Console.WriteLine();
                     Console.WriteLine(path);
                     main.Startup(path);
                 }
-
 
             }
             else
             {
                 main.Startup(null);
             }
-            Thread.Sleep(99999);
+
         }
     }
 }

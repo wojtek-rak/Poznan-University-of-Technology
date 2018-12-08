@@ -9,6 +9,7 @@ namespace PCmax
 {
     public class Main
     {
+    
         //INSTANCE
         private const bool _generate = false;
         private const bool _testPathActive = false;
@@ -18,9 +19,15 @@ namespace PCmax
         private const bool additionalInfo = false;
         private const bool additionalInfoMAX = false;
 
+        public List<int> Tasks => new List<int>(tasks);
+        public List<int> TaskMachines => new List<int>(taskMachines);
+
+        private List<int> tasks = new List<int>();
+        private List<int> taskMachines = new List<int>();
 
         public void Startup(string pathLive)
         {
+            var max =  (value: -1,alg: "default");
             int maxValue = -1;
             String path = _path;
             if (_generate)
@@ -35,8 +42,7 @@ namespace PCmax
             int numberOfThreads;
             int numberOfTasks;
             string line;
-            List<int> tasks = new List<int>();
-            List<int> taskMachines = new List<int>();
+
             //Initialize data from file
             using (var reader = new StreamReader(path))
             {
@@ -79,19 +85,43 @@ namespace PCmax
                 }
             }
 
-
-            var greedy = new Greedy() {tasks = new List<int>(tasks), taskMachines = new List<int>(taskMachines)};
+            // Greedy without sort
+            var greedy = new Greedy() {tasks = Tasks, taskMachines = TaskMachines};
             var greedyValue = greedy.Calculate();
+            max = (greedyValue, "greedy no sort");
 
-            if(additionalInfoMAX)
+            // Greedy with sort
+            var sortedTask = Tasks;
+            sortedTask.Sort();
+            var greedySort = new Greedy() { tasks = sortedTask, taskMachines = TaskMachines };
+            var greedySortedValue = greedySort.Calculate();
+            if (max.value > greedySortedValue)
+            {
+                max = (greedySortedValue, "greedy sorted");
+            }
+
+            if (additionalInfoMAX)
             {
                 Console.WriteLine();
                 Console.WriteLine($"Max PCMAX value: {maxValue}");
             }
 
-
+            Console.WriteLine($"Max value {max.value} with {max.alg}");
+            if(max.alg == "greedy no sort")
+            {
+                InitPopulations();
+            }
+            else
+            {
+                tasks.Sort();
+                InitPopulations();
+            }
         }
 
-        
+        public void InitPopulations()
+        {
+            var genetic = new Genetic(this);
+            genetic.Start();
+        }
     }
 }
