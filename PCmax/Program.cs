@@ -27,6 +27,11 @@ namespace PCmax
             var main = new Main();
             if(liveInstances)
             {
+                paths = new string[]{
+                //"m50n200.txt",
+                "m10.txt",
+
+                };
                 foreach (var path in paths)
                 {
                     Console.WriteLine();

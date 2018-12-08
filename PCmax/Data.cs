@@ -5,15 +5,17 @@ namespace PCmax
 {
     public class Data
     {
+        public int BestScore = 999999999;
+        private List<int> bestVector;
         public List<int> BestVector
         {
             get
             {
-                return BestVector;
+                return bestVector;
             }
             set
             {
-                BestVector = new List<int>(value);
+                bestVector = new List<int>(value);
             }
         }
 

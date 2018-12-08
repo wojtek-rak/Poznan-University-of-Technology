@@ -18,10 +18,13 @@ namespace PCmax
         private const string _testPath = "TestInstance.txt"; // "TestInstance.txt"
         private const bool additionalInfo = false;
         private const bool additionalInfoMAX = false;
+        private const bool greedyGO = true;
 
+        public String path;
         public List<int> Tasks => new List<int>(tasks);
         public List<int> TaskMachines => new List<int>(taskMachines);
-
+        public int numberOfThreads;
+        public int numberOfTasks;
         private List<int> tasks = new List<int>();
         private List<int> taskMachines = new List<int>();
 
@@ -29,7 +32,7 @@ namespace PCmax
         {
             var max =  (value: -1,alg: "default");
             int maxValue = -1;
-            String path = _path;
+            path = _path;
             if (_generate)
             {
                 var generator = new Generator() {_path = _path};
@@ -39,8 +42,7 @@ namespace PCmax
 
             if (pathLive != null) path = pathLive;
 
-            int numberOfThreads;
-            int numberOfTasks;
+
             string line;
 
             //Initialize data from file
@@ -107,21 +109,36 @@ namespace PCmax
             }
 
             Console.WriteLine($"Max value {max.value} with {max.alg}");
-            if(max.alg == "greedy no sort")
+            if(greedyGO)
             {
-                InitPopulations();
+                if (max.alg == "greedy no sort")
+                {
+                    InitPopulations();
+                }
+                else
+                {
+                    tasks.Sort();
+                    InitPopulations();
+                }
             }
-            else
-            {
-                tasks.Sort();
-                InitPopulations();
-            }
+
         }
 
         public void InitPopulations()
         {
-            var genetic = new Genetic(this);
+            Data data = new Data();
+            var genetic = new Genetic(this, data);
             genetic.Start();
+            Console.WriteLine($"Best Score: {data.BestScore}");
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(path.Substring(0, path.Length - 3) + "result.txt"))
+            {
+                foreach (var value in data.BestVector)
+                {
+                    file.WriteLine(value);
+                }
+                file.WriteLine("ACTUAL:");
+                file.WriteLine(data.BestScore);
+            }
         }
     }
 }
