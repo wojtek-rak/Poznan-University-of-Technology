@@ -5,10 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 namespace PCmax
 {
     public class Main
     {
+        public static string WindowsPath =
+            @"C:\Users\Wolix\Documents\A   Projects\c# pprojects\PCmax\PCmax\PCmax\bin\Debug\Results\";
+
+        public static string MacPath = "";
+        public static string ActualPath => WindowsPath;
 
         //INSTANCE
         private const bool _generate = false;
@@ -99,7 +105,7 @@ namespace PCmax
 
             // Greedy with sort
             var sortedTask = Tasks;
-            sortedTask.Sort();
+            sortedTask = sortedTask.OrderBy(x => x.task).ToList();
             var greedySort = new Greedy() { tasks = sortedTask, taskMachines = TaskMachines };
             var greedySortedValue = greedySort.Calculate();
             if (max.value > greedySortedValue)
@@ -135,7 +141,7 @@ namespace PCmax
             var genetic = new Genetic(this, data);
             genetic.Start();
             Console.WriteLine($"Best Score: {data.BestScore}");
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(path.Substring(0, path.Length - 3) + "result.txt"))
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(ActualPath + path.Substring(0, path.Length - 3) + "result.txt"))
             {
                 foreach (var value in data.BestVector)
                 {
@@ -144,6 +150,7 @@ namespace PCmax
                 file.WriteLine("ACTUAL:");
                 file.WriteLine(data.BestScore);
             }
+
         }
     }
 }

@@ -10,6 +10,7 @@ namespace PCmax
 {
     class Program
     {
+        private const bool onePath = false;
         private const bool liveInstances = true;
         private static string[] paths = new string[]{
             "m10.txt",
@@ -24,16 +25,19 @@ namespace PCmax
 
         static void Main(string[] args)
         {
-            var main = new Main();
+            
             if(liveInstances)
             {
-                paths = new string[]{
-                //"m50n200.txt",
-                "m10.txt",
-
-                };
+                if (onePath)
+                {
+                    paths = new string[]{
+                        //"m50n200.txt",
+                        "m10.txt",
+                    };
+                }
                 foreach (var path in paths)
                 {
+                    var main = new Main();
                     Console.WriteLine();
                     Console.WriteLine(path);
                     main.Startup(path);
@@ -42,8 +46,10 @@ namespace PCmax
             }
             else
             {
+                var main = new Main();
                 main.Startup(null);
             }
+            Console.ReadKey();
 
         }
     }

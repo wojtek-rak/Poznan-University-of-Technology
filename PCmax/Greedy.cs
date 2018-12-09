@@ -8,7 +8,7 @@ namespace PCmax
 {
     public class Greedy
     {
-        public List<int> tasks { get; set; }
+        public List<(int index, int task)> tasks { get; set; }
         public List<int> taskMachines { get; set; }
         public int Calculate()
         {
@@ -20,7 +20,7 @@ namespace PCmax
                     if (tasks.Count == 0) break;
                     if (taskMachines[i] <= time)
                     {
-                        taskMachines[i] += tasks.First();
+                        taskMachines[i] += tasks.First().task;
                         tasks.Remove(tasks.First());
                     }
                 }
