@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PCmax
 {
@@ -88,23 +89,13 @@ namespace PCmax
 
         private void RunLoop()
         {
-
+            List<(List<int> chromosome, int index, int score)> generation = new List<(List<int> chromosome, int index, int score)>();
             var start = DateTime.Now;
-
+            int generationCount = 0;
             while((DateTime.Now - start) < algorithmTime)
             {
-                List<List<int>> newPopulation = new List<List<int>>();
-                foreach (var chromosome in population)
-                {
-                    var newChromosome = new List<int>();
-                    newChromosome = (chromosome);
-                    Crossover(newChromosome);
-
-                    newPopulation.Add(newChromosome);
-                }
-                if(data.BestVector != null) newPopulation[0] = new List<int>(data.BestVector);
-                population = newPopulation;
-
+                generationCount++;
+                int i = 0;
                 foreach (var chromosome in population)
                 {
                     var score = Scoring(chromosome);
@@ -115,7 +106,26 @@ namespace PCmax
                         data.BestScore = score;
                         data.BestVector = chromosome;
                     }
+                    generation.Add((chromosome, i, score));
+                    i++;
                 }
+                var parents = generation.OrderBy(x => x.score).Take(2).ToList();
+                var supremechild = CrossOver(parents[0], parents[1]);
+                List<List<int>> newPopulation = new List<List<int>>();
+                foreach (var chromosome in population)
+                {
+
+                    var newChromosome = new List<int>();
+                    newChromosome = (chromosome);
+
+                    Mutation(newChromosome);
+
+                    newPopulation.Add(newChromosome);
+                }
+                if(data.BestVector != null) newPopulation[0] = new List<int>(data.BestVector);
+                population = newPopulation;
+
+
             }
             //foreach (var chromosome in population)
             //{
@@ -130,7 +140,7 @@ namespace PCmax
             //}
         }
 
-        private List<int> Crossover(List<int> chromosome)
+        private List<int> Mutation(List<int> chromosome)
         {
             var one = random.Next(0, taskRange);
             var two = random.Next(0, taskRange);
@@ -153,6 +163,12 @@ namespace PCmax
             {
                 Console.Write($"{value} ");
             }
+        }
+        private (List<int> chromosome, int index, int score) CrossOver((List<int> chromosome, int index, int score) parentOne, (List<int> chromosome, int index, int score) parentTwo)
+        {
+
+
+            return parentOne;
         }
     }
 }

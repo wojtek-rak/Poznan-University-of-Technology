@@ -9,7 +9,7 @@ namespace PCmax
 {
     public class Main
     {
-    
+
         //INSTANCE
         private const bool _generate = false;
         private const bool _testPathActive = false;
@@ -21,7 +21,11 @@ namespace PCmax
         private const bool greedyGO = true;
 
         public String path;
-        public List<int> Tasks => new List<int>(tasks);
+        public List<int> Tasks {
+            get{
+                return new List<int>(tasks);
+            }
+        }
         public List<int> TaskMachines => new List<int>(taskMachines);
         public int numberOfThreads;
         public int numberOfTasks;
