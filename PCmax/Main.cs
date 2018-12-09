@@ -21,15 +21,15 @@ namespace PCmax
         private const bool greedyGO = true;
 
         public String path;
-        public List<int> Tasks {
+        public List<(int index, int task)> Tasks {
             get{
-                return new List<int>(tasks);
+                return new List<(int index, int task)>(tasks);
             }
         }
         public List<int> TaskMachines => new List<int>(taskMachines);
         public int numberOfThreads;
         public int numberOfTasks;
-        private List<int> tasks = new List<int>();
+        private List<(int index, int task)> tasks = new List<(int index, int task)>();
         private List<int> taskMachines = new List<int>();
 
         public void Startup(string pathLive)
@@ -48,7 +48,7 @@ namespace PCmax
 
 
             string line;
-
+            int k = 0;
             //Initialize data from file
             using (var reader = new StreamReader(path))
             {
@@ -58,7 +58,8 @@ namespace PCmax
                 {
                     try
                     {
-                        tasks.Add(Int32.Parse(line));
+                        tasks.Add((k, Int32.Parse(line)));
+                        k++;
                     }
                     catch (Exception ex)            
                     {                
