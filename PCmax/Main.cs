@@ -105,7 +105,7 @@ namespace PCmax
 
             // Greedy with sort
             var sortedTask = Tasks;
-            sortedTask = sortedTask.OrderBy(x => x.task).ToList();
+            sortedTask = sortedTask.OrderByDescending(x => x.task).ToList();
             var greedySort = new Greedy() { tasks = sortedTask, taskMachines = TaskMachines };
             var greedySortedValue = greedySort.Calculate();
             if (max.value > greedySortedValue)

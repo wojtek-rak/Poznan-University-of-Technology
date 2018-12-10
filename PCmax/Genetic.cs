@@ -81,12 +81,12 @@ namespace PCmax
                     }
                     else
                     {
-                        population.Add(main.Tasks);
+                        population.Add(main.Tasks.OrderByDescending(x => x.task).ToList());
                     }
                 }
                 else
                 {
-                    population.Add(main.Tasks);
+                    population.Add(main.Tasks.OrderByDescending(x => x.task).ToList());
                 }
 
 
@@ -180,7 +180,7 @@ namespace PCmax
                 if (!supremeChild.Exists(x => x.index == value.index)) supremeChild.Add(value);
 
             }
-
+            //Console.WriteLine($"Score of child {Scoring(supremeChild)}");
             return supremeChild;
         }
     }
