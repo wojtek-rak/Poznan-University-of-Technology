@@ -27,15 +27,15 @@ namespace PCmax
         private const bool greedyGO = true;
 
         public String path;
-        public List<(int index, int task)> Tasks {
+        public List<(int index, int task, int machineId)> Tasks {
             get{
-                return new List<(int index, int task)>(tasks);
+                return new List<(int index, int task, int machineId)>(tasks);
             }
         }
         public List<int> TaskMachines => new List<int>(taskMachines);
         public int numberOfThreads;
         public int numberOfTasks;
-        private List<(int index, int task)> tasks = new List<(int index, int task)>();
+        private List<(int index, int task, int machineId)> tasks = new List<(int index, int task, int machineId)>();
         private List<int> taskMachines = new List<int>();
 
         public void Startup(string pathLive)
@@ -64,7 +64,7 @@ namespace PCmax
                 {
                     try
                     {
-                        tasks.Add((k, Int32.Parse(line)));
+                        tasks.Add((k, Int32.Parse(line), -1));
                         k++;
                     }
                     catch (Exception ex)            
@@ -97,7 +97,9 @@ namespace PCmax
                     Console.Write(@"{0} ", task);
                 }
             }
+            //Init tasks
 
+            InitializeTasks(Tasks, TaskMachines);
             // Greedy without sort
             var greedy = new Greedy() {tasks = Tasks, taskMachines = TaskMachines};
             var greedyValue = greedy.Calculate();
@@ -152,5 +154,34 @@ namespace PCmax
             }
 
         }
+
+
+        private void InitializeTasks(List<(int index, int task, int machineId)> tasksLocal, List<int> taskMachinesLocal)
+        {
+            ;
+            int time = 0;
+            while (tasksLocal.Count > 0)
+            {
+                for (int i = 0; i < taskMachinesLocal.Count; i++)
+                {
+                    if (tasksLocal.Count == 0) break;
+                    if (taskMachinesLocal[i] <= time)
+                    {
+                        var task = tasksLocal.First();
+                        taskMachinesLocal[i] += task.task;
+                        var taskEdit = tasks.First(x => x.index == task.index);
+
+                        var index = tasks.IndexOf(taskEdit);
+                        taskEdit = (taskEdit.index, taskEdit.task, i);
+                        if (index != -1)
+                            tasks[index] = taskEdit;
+                            
+                        tasksLocal.Remove(task);
+                    }
+                }
+                time++;
+            }
+            //Console.WriteLine(@"Max time with greedy algorithm: {0}", taskMachines.Max());
+            }
     }
 }
