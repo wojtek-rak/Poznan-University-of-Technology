@@ -14,7 +14,7 @@ namespace PCmax
             @"C:\Users\Wolix\Documents\A   Projects\c# pprojects\PCmax\PCmax\PCmax\bin\Debug\Results\";
 
         public static string MacPath = "/Users/wolix/Documents/c#_project/PCmax/PCmax/bin/Debug/Results/";
-        public static string ActualPath => MacPath;
+        public static string ActualPath => WindowsPath;
 
         //INSTANCE
         private const bool _generate = false;

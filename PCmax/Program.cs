@@ -10,7 +10,7 @@ namespace PCmax
 {
     class Program
     {
-        private const bool onePath = false;
+        private const bool onePath = true;
         private const bool liveInstances = true;
         private static string[] paths = new string[]{
             "m10.txt",
@@ -32,7 +32,10 @@ namespace PCmax
                 {
                     paths = new string[]{
                         //"m50n200.txt",
-                        "m10.txt",
+                        //"m10.txt",
+                        "m50.txt",
+                        //"m10n200.txt",
+
                     };
                 }
                 foreach (var path in paths)
