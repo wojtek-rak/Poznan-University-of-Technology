@@ -33,8 +33,8 @@ namespace PCmax
                     paths = new string[]{
                         //"m50n200.txt",
                         //"m10.txt",
-                        "m50.txt",
-                        //"m10n200.txt",
+                        //"m50.txt",
+                        "m10n200.txt",
 
                     };
                 }

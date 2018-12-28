@@ -8,7 +8,7 @@ namespace PCmax
 {
     public class Greedy
     {
-        public List<(int index, int task, int machineId)> tasks { get; set; }
+        public List<Gene> tasks { get; set; }
         public List<int> taskMachines { get; set; }
         public int Calculate()
         {

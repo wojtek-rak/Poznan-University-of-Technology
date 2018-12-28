@@ -17,15 +17,15 @@ namespace PCmax.Tests
             mainObject.numberOfThreads = 3;
             var genetic = new Genetic(mainObject, data.Object);
 
-            var testList = new List<(int index, int task, int machineId)>
+            var testList = new List<Gene>
             {
-                (0, 10, 0),
-                (1, 10, 0),
-                (2, 10, 0),
-                (3, 10, 1),
-                (4, 10, 1),
-                (5, 10, 2),
-                (6, 10, 1),
+                new Gene(0, 10, 0),
+                new Gene(1, 10, 0),
+                new Gene(2, 10, 0),
+                new Gene(3, 10, 1),
+                new Gene(4, 10, 0),
+                new Gene(5, 10, 2),
+                new Gene(6, 10, 1),
             };
             var expected = testList.Count(x => x.machineId == 2) + 1;
             testList = genetic.UpgradeGenome(testList);

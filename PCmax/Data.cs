@@ -6,8 +6,8 @@ namespace PCmax
     public class Data
     {
         public int BestScore = 999999999;
-        private List<(int index, int task, int machineId)> bestVector;
-        public List<(int index, int task, int machineId)> BestVector
+        private List<Gene> bestVector;
+        public List<Gene> BestVector
         {
             get
             {
@@ -15,7 +15,7 @@ namespace PCmax
             }
             set
             {
-                bestVector = new List<(int index, int task, int machineId)>(value);
+                bestVector = new List<Gene>(value);
             }
         }
 

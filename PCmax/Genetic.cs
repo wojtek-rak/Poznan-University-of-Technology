@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace PCmax
 {
@@ -10,13 +11,24 @@ namespace PCmax
     {
 
         //GENETIC PROPERTIES
-        private const int POPULATION = 10;
-        private const int MUTATION_CHANCE = 5;
+        private bool AUTO_FITTING = true;
+        private int MAX_POPULATION = 41;
+        private int MAX_MUTATION_CHANCE = 11;
+        private int MAX_SUPER_POPULATION = 31;
+
+        //MANUAL
+        private int POPULATION = 30;
+        private int MUTATION_CHANCE = 4;
+        private int SUPER_POPULATION = 15;
+
         private TimeSpan algorithmTime = TimeSpan.FromSeconds(50);
+
+        public static int UpgradeGenome_Range = 2;
         //END
 
 
-        public List<List<(int index, int task, int machineId)>> population = new List<List<(int index, int task, int machineId)>>();
+        public List<List<Gene>> population = new List<List<Gene>>();
+        public List<List<Gene>> superPopulation = new List<List<Gene>>();
         private Data data;
         private Greedy greedy = new Greedy();
         private readonly Main main;
@@ -31,9 +43,211 @@ namespace PCmax
         public void Start()
         {
             taskRange = main.Tasks.Count;
-            GeneratePopulation();
-            RunLoop();
+            if (AUTO_FITTING)
+            {
+
+                int count = 0;
+                for (int populationRange = 5; populationRange < MAX_POPULATION; populationRange += 5)
+                {
+                    for (int mutationChanceRange = 0; mutationChanceRange < MAX_MUTATION_CHANCE; mutationChanceRange += 2)
+                    {
+                        for (int superPopulationRange = 5; superPopulationRange < MAX_SUPER_POPULATION; superPopulationRange += 6)
+                        {
+                            Console.WriteLine(count++);
+                        }
+                    }
+                }
+
+                Console.WriteLine("TO IMPLEMENT!");
+                Thread.Sleep(50000);
+            }
+            else
+            {
+                GeneratePopulation();
+                RunLoop();
+            }
+            
         }
+
+
+        private void RunLoop()
+        {
+            List<(List<Gene> chromosome, int score)> generation = new List<(List<Gene> chromosome, int score)>();
+            var start = DateTime.Now;
+            int generationCount = 0;
+            while((DateTime.Now - start) < algorithmTime)
+            {
+                generationCount++;
+                int i = 0;
+                foreach (var chromosome in population)
+                {
+                    var score = Scoring(chromosome);
+                    //Console.WriteLine(score);
+                    //PrintChromosome(chromosome);
+                    if (data.BestScore > score)
+                    {
+                        data.BestScore = score;
+                        data.BestVector = chromosome;
+                    }
+                    generation.Add((chromosome, score));
+                    i++;
+                }
+                var parents = generation.OrderBy(x => x.score).Take(2).ToList();
+                var supremechild = CrossOver(parents[0], parents[1]);
+                List<List<Gene>> newPopulation = new List<List<Gene>>();
+                newPopulation.Add(supremechild);
+                int mut = 0;
+                foreach (var chromosome in population)
+                {
+
+                    var newChromosome = new List<Gene>();
+                    newChromosome = chromosome;
+
+                    //UPGRADE
+                    newChromosome = UpgradeGenome(newChromosome);
+
+                    mut++;
+                    if (mut > MUTATION_CHANCE)
+                    {
+                        //MUTATION
+                        Mutation(newChromosome);
+                        mut = 0;
+                    }
+
+                    newPopulation.Add(newChromosome);
+                }
+                if(data.BestVector != null) newPopulation[1] = new List<Gene>(data.BestVector);
+
+                List<(List<Gene> chromosome, int score)> newGeneration = new List<(List<Gene> chromosome, int score)>();
+                foreach (var chromosome in newPopulation)
+                {
+                    var score = Scoring(chromosome);
+                    //Console.WriteLine(score);
+                    //PrintChromosome(chromosome);
+                    if (data.BestScore > score)
+                    {
+                        data.BestScore = score;
+                        data.BestVector = chromosome;
+                    }
+                    newGeneration.Add((chromosome, score));
+                    i++;
+                }
+
+                newGeneration = newGeneration.OrderBy(x => x.score).ToList();
+                if (superPopulation.Count < SUPER_POPULATION)
+                {
+                    superPopulation.Add(newGeneration.First().chromosome);
+                    superPopulation.Add(newGeneration.Skip(1).First().chromosome);
+                    superPopulation.Add(newGeneration.Last().chromosome);
+                    GeneratePopulation(data);
+                }
+                else
+                {
+                    population = new List<List<Gene>>(superPopulation);
+                    superPopulation = new List<List<Gene>>();
+                }
+
+                //population = newPopulation;
+                Console.WriteLine(data.BestScore);
+
+            }
+            //foreach (var chromosome in population)
+            //{
+            //    var score = Scoring(chromosome);
+            //    //Console.WriteLine(score);
+            //    //PrintChromosome(chromosome);
+            //    if (data.BestScore > score)
+            //    {
+            //        data.BestScore = score;
+            //        data.BestVector = chromosome;
+            //    }
+            //}
+        }
+
+        private int Scoring(List<Gene> tasks)
+        {
+            var max = 0;
+            for (int i = 0; i < main.TaskMachines.Count; i++)
+            {
+                var maxValue = tasks.Where(x => x.machineId == i).Sum(y => y.task);
+                if (max < maxValue) max = maxValue;
+
+            }
+
+            //greedy.tasks = new List<Gene>(tasks);
+            //greedy.taskMachines = new List<int>(main.TaskMachines);
+            return max;
+        }
+        public void PrintChromosome(List<int> chromosome)
+        {
+            Console.WriteLine();
+            foreach (var value in chromosome)
+            {
+                Console.Write($"{value} ");
+            }
+        }
+
+#warning UPGRADE GENOME
+        public List<Gene> UpgradeGenome(List<Gene> genToUpgrade)
+        {
+            var taskMachines = new List<(int sum, int index)>();
+            for (int i = 0; i < main.numberOfThreads; i++)
+            {
+                taskMachines.Add((0, i));
+            }
+
+            foreach (var gen in genToUpgrade)
+            {
+                taskMachines[gen.machineId] = (taskMachines[gen.machineId].sum + gen.task, taskMachines[gen.machineId].index);
+            }
+
+            taskMachines = taskMachines.OrderByDescending(x => x.sum).ToList();
+            int randomFasted = random.Next(0, UpgradeGenome_Range);
+            int randomOverload = 0;//random.Next(0, 3);
+            var overloadMachineId = taskMachines.Skip(randomOverload).First().index;
+            var fastedMachineId = taskMachines.OrderBy(x => x.sum).Skip(randomFasted).First().index;
+
+            var tempOverload = genToUpgrade.First(x => x.machineId == overloadMachineId);
+            genToUpgrade[tempOverload.index] = new Gene(genToUpgrade[tempOverload.index].index, genToUpgrade[tempOverload.index].task, fastedMachineId);
+
+            //Console.WriteLine($"Score of child {Scoring(supremeChild)}");
+            return genToUpgrade;
+        }
+
+#warning CROSSOVER
+        public List<Gene> CrossOver((List<Gene> chromosome, int score) parentOne, (List<Gene> chromosome, int score) parentTwo)
+        {
+            parentOne = (parentOne.chromosome.OrderBy(x => x.index).ToList(), parentOne.score);
+            parentTwo = (parentTwo.chromosome.OrderBy(x => x.index).ToList(), parentTwo.score);
+            List<Gene> supremeChild = parentOne.chromosome.Take(parentOne.chromosome.Count / 2).ToList();
+            foreach (var value in parentTwo.chromosome.Skip(parentOne.chromosome.Count / 2))
+            {
+                //if (!supremeChild.Exists(x => x.index == value.index)) 
+                supremeChild.Add(value);
+
+            }
+            //Console.WriteLine($"Score of child {Scoring(supremeChild)}");
+            return supremeChild;
+        }
+
+#warning MUTACJE
+        public List<Gene> Mutation(List<Gene> chromosome)
+        {
+            var one = random.Next(0, taskRange);
+            var two = random.Next(0, taskRange);
+
+            var temp = chromosome[one].machineId;
+            chromosome[one] = new Gene(chromosome[one].index, chromosome[one].task, chromosome[two].machineId);
+            chromosome[two] = new Gene(chromosome[two].index, chromosome[two].task, temp);
+
+            return chromosome;
+
+        }
+
+
+
+
+
 
         private void GeneratePopulation()
         {
@@ -44,7 +258,7 @@ namespace PCmax
                 {
                     if (File.Exists(Main.ActualPath + main.path.Substring(0, main.path.Length - 3) + "result.txt"))
                     {
-                        List<(int index, int task, int machineId)> oldPopulation = new List<(int index, int task, int machineId)>();
+                        List<Gene> oldPopulation = new List<Gene>();
                         String line;
                         int maxValue = 999999999;
                         using (var reader = new StreamReader(Main.ActualPath + main.path.Substring(0, main.path.Length - 3) + "result.txt"))
@@ -58,7 +272,7 @@ namespace PCmax
                                     line = line.Replace(" ", "");
                                     var intArray = line.Split(',');
                                     
-                                    oldPopulation.Add((Int32.Parse(intArray[0]), Int32.Parse(intArray[1]), Int32.Parse(intArray[2])));
+                                    oldPopulation.Add(new Gene(Int32.Parse(intArray[0]), Int32.Parse(intArray[1]), Int32.Parse(intArray[2])));
                                 }
                                 catch (Exception ex)
                                 {
@@ -94,8 +308,8 @@ namespace PCmax
                         
                         var randomIndex = random.Next(0, newPopulation.Count);
                         var temp = newPopulation[j].machineId;
-                        newPopulation[j] = (newPopulation[j].index, newPopulation[j].task, newPopulation[randomIndex].machineId);
-                        newPopulation[randomIndex] = (newPopulation[randomIndex].index, newPopulation[randomIndex].task, temp);
+                        newPopulation[j] = new Gene(newPopulation[j].index, newPopulation[j].task, newPopulation[randomIndex].machineId);
+                        newPopulation[randomIndex] = new Gene(newPopulation[randomIndex].index, newPopulation[randomIndex].task, temp);
 
                     }
 
@@ -106,146 +320,35 @@ namespace PCmax
             }
         }
 
-        private void RunLoop()
+        private void GeneratePopulation(Data oldData)
         {
-            List<(List<(int index, int task, int machineId)> chromosome, int score)> generation = new List<(List<(int index, int task, int machineId)> chromosome, int score)>();
-            var start = DateTime.Now;
-            int generationCount = 0;
-            while((DateTime.Now - start) < algorithmTime)
+
+            for (int i = 0; i < POPULATION; i++)
             {
-                generationCount++;
-                int i = 0;
-                foreach (var chromosome in population)
+                if (i == 0)
                 {
-                    var score = Scoring(chromosome);
-                    //Console.WriteLine(score);
-                    //PrintChromosome(chromosome);
-                    if (data.BestScore > score)
-                    {
-                        data.BestScore = score;
-                        data.BestVector = chromosome;
-                    }
-                    generation.Add((chromosome, score));
-                    i++;
+                    population.Add(oldData.BestVector);
                 }
-                var parents = generation.OrderBy(x => x.score).Take(2).ToList();
-                var supremechild = CrossOver(parents[0], parents[1]);
-                List<List<(int index, int task, int machineId)>> newPopulation = new List<List<(int index, int task, int machineId)>>();
-                newPopulation.Add(supremechild);
-                int mut = 0;
-                foreach (var chromosome in population)
+                else
                 {
+                    var newPopulation = main.Tasks;
 
-                    var newChromosome = new List<(int index, int task, int machineId)>();
-                    newChromosome = chromosome;
-
-                    newChromosome = UpgradeGenome(newChromosome);
-
-                    mut++;
-                    if (mut > MUTATION_CHANCE)
+                    for (int j = 0; j < newPopulation.Count - 1; j++)
                     {
-                        Mutation(newChromosome);
-                        mut = 0;
+                        
+                        var randomIndex = random.Next(0, newPopulation.Count);
+                        var temp = newPopulation[j].machineId;
+                        newPopulation[j] = new Gene(newPopulation[j].index, newPopulation[j].task, newPopulation[randomIndex].machineId);
+                        newPopulation[randomIndex] = new Gene(newPopulation[randomIndex].index, newPopulation[randomIndex].task, temp);
+
                     }
 
-                    newPopulation.Add(newChromosome);
+                    population.Add(newPopulation);
                 }
-                if(data.BestVector != null) newPopulation[1] = new List<(int index, int task, int machineId)>(data.BestVector);
-                population = newPopulation;
-                Console.WriteLine(data.BestScore);
 
-            }
-            //foreach (var chromosome in population)
-            //{
-            //    var score = Scoring(chromosome);
-            //    //Console.WriteLine(score);
-            //    //PrintChromosome(chromosome);
-            //    if (data.BestScore > score)
-            //    {
-            //        data.BestScore = score;
-            //        data.BestVector = chromosome;
-            //    }
-            //}
-        }
 
-        private int Scoring(List<(int index, int task, int machineId)> tasks)
-        {
-            var max = 0;
-            for (int i = 0; i < main.TaskMachines.Count; i++)
-            {
-                var maxValue = tasks.Where(x => x.machineId == i).Sum(y => y.task);
-                if (max < maxValue) max = maxValue;
-
-            }
-
-            //greedy.tasks = new List<(int index, int task, int machineId)>(tasks);
-            //greedy.taskMachines = new List<int>(main.TaskMachines);
-            return max;
-        }
-        public void PrintChromosome(List<int> chromosome)
-        {
-            Console.WriteLine();
-            foreach (var value in chromosome)
-            {
-                Console.Write($"{value} ");
             }
         }
 
-#warning UPGRADE GENOME
-        public List<(int index, int task, int machineId)> UpgradeGenome(List<(int index, int task, int machineId)> genToUpgrade)
-        {
-            var taskMachines = new List<(int sum, int index)>();
-            for (int i = 0; i < main.numberOfThreads; i++)
-            {
-                taskMachines.Add((0, i));
-            }
-
-            foreach (var gen in genToUpgrade)
-            {
-                taskMachines[gen.machineId] = (taskMachines[gen.machineId].sum + gen.task, taskMachines[gen.machineId].index);
-            }
-
-            taskMachines = taskMachines.OrderByDescending(x => x.sum).ToList();
-            int randomFasted = random.Next(0, 2);
-            int randomOverload = 0;//random.Next(0, 3);
-            var overloadMachineId = taskMachines.Skip(randomFasted).First().index;
-            var fastedMachineId = taskMachines.Skip(randomOverload).Last().index;
-
-            var tempOverload = genToUpgrade.First(x => x.machineId == overloadMachineId);
-            genToUpgrade[tempOverload.index] = (genToUpgrade[tempOverload.index].index, genToUpgrade[tempOverload.index].task, fastedMachineId);
-
-            //Console.WriteLine($"Score of child {Scoring(supremeChild)}");
-            return genToUpgrade;
-        }
-
-#warning CROSSOVER
-        public List<(int index, int task, int machineId)> CrossOver((List<(int index, int task, int machineId)> chromosome, int score) parentOne, (List<(int index, int task, int machineId)> chromosome, int score) parentTwo)
-        {
-            parentOne = (parentOne.chromosome.OrderBy(x => x.index).ToList(), parentOne.score);
-            parentTwo = (parentTwo.chromosome.OrderBy(x => x.index).ToList(), parentTwo.score);
-            List<(int index, int task, int machineId)> supremeChild = parentOne.chromosome.Take(parentOne.chromosome.Count / 2).ToList();
-            foreach (var value in parentTwo.chromosome.Skip(parentOne.chromosome.Count / 2))
-            {
-                //if (!supremeChild.Exists(x => x.index == value.index)) 
-                supremeChild.Add(value);
-
-            }
-            //Console.WriteLine($"Score of child {Scoring(supremeChild)}");
-            return supremeChild;
-        }
-
-#warning MUTACJE
-        public List<(int index, int task, int machineId)> Mutation(List<(int index, int task, int machineId)> chromosome)
-        {
-            var one = random.Next(0, taskRange);
-            var two = random.Next(0, taskRange);
-
-            var temp = chromosome[one].machineId;
-            chromosome[one] = (chromosome[one].index, chromosome[one].task, chromosome[two].machineId);
-            chromosome[two] = (chromosome[two].index, chromosome[two].task, temp);
-
-            return chromosome;
-
-        }
     }
 }

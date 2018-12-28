@@ -46,6 +46,7 @@
     <Reference Include="mscorlib" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gene.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Greedy.cs" />
     <Compile Include="Program.cs" />
