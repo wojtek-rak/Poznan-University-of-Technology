@@ -131,7 +131,7 @@ void SetUp()
         subscriptions[i].count = 0;
         activeTypes[i] = 0;
     }
-    msgctl(MainMessageQueuesId, IPC_RMID, 0);
+    //msgctl(MainMessageQueuesId, IPC_RMID, 0);
 }
 
 int GetUserPrimaryId(char name[100])
@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
             Subscriptions sub = subscriptions[normalMessage.typeMessage];
             for(int i = 1; i <= sub.count; i++)
             {
-                printf("\n sending... \n");
+                printf("\n sending... to PID: %d\n", sub.primaryId[i]);
                 SendNormalMessage(sub.primaryId[i]);
             }
             
