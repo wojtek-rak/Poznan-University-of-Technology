@@ -17,7 +17,17 @@
 #define LoggingMessageType 101
 #define SubscribeMessageType 102
 #define PrimaryIdMessageType 103
+#define NewTypeMessageType 104
+#define NewTypeResponseMessageType 105
+#define NormalMessageType 106
 #define MainMessageQueuesId 110
+#define MaxNumberOfMessageTypes 1000
+
+typedef struct SubscriptionList {
+    long typeOfSubscribe;
+    int notification;
+    int transition;
+} SubscriptionList;
 
 typedef struct SubscribeMessage {
     long type;
@@ -27,10 +37,12 @@ typedef struct SubscribeMessage {
     int transition;
 } SubscribeMessage;
 
-typedef struct Message {
+typedef struct NormalMessage {
     long type;
+    int typeMessage;
+    int priority;
     char text[256];
-} Message;
+} NormalMessage;
 
 typedef struct PrimaryIdMessage {
     long type;
@@ -44,20 +56,52 @@ typedef struct LoggingMessage {
     char name[100];
 } LoggingMessage;
 
+typedef struct NewTypeMessage {
+    long type;
+    int typeToCreate;
+    char name[100];
+} NewTypeMessage;
+
+typedef struct NewTypeResponseMessage {
+    long type;
+    char response[256];
+} NewTypeResponseMessage;
+
+struct NewTypeResponseMessage newTypeResponseMessage;
+struct NewTypeMessage newTypeMessage;
 struct LoggingMessage loggingMessage;
 struct SubscribeMessage subscribeMessage;
-struct Message message;
+struct NormalMessage normalMessage;
 struct PrimaryIdMessage primaryIdMessage;
+struct SubscriptionList subscriptionList[MaxNumberOfMessageTypes];
+struct NormalMessage waitingMessages[500];
+int waitingMessagesCount = 0;
+int subscriptionCount = 0;
 
 int msgId;
 int primaryId;
 
-void SendMessage(int type, char text[256])
+void SendNormalMessage(int type, int priority, char text[256])
 {
-    message.type = type;
-    strcpy(message.text, text);
+    normalMessage.type = NormalMessageType;
+    normalMessage.typeMessage = type;
+    normalMessage.priority = priority;
+    strcpy(normalMessage.text, text);
     
-    if(msgsnd(msgId, &message, 256, 0) == -1)
+    if(msgsnd(msgId, &normalMessage, 264, 0) == -1)
+    {
+        perror("Message sending error");
+        exit(1);
+    }
+}
+
+void SendNewTypeMessage(int typeToCreate, char name[100])
+{
+    newTypeMessage.type = NewTypeMessageType;
+    strcpy(newTypeMessage.name, name);
+    newTypeMessage.typeToCreate = typeToCreate;
+    
+    if(msgsnd(msgId, &newTypeMessage, 104, 0) == -1)
     {
         perror("Message sending error");
         exit(1);
@@ -111,8 +155,10 @@ int main(int argc, char* argv[])
         exit(1);
     }
     
+    //Send loggin message
     SendLoggingMessage(id, name);
     
+    //get response with primaryId for communication
     int getResponse = 1;
     int deadCount = 0;
     while (getResponse)
@@ -143,66 +189,165 @@ int main(int argc, char* argv[])
             }
         }
     }
-    
+    //main loop
     while(1)
     {
         
-        printf("Press s for suscribe, or m for read message: ");
+        
         char choice = getchar();
+        //Send Subscribe message
         if(choice == 's')
         {
             long subType;
             int subNotyfication;
             int subTransition;
+            
             printf("Subscribe\n");
-            printf("Subscribe type: ");
+            printf("Subscribe type >150 and <1000: ");
             scanf("%li", &subType);
+            if(subType < 150) subType = 150;
+            if(subType > 1000) subType = 1000;
             printf("Subscribe notification 1 or 0: ");
             scanf("%d", &subNotyfication);
             printf("Subscribe transition 1 or 0: ");
             scanf("%d", &subTransition);
+            
             // WALIDACJA! NUMERU!
+            subscriptionCount++;
+            
+            subscriptionList[subscriptionCount].typeOfSubscribe = subType;
+            subscriptionList[subscriptionCount].notification = subNotyfication;
+            subscriptionList[subscriptionCount].transition = subTransition;
+            
             SendSubscribeMessage(name, subType, subNotyfication, subTransition);
             printf("Subscribed Sucessfully!\n");
         }
+        //New Type
+        else if (choice == 't')
+        {
+            int newType;
+            printf("NewType beetwen 150-1000: ");
+            scanf("%d", &newType);
+            if(newType < 150) newType = 150;
+            if(newType > 1000) newType = 1000;
+            
+            SendNewTypeMessage(newType, name);
+            
+            int response = msgrcv(msgId, &newTypeResponseMessage, 256, NewTypeResponseMessageType, 0);
+            if(response == -1)
+            {
+                perror("Unexpected type error: ");
+                exit(1);
+            }
+            printf("Message: %s\n", newTypeResponseMessage.response);
+        }
+        //Send normall message
+        else if (choice == 'y')
+        {
+            int type;
+            int priority;
+            char text[256];
+            
+            printf("Send Message\n");
+            printf("Message type >150 and <1000: ");
+            scanf("%d", &type);
+            if(type < 150) type = 150;
+            if(type > 1000) type = 1000;
+            printf("Message priority 1-100: ");
+            scanf("%d", &priority);
+            if(priority < 1) priority = 1;
+            if(priority > 100) priority = 100;
+            printf("Message Text (max 256 characters): ");
+            //scanf("%s", text);
+            fseek(stdin,0,SEEK_END);
+            scanf("%256[^\n]", text);
+            
+            SendNormalMessage(type, priority, text);
+        }
+        //Get Messages and print one with the higher priority
         else if (choice == 'm')
         {
+            msgrcv(msgId, &normalMessage, 266, primaryId, 0);
+            do
+            {
+                waitingMessagesCount++;
+                waitingMessages[waitingMessagesCount] = normalMessage;
+            } while (msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1);
+            int maxPriority = 0;
+            int maxIndex = 0;
+            NormalMessage maxMessage;
+            for(int i = 1; i<= waitingMessagesCount; i++)
+            {
+                if(maxPriority < waitingMessages[i].priority)
+                {
+                    maxPriority = waitingMessages[i].priority;
+                    maxMessage = waitingMessages[i];
+                    maxIndex = i;
+                }
+            }
+            //clear array
+            waitingMessagesCount--;
+            for(int i = 1; i<= waitingMessagesCount; i++)
+            {
+                if(i >= maxIndex)
+                {
+                    waitingMessages[i] = waitingMessages[i + 1];
+                }
+            }
+            printf("Message Recive Type: %d\n", maxMessage.typeMessage);
+            printf("Priority: %d\n", maxMessage.priority);
+            printf("Message Text:\n %s\n:", maxMessage.text);
+        }
+        //Get Messages Async
+        else if (choice == 'a')
+        {
+            while (msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1)
+            {
+                waitingMessagesCount++;
+                waitingMessages[waitingMessagesCount] = normalMessage;
+            }
             
+            for(int j = 1; j <= waitingMessagesCount; j++)
+            {
+                int maxPriority = 0;
+                int maxIndex = 0;
+                NormalMessage maxMessage;
+                for(int i = 1; i<= waitingMessagesCount; i++)
+                {
+                    if(maxPriority < waitingMessages[i].priority)
+                    {
+                        maxPriority = waitingMessages[i].priority;
+                        maxMessage = waitingMessages[i];
+                        maxIndex = i;
+                    }
+                }
+                //clear array
+                waitingMessagesCount--;
+                for(int i = 1; i<= waitingMessagesCount; i++)
+                {
+                    if(i >= maxIndex)
+                    {
+                        waitingMessages[i] = waitingMessages[i + 1];
+                    }
+                }
+                printf("Message Recive Type: %d\n", maxMessage.typeMessage);
+                printf("Priority: %d\n", maxMessage.priority);
+                printf("Message Text:\n %s\n:", maxMessage.text);
+            }
+            
+        }
+        else
+        {
+            printf("\nPress y for send normall message, s for suscribe, or m for read message, a for read async, t for new type: \n");
         }
         
             
     }
     
-//    char buf[1000];
-//    char buf2[1000];
-//    char buf3[1000];
-//    char in[100];
-//    int x;
-//    //char* y = argv[argc - 1];
-//    //printf("\nargc %d\n ",argc);
-//    
-//    int mid = msgget(0x123, 0777 | IPC_CREAT);
-//    printf("\nMID: %d\n ", mid);
-//    struct msgbuf
-//    {
-//        long type;
-//        char k[100];
-//    } my_msg;
-//
-//
-//    //int fd = open("fl1", O_WRONLY);
-//
-//    //write(fd, "Hello", 5);
-//
-//    //dup2(fd, 1);
-//    //execlp("ls", "ls", "-l", 0);
-//
-//    //strcpy(my_msg.text, i);
-//    printf("\nInput: ");
-//    scanf("%s", my_msg.k);
-//    my_msg.type = 5;
-//    //my_msg.k = in;
-//    msgsnd(mid, &my_msg, 100, 0);
+    //int subPriority;
+    //printf("Priority 1-100: ");
+    //scanf("%d", &subPriority);
+    //int priority;
     
     
     
