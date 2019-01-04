@@ -19,8 +19,31 @@ Następnie w pentli użytkownik ma do wyboru następujące akcje przy danych inp
 Zasubskrybowanie danego tematu:
 Funkcja: SendSubscribeMessage
 Struktura:  SubscribeMessage :
-            typ             = SubscribeMessageType 
+            typ             = SubscribeMessageType (predefiniowany)
             name            = Name klienta
             typeToSubscribe = Typ do subskrybowania
             notification    = Informacja o powiadomieniach
             transition      = Informacja o okresowości
+
+'t'
+Ogłoszenie nowego typu:
+Funkcja: SendNewTypeMessage
+Struktura:  NewTypeMessage  :
+            typ             = NewTypeMessageType (predefiniowany)
+            typeToCreate    = Typ do stworzenia
+            name            = Name klienta
+
+Oczekiwanie na odpowiedź odnośnie typu:
+Struktura:  NewTypeMessage  :
+            typ             = NewTypeResponseMessageType (predefiniowany)
+            response        = odpowiedź tekstowa czy udało się
+            
+'y'
+Rozgłoszenie nowej wiadomości:
+Funkcja: SendNormalMessage
+Struktura:  NormalMessage   :
+            typ             = NormalMessageType (predefiniowany)
+            typeMessage     = Typ (temat) wiadomości
+            priority        = priorytet wyświtlania
+            text            = tekst wiadomości (może zawierać spacje) max 10 znaków
+            
