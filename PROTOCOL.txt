@@ -47,3 +47,19 @@ Struktura:  NormalMessage   :
             priority        = priorytet wyświtlania
             text            = tekst wiadomości (może zawierać spacje) max 10 znaków
             
+'m'
+Odbór wiadomo±ci w sposób synchroniczny:
+Struktura:  NormalMessage   :
+            typ             = primaryId
+            typeMessage     = Typ (temat) wiadomości
+            priority        = priorytet wyświtlania
+            text            = tekst wiadomości (może zawierać spacje) max 10 znaków
+            
+'a'
+Odbór wiadomo±ci w sposób asynchroniczny:
+Struktura:  NormalMessage   :
+            typ             = primaryId
+            typeMessage     = Typ (temat) wiadomości
+            priority        = priorytet wyświtlania
+            text            = tekst wiadomości (może zawierać spacje) max 10 znaków
+            
