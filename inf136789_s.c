@@ -243,27 +243,9 @@ int main(int argc, char* argv[])
                 printf("\n sending... to PID: %d\n", sub.primaryId[i]);
                 SendNormalMessage(sub.primaryId[i]);
             }
-            
-            
         }
-        
         sleep(1);
-        printf("\n");
-        
-        
-//        int k;
-//        printf("Sizeof int: %d\n", sizeof(k));
-//        short x;
-//        long y;
-//        char z[100];
-//        printf("Sizeof short: %d\n", sizeof(x));
-//        printf("Sizeof long: %d\n", sizeof(y));
-//        printf("Sizeof chartab: %d\n", sizeof(z));
-//        printf("Sizeof ALL: %d\n", sizeof(z)+sizeof(x)+sizeof(y)+sizeof(x));
     }
-    
-    
-    
     return 0;
 }
 

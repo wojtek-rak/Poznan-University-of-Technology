@@ -260,7 +260,6 @@ int main(int argc, char* argv[])
             if(priority < 1) priority = 1;
             if(priority > 100) priority = 100;
             printf("Message Text (max 256 characters): ");
-            //scanf("%s", text);
             fseek(stdin,0,SEEK_END);
             scanf("%10[^\n]", text);
             printf("REALLYNYGA");
@@ -269,10 +268,6 @@ int main(int argc, char* argv[])
         //Get Messages and print one with the higher priority
         else if (choice == 'm')
         {
-//            msgrcv(msgId, &normalMessage, 266, primaryId, 0);
-//            printf("Message Recive Type: %d\n", normalMessage.typeMessage);
-//            printf("Priority: %d\n", normalMessage.priority);
-//            printf("Message Text:\n %s\n:", normalMessage.text);
             msgrcv(msgId, &normalMessage, 266, primaryId, 0);
             do
             {
@@ -308,12 +303,6 @@ int main(int argc, char* argv[])
         //Get Messages Async
         else if (choice == 'a')
         {
-//            if(msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1)
-//            {
-//                printf("Message Recive Type: %d\n", normalMessage.typeMessage);
-//                printf("Priority: %d\n", normalMessage.priority);
-//                printf("Message Text:\n %s\n:", normalMessage.text);
-//            }
             
             while (msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1)
             {
@@ -350,23 +339,12 @@ int main(int argc, char* argv[])
                 printf("Priority: %d\n", maxMessage.priority);
                 printf("Message Text:\n %s\n:", maxMessage.text);
             }
-            
         }
         else
         {
             printf("\nPress y for send normall message, s for suscribe, or m for read message, a for read async, t for new type: \n");
         }
-        
-            
     }
-    
-    //int subPriority;
-    //printf("Priority 1-100: ");
-    //scanf("%d", &subPriority);
-    //int priority;
-    
-    
-    
     return 0;
 }
 
