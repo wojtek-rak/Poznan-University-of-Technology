@@ -34,7 +34,7 @@ Struktura:  NewTypeMessage  :
             name            = Name klienta
 
 Oczekiwanie na odpowiedź odnośnie typu:
-Struktura:  NewTypeMessage  :
+Struktura:  NewTypeResponseMessage  :
             typ             = NewTypeResponseMessageType (predefiniowany)
             response        = odpowiedź tekstowa czy udało się
             
@@ -49,17 +49,30 @@ Struktura:  NormalMessage   :
             
 'm'
 Odbór wiadomo±ci w sposób synchroniczny:
-Struktura:  NormalMessage   :
+Struktura:  NormalMessage   : (to samo co w SendNormalMessage, tylko z innym typem)
             typ             = primaryId
-            typeMessage     = Typ (temat) wiadomości
-            priority        = priorytet wyświtlania
-            text            = tekst wiadomości (może zawierać spacje) max 10 znaków
             
 'a'
 Odbór wiadomo±ci w sposób asynchroniczny:
-Struktura:  NormalMessage   :
+Struktura:  NormalMessage   : (to samo co w SendNormalMessage, tylko z innym typem)
             typ             = primaryId
-            typeMessage     = Typ (temat) wiadomości
-            priority        = priorytet wyświtlania
-            text            = tekst wiadomości (może zawierać spacje) max 10 znaków
             
+
+Server:
+
+Odbieranie wiadomości o logowaniu
+Struktura:  LoggingMessage: (to samo co u klienta)
+            
+Odpowiedź servera do klienta:
+Funkcja: SendPrimaryIdMessage
+Struktura:  PrimaryIdMessage : (to samo co u klienta)
+            
+Odbieranie wiadomości o subskrybcji
+Struktura:  SubscribeMessage : (to samo co u klienta)
+
+Odbieranie wiadomości o typie
+Struktura:  NewTypeMessage : (to samo co u klienta)
+
+Wysyłanie odpowiedzi o rezultacie o utworzonym typie:
+Funkcja: SendNewTypeResponseMessage
+Struktura: NewTypeResponseMessage: (to samo co u klienta)
