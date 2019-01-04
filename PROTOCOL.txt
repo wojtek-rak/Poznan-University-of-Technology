@@ -1,0 +1,26 @@
+Client:
+
+Na starcie przy logowaniu
+Funkcja: SendLoggingMessage
+Struktura:  LoggingMessage:
+            typ   = LoggingMessageType (predefiniowany)
+            id    = Id klienta
+            name  = Name klienta
+            
+Oczekiwanie na odpowiedź od serwera:
+Struktura:  PrimaryIdMessage 
+            typ       = PrimaryIdMessageType (predefiniowany)
+            name      = Name klienta
+            primaryID = unikalne Id użytkownika jakie dostaje od serwera, to z niego będzie odbierał wiadomości o typach jakie zasubskrybował
+
+Następnie w pentli użytkownik ma do wyboru następujące akcje przy danych inputach:
+
+'s'
+Zasubskrybowanie danego tematu:
+Funkcja: SendSubscribeMessage
+Struktura:  SubscribeMessage :
+            typ             = SubscribeMessageType 
+            name            = Name klienta
+            typeToSubscribe = Typ do subskrybowania
+            notification    = Informacja o powiadomieniach
+            transition      = Informacja o okresowości
