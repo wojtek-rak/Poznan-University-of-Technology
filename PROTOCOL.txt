@@ -76,3 +76,11 @@ Struktura:  NewTypeMessage : (to samo co u klienta)
 Wysyłanie odpowiedzi o rezultacie o utworzonym typie:
 Funkcja: SendNewTypeResponseMessage
 Struktura: NewTypeResponseMessage: (to samo co u klienta)
+
+Odbbieranie nowej wiadomości do rozgłaszania:
+Struktura: NormalMessage: (to samo co u klienta)
+
+Wysyłanie wiadomości do subskrybentów:
+Funkcja: SendNormalMessage
+Struktura:  NormalMessage:
+            typ = primaryId danych subskrybentów
