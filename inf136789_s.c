@@ -24,6 +24,8 @@
 #define MaxNumberOfMessageTypes 1000
 #define MaxNumberOfUsers 99
 
+#define SizeOfNormallMessage 18
+
 typedef struct User
 {
     int primaryId;
@@ -43,7 +45,7 @@ typedef struct NormalMessage {
     long type;
     int typeMessage;
     int priority;
-    char text[256];
+    char text[10];
 } NormalMessage;
 
 typedef struct PrimaryIdMessage {
@@ -117,7 +119,7 @@ void SendNormalMessage(int type)
 {
     normalMessage.type = type;
     
-    if(msgsnd(msgId, &normalMessage, 266, 0) == -1)
+    if(msgsnd(msgId, &normalMessage, SizeOfNormallMessage, 0) == -1)
     {
         perror("Message sending error");
         exit(1);
@@ -220,7 +222,7 @@ int main(int argc, char* argv[])
             }
         }
         //Normal message
-        int newMessageNormal = msgrcv(msgId, &normalMessage, 264, NormalMessageType, IPC_NOWAIT);
+        int newMessageNormal = msgrcv(msgId, &normalMessage, SizeOfNormallMessage, NormalMessageType, IPC_NOWAIT);
         if(newMessageNormal != -1)
         {
             if(activeTypes[normalMessage.typeMessage] != 1)

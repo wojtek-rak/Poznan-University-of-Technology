@@ -23,6 +23,8 @@
 #define MainMessageQueuesId 110
 #define MaxNumberOfMessageTypes 1000
 
+#define SizeOfNormallMessage 18
+
 typedef struct SubscriptionList {
     long typeOfSubscribe;
     int notification;
@@ -41,7 +43,7 @@ typedef struct NormalMessage {
     long type;
     int typeMessage;
     int priority;
-    char text[256];
+    char text[10];
 } NormalMessage;
 
 typedef struct PrimaryIdMessage {
@@ -81,14 +83,14 @@ int subscriptionCount = 0;
 int msgId;
 int primaryId;
 
-void SendNormalMessage(int type, int priority, char text[256])
+void SendNormalMessage(int type, int priority, char text[10])
 {
     normalMessage.type = NormalMessageType;
     normalMessage.typeMessage = type;
     normalMessage.priority = priority;
     strcpy(normalMessage.text, text);
     
-    if(msgsnd(msgId, &normalMessage, 264, 0) == -1)
+    if(msgsnd(msgId, &normalMessage, SizeOfNormallMessage, 0) == -1)
     {
         perror("Message sending error");
         exit(1);
@@ -246,7 +248,7 @@ int main(int argc, char* argv[])
         {
             int type;
             int priority;
-            char text[256];
+            char text[10];
             
             printf("Send Message\n");
             printf("Message type >150 and <1000: ");
@@ -260,93 +262,93 @@ int main(int argc, char* argv[])
             printf("Message Text (max 256 characters): ");
             //scanf("%s", text);
             fseek(stdin,0,SEEK_END);
-            scanf("%256[^\n]", text);
+            scanf("%10[^\n]", text);
             printf("REALLYNYGA");
             SendNormalMessage(type, priority, text);
         }
         //Get Messages and print one with the higher priority
         else if (choice == 'm')
         {
-            msgrcv(msgId, &normalMessage, 266, primaryId, 0);
-            printf("Message Recive Type: %d\n", normalMessage.typeMessage);
-            printf("Priority: %d\n", normalMessage.priority);
-            printf("Message Text:\n %s\n:", normalMessage.text);
 //            msgrcv(msgId, &normalMessage, 266, primaryId, 0);
-//            do
-//            {
-//                printf("MSGGet\n");
-//                waitingMessagesCount++;
-//                waitingMessages[waitingMessagesCount] = normalMessage;
-//            } while (msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1);
-//            int maxPriority = 0;
-//            int maxIndex = 0;
-//            NormalMessage maxMessage;
-//            for(int i = 1; i<= waitingMessagesCount; i++)
-//            {
-//                if(maxPriority < waitingMessages[i].priority)
-//                {
-//                    maxPriority = waitingMessages[i].priority;
-//                    maxMessage = waitingMessages[i];
-//                    maxIndex = i;
-//                }
-//            }
-//            //clear array
-//            waitingMessagesCount--;
-//            for(int i = 1; i<= waitingMessagesCount; i++)
-//            {
-//                if(i >= maxIndex)
-//                {
-//                    waitingMessages[i] = waitingMessages[i + 1];
-//                }
-//            }
-//            printf("Message Recive Type: %d\n", maxMessage.typeMessage);
-//            printf("Priority: %d\n", maxMessage.priority);
-//            printf("Message Text:\n %s\n:", maxMessage.text);
+//            printf("Message Recive Type: %d\n", normalMessage.typeMessage);
+//            printf("Priority: %d\n", normalMessage.priority);
+//            printf("Message Text:\n %s\n:", normalMessage.text);
+            msgrcv(msgId, &normalMessage, 266, primaryId, 0);
+            do
+            {
+                printf("MSGGet\n");
+                waitingMessagesCount++;
+                waitingMessages[waitingMessagesCount] = normalMessage;
+            } while (msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1);
+            int maxPriority = 0;
+            int maxIndex = 0;
+            NormalMessage maxMessage;
+            for(int i = 1; i<= waitingMessagesCount; i++)
+            {
+                if(maxPriority < waitingMessages[i].priority)
+                {
+                    maxPriority = waitingMessages[i].priority;
+                    maxMessage = waitingMessages[i];
+                    maxIndex = i;
+                }
+            }
+            //clear array
+            waitingMessagesCount--;
+            for(int i = 1; i<= waitingMessagesCount; i++)
+            {
+                if(i >= maxIndex)
+                {
+                    waitingMessages[i] = waitingMessages[i + 1];
+                }
+            }
+            printf("Message Recive Type: %d\n", maxMessage.typeMessage);
+            printf("Priority: %d\n", maxMessage.priority);
+            printf("Message Text:\n %s\n:", maxMessage.text);
         }
         //Get Messages Async
         else if (choice == 'a')
         {
-            if(msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1)
-            {
-                printf("Message Recive Type: %d\n", normalMessage.typeMessage);
-                printf("Priority: %d\n", normalMessage.priority);
-                printf("Message Text:\n %s\n:", normalMessage.text);
-            }
+//            if(msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1)
+//            {
+//                printf("Message Recive Type: %d\n", normalMessage.typeMessage);
+//                printf("Priority: %d\n", normalMessage.priority);
+//                printf("Message Text:\n %s\n:", normalMessage.text);
+//            }
             
-//            while (msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1)
-//            {
-//                printf("MSGGet\n");
-//                waitingMessagesCount++;
-//                waitingMessages[waitingMessagesCount] = normalMessage;
-//            }
-//
-//            for(int j = 1; j <= waitingMessagesCount; j++)
-//            {
-//                int maxPriority = 0;
-//                int maxIndex = 0;
-//                NormalMessage maxMessage;
-//                for(int i = 1; i<= waitingMessagesCount; i++)
-//                {
-//                    if(maxPriority < waitingMessages[i].priority)
-//                    {
-//                        maxPriority = waitingMessages[i].priority;
-//                        maxMessage = waitingMessages[i];
-//                        maxIndex = i;
-//                    }
-//                }
-//                //clear array
-//                waitingMessagesCount--;
-//                for(int i = 1; i<= waitingMessagesCount; i++)
-//                {
-//                    if(i >= maxIndex)
-//                    {
-//                        waitingMessages[i] = waitingMessages[i + 1];
-//                    }
-//                }
-//                printf("Message Recive Type: %d\n", maxMessage.typeMessage);
-//                printf("Priority: %d\n", maxMessage.priority);
-//                printf("Message Text:\n %s\n:", maxMessage.text);
-//            }
+            while (msgrcv(msgId, &normalMessage, 266, primaryId, IPC_NOWAIT) != -1)
+            {
+                printf("MSGGet\n");
+                waitingMessagesCount++;
+                waitingMessages[waitingMessagesCount] = normalMessage;
+            }
+
+            for(int j = 1; j <= waitingMessagesCount; j++)
+            {
+                int maxPriority = 0;
+                int maxIndex = 0;
+                NormalMessage maxMessage;
+                for(int i = 1; i<= waitingMessagesCount; i++)
+                {
+                    if(maxPriority < waitingMessages[i].priority)
+                    {
+                        maxPriority = waitingMessages[i].priority;
+                        maxMessage = waitingMessages[i];
+                        maxIndex = i;
+                    }
+                }
+                //clear array
+                waitingMessagesCount--;
+                for(int i = 1; i<= waitingMessagesCount; i++)
+                {
+                    if(i >= maxIndex)
+                    {
+                        waitingMessages[i] = waitingMessages[i + 1];
+                    }
+                }
+                printf("Message Recive Type: %d\n", maxMessage.typeMessage);
+                printf("Priority: %d\n", maxMessage.priority);
+                printf("Message Text:\n %s\n:", maxMessage.text);
+            }
             
         }
         else
