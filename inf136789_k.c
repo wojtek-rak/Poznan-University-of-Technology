@@ -321,12 +321,13 @@ int main(int argc, char* argv[])
                 waitingMessagesCount++;
                 waitingMessages[waitingMessagesCount] = normalMessage;
             }
-
-            for(int j = 1; j <= waitingMessagesCount; j++)
+            int iterator = waitingMessagesCount;
+            for(int j = 1; j <= iterator; j++)
             {
                 int maxPriority = 0;
                 int maxIndex = 0;
                 NormalMessage maxMessage;
+                
                 for(int i = 1; i<= waitingMessagesCount; i++)
                 {
                     if(maxPriority < waitingMessages[i].priority)
