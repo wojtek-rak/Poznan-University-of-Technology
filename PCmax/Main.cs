@@ -147,7 +147,7 @@ namespace PCmax
             {
                 foreach (var value in data.BestVector)
                 {
-                    file.WriteLine(value);
+                    file.WriteLine($"({value.index}, {value.task}, {value.machineId})");
                 }
                 file.WriteLine("ACTUAL:");
                 file.WriteLine(data.BestScore);

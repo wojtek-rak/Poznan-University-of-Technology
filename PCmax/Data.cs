@@ -13,10 +13,7 @@ namespace PCmax
             {
                 return bestVector;
             }
-            set
-            {
-                bestVector = new List<Gene>(value);
-            }
+            set { bestVector = value != null ? new List<Gene>(value) : null; }
         }
 
         public Data()

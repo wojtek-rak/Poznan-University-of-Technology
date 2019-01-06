@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 
 namespace PCmax
@@ -11,17 +12,17 @@ namespace PCmax
     {
 
         //GENETIC PROPERTIES
-        private bool AUTO_FITTING = true;
+        private bool AUTO_FITTING = false;
         private int MAX_POPULATION = 41;
         private int MAX_MUTATION_CHANCE = 11;
         private int MAX_SUPER_POPULATION = 31;
 
         //MANUAL
-        private int POPULATION = 30;
-        private int MUTATION_CHANCE = 4;
-        private int SUPER_POPULATION = 15;
+        private int POPULATION = 10;
+        private int MUTATION_CHANCE = 6;
+        private int SUPER_POPULATION = 23;
 
-        private TimeSpan algorithmTime = TimeSpan.FromSeconds(50);
+        private TimeSpan algorithmTime = TimeSpan.FromSeconds(360);
 
         public static int UpgradeGenome_Range = 2;
         //END
@@ -45,7 +46,7 @@ namespace PCmax
             taskRange = main.Tasks.Count;
             if (AUTO_FITTING)
             {
-
+                var result = new List<(List<Gene> vector, int score, int populationRange, int mutationChanceRange, int superPopulationRange)>();
                 int count = 0;
                 for (int populationRange = 5; populationRange < MAX_POPULATION; populationRange += 5)
                 {
@@ -53,8 +54,30 @@ namespace PCmax
                     {
                         for (int superPopulationRange = 5; superPopulationRange < MAX_SUPER_POPULATION; superPopulationRange += 6)
                         {
+                            data.BestScore = 999999999;
+                            data.BestVector = null;
+                            population = new List<List<Gene>>();
+                            superPopulation = new List<List<Gene>>();
+                            GeneratePopulationNoData();
+                            RunLoop();
+                            result.Add((data.BestVector, data.BestScore, populationRange, mutationChanceRange, superPopulationRange));
+                            Console.WriteLine(data.BestScore);
                             Console.WriteLine(count++);
                         }
+                    }
+                }
+
+                result = result.OrderBy(x => x.score).ToList();
+                foreach (var tuple in result)
+                {
+                    Console.WriteLine($"Score: {tuple.score} {tuple.populationRange} {tuple.mutationChanceRange} {tuple.superPopulationRange}");
+                }
+
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(Main.ActualPath + "fittingResult.txt"))
+                {
+                    foreach (var tuple in result)
+                    {
+                        file.WriteLine($"Score: {tuple.score} {tuple.populationRange} {tuple.mutationChanceRange} {tuple.superPopulationRange}");
                     }
                 }
 
@@ -148,6 +171,8 @@ namespace PCmax
                 }
 
                 //population = newPopulation;
+                
+                //Score after loop
                 Console.WriteLine(data.BestScore);
 
             }
@@ -346,6 +371,29 @@ namespace PCmax
                     population.Add(newPopulation);
                 }
 
+
+            }
+        }
+
+        private void GeneratePopulationNoData()
+        {
+
+            for (int i = 0; i < POPULATION; i++)
+            {
+                
+                    var newPopulation = main.Tasks;
+
+                    for (int j = 0; j < newPopulation.Count - 1; j++)
+                    {
+                        
+                        var randomIndex = random.Next(0, newPopulation.Count);
+                        var temp = newPopulation[j].machineId;
+                        newPopulation[j] = new Gene(newPopulation[j].index, newPopulation[j].task, newPopulation[randomIndex].machineId);
+                        newPopulation[randomIndex] = new Gene(newPopulation[randomIndex].index, newPopulation[randomIndex].task, temp);
+
+                    }
+
+                    population.Add(newPopulation);
 
             }
         }
