@@ -19,11 +19,11 @@ namespace PCmax
         private int MAX_SUPER_POPULATION = 31;
 
         //MANUAL
-        private int POPULATION = 100;
-        private int MUTATION_CHANCE = 1;
+        private int POPULATION = 143;
+        private int MUTATION_CHANCE = 3;
         private int SUPER_POPULATION = 50;
 
-        private TimeSpan algorithmTime = TimeSpan.FromSeconds(4);
+        private TimeSpan algorithmTime = TimeSpan.FromSeconds(500);
 
         public static int UpgradeGenome_Range = 2;
         //END
