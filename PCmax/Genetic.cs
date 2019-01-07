@@ -23,7 +23,7 @@ namespace PCmax
         private int MUTATION_CHANCE = 1;
         private int SUPER_POPULATION = 50;
 
-        private TimeSpan algorithmTime = TimeSpan.FromSeconds(60);
+        private TimeSpan algorithmTime = TimeSpan.FromSeconds(4);
 
         public static int UpgradeGenome_Range = 2;
         //END
