@@ -19,11 +19,11 @@ namespace PCmax
         private int MAX_SUPER_POPULATION = 31;
 
         //MANUAL
-        private int POPULATION = 30;
-        private int MUTATION_CHANCE = 3;
-        private int SUPER_POPULATION = 16;
+        private int POPULATION = 100;
+        private int MUTATION_CHANCE = 1;
+        private int SUPER_POPULATION = 50;
 
-        private TimeSpan algorithmTime = TimeSpan.FromSeconds(15);
+        private TimeSpan algorithmTime = TimeSpan.FromSeconds(60);
 
         public static int UpgradeGenome_Range = 2;
         //END
@@ -116,8 +116,8 @@ namespace PCmax
                 //    generation.Add((chromosome, score));
                 //    i++;
                 //}
-                
-                
+
+
                 int mut = 0;
                 for (int j = 0; j < population.Count; j++)
                 {
@@ -136,10 +136,10 @@ namespace PCmax
                     }
                 }
 
-                if(data.BestVector != null) population[1] = new List<Gene>(data.BestVector);
+                if (data.BestVector != null) population[1] = new List<Gene>(data.BestVector);
                 List<(List<Gene> chromosome, int score)> newGeneration = new List<(List<Gene> chromosome, int score)>();
                 int tempScore = 999999999;
-                var parents = new List<Gene>();
+                var parents1 = new List<Gene>(population[0]);
                 var parents2 = new List<Gene>();
                 //parents.Add(new Gene());
                 foreach (var chromosome in population)
@@ -157,13 +157,13 @@ namespace PCmax
                     {
 
                         tempScore = score;
-                        parents2 = new List<Gene>(parents);
-                        parents = chromosome;
+                        parents2 = new List<Gene>(parents1);
+                        parents1 = chromosome;
                     }
                     newGeneration.Add((chromosome, score));
                 }
                 //var parents = newGeneration.OrderBy(x => x.score).Take(2).ToList();
-                var supremechild = CrossOver(parents, newGeneration.Skip(2).First().chromosome);
+                var supremechild = CrossOver(parents1, parents2);
                 var scoreSupreme = Scoring(supremechild);
                 if (data.BestScore > scoreSupreme)
                 {
@@ -171,25 +171,28 @@ namespace PCmax
                     data.BestVector = supremechild;
                 }
                 //newPopulation.Add(supremechild);
-                newGeneration = newGeneration.OrderBy(x => x.score).ToList();
-                if (superPopulation.Count < SUPER_POPULATION)
-                {
-                    superPopulation.Add(supremechild);
-                    superPopulation.Add(newGeneration.First().chromosome);
-                    superPopulation.Add(newGeneration.Skip(1).First().chromosome);
-                    superPopulation.Add(newGeneration.Last().chromosome);
-                    GeneratePopulation(data);
-                }
-                else
-                {
-                    population = new List<List<Gene>>(superPopulation);
-                    superPopulation = new List<List<Gene>>();
-                }
+                //newGeneration = newGeneration.OrderBy(x => x.score).ToList();
+
+                GeneratePopulation(data, parents1, parents2);
+
+                //if (superPopulation.Count < SUPER_POPULATION)
+                //{
+                //    superPopulation.Add(supremechild);
+                //    superPopulation.Add(newGeneration.First().chromosome);
+                //    superPopulation.Add(newGeneration.Skip(1).First().chromosome);
+                //    superPopulation.Add(newGeneration.Last().chromosome);
+                    
+                //}
+                //else
+                //{
+                //    population = new List<List<Gene>>(superPopulation);
+                //    superPopulation = new List<List<Gene>>();
+                //}
 
                 //population = newPopulation;
                 
                 //Score after loop
-                if (generationCount % 20 == 0)
+                if (generationCount % 100 == 0)
                 {
                     Console.WriteLine(data.BestScore);
                     Console.WriteLine(generationCount);
@@ -215,6 +218,10 @@ namespace PCmax
             var max = 0;
             tasks.ForEach(x =>
                 machines[x.machineId] += x.task);
+            //for (int i = 0; i < main.numberOfTasks; i++)
+            //{
+            //    machines[tasks[i].machineId] += tasks[i].task;
+            //}
             for (int i = 0; i < main.numberOfThreads; i++)
             {
                 if (max < machines[i]) max = machines[i];
@@ -372,7 +379,7 @@ namespace PCmax
             }
         }
 
-        private void GeneratePopulation(Data oldData)
+        private void GeneratePopulation(Data oldData, List<Gene> parent1, List<Gene> parent2)
         {
             population = new List<List<Gene>>();
             for (int i = 0; i < POPULATION; i++)
@@ -383,17 +390,21 @@ namespace PCmax
                 }
                 else
                 {
-                    var newPopulation = main.Tasks;
-
-                    for (int j = 0; j < newPopulation.Count - 1; j++)
+                    List<Gene> newPopulation;
+                    if (i > POPULATION / 2)
                     {
-                        
-                        var randomIndex = random.Next(0, newPopulation.Count);
-                        var temp = newPopulation[j].machineId;
-                        newPopulation[j] = new Gene(newPopulation[j].index, newPopulation[j].task, newPopulation[randomIndex].machineId);
-                        newPopulation[randomIndex] = new Gene(newPopulation[randomIndex].index, newPopulation[randomIndex].task, temp);
-
+                        newPopulation = new List<Gene>(parent1);
                     }
+                    else
+                    {
+                        newPopulation = new List<Gene>(parent2);
+                    }
+
+                    var randomIndex = random.Next(0, newPopulation.Count);
+                    var randomIndex2 = random.Next(0, newPopulation.Count);
+                    var temp = newPopulation[randomIndex2].machineId;
+                    newPopulation[randomIndex2] = new Gene(newPopulation[randomIndex2].index, newPopulation[randomIndex2].task, newPopulation[randomIndex].machineId);
+                    newPopulation[randomIndex] = new Gene(newPopulation[randomIndex].index, newPopulation[randomIndex].task, temp);
 
                     population.Add(newPopulation);
                 }
