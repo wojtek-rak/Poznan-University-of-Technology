@@ -18,9 +18,9 @@ namespace PCmax
         private int MAX_SUPER_POPULATION = 31;
 
         //MANUAL
-        private int POPULATION = 10;
-        private int MUTATION_CHANCE = 6;
-        private int SUPER_POPULATION = 23;
+        private int POPULATION = 100;
+        private int MUTATION_CHANCE = 3;
+        private int SUPER_POPULATION = 100;
 
         private TimeSpan algorithmTime = TimeSpan.FromSeconds(360);
 
@@ -95,30 +95,29 @@ namespace PCmax
 
         private void RunLoop()
         {
-            List<(List<Gene> chromosome, int score)> generation = new List<(List<Gene> chromosome, int score)>();
+            //List<(List<Gene> chromosome, int score)> generation = new List<(List<Gene> chromosome, int score)>();
             var start = DateTime.Now;
             int generationCount = 0;
             while((DateTime.Now - start) < algorithmTime)
             {
                 generationCount++;
-                int i = 0;
-                foreach (var chromosome in population)
-                {
-                    var score = Scoring(chromosome);
-                    //Console.WriteLine(score);
-                    //PrintChromosome(chromosome);
-                    if (data.BestScore > score)
-                    {
-                        data.BestScore = score;
-                        data.BestVector = chromosome;
-                    }
-                    generation.Add((chromosome, score));
-                    i++;
-                }
-                var parents = generation.OrderBy(x => x.score).Take(2).ToList();
-                var supremechild = CrossOver(parents[0], parents[1]);
+                //int i = 0;
+                //foreach (var chromosome in population)
+                //{
+                //    var score = Scoring(chromosome);
+                //    //Console.WriteLine(score);
+                //    //PrintChromosome(chromosome);
+                //    if (data.BestScore > score)
+                //    {
+                //        data.BestScore = score;
+                //        data.BestVector = chromosome;
+                //    }
+                //    generation.Add((chromosome, score));
+                //    i++;
+                //}
+                
                 List<List<Gene>> newPopulation = new List<List<Gene>>();
-                newPopulation.Add(supremechild);
+                
                 int mut = 0;
                 foreach (var chromosome in population)
                 {
@@ -139,8 +138,8 @@ namespace PCmax
 
                     newPopulation.Add(newChromosome);
                 }
-                if(data.BestVector != null) newPopulation[1] = new List<Gene>(data.BestVector);
 
+                if(data.BestVector != null) newPopulation[1] = new List<Gene>(data.BestVector);
                 List<(List<Gene> chromosome, int score)> newGeneration = new List<(List<Gene> chromosome, int score)>();
                 foreach (var chromosome in newPopulation)
                 {
@@ -153,12 +152,14 @@ namespace PCmax
                         data.BestVector = chromosome;
                     }
                     newGeneration.Add((chromosome, score));
-                    i++;
                 }
-
+                var parents = newGeneration.OrderBy(x => x.score).Take(2).ToList();
+                var supremechild = CrossOver(parents[0], parents[1]);
+                //newPopulation.Add(supremechild);
                 newGeneration = newGeneration.OrderBy(x => x.score).ToList();
                 if (superPopulation.Count < SUPER_POPULATION)
                 {
+                    superPopulation.Add(supremechild);
                     superPopulation.Add(newGeneration.First().chromosome);
                     superPopulation.Add(newGeneration.Skip(1).First().chromosome);
                     superPopulation.Add(newGeneration.Last().chromosome);
@@ -347,7 +348,7 @@ namespace PCmax
 
         private void GeneratePopulation(Data oldData)
         {
-
+            population = new List<List<Gene>>();
             for (int i = 0; i < POPULATION; i++)
             {
                 if (i == 0)
@@ -377,7 +378,7 @@ namespace PCmax
 
         private void GeneratePopulationNoData()
         {
-
+            population = new List<List<Gene>>();
             for (int i = 0; i < POPULATION; i++)
             {
                 
