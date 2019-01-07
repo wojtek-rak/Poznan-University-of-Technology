@@ -6,6 +6,10 @@
         public int task { get; set; }
         public int machineId { get; set; }
 
+        public Gene()
+        {
+        }
+
         public Gene(int index, int task, int machineId)
         {
             this.index = index;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using MoreLinq.Extensions;
 
 namespace PCmax
 {
@@ -18,11 +19,11 @@ namespace PCmax
         private int MAX_SUPER_POPULATION = 31;
 
         //MANUAL
-        private int POPULATION = 100;
+        private int POPULATION = 30;
         private int MUTATION_CHANCE = 3;
-        private int SUPER_POPULATION = 100;
+        private int SUPER_POPULATION = 16;
 
-        private TimeSpan algorithmTime = TimeSpan.FromSeconds(360);
+        private TimeSpan algorithmTime = TimeSpan.FromSeconds(15);
 
         public static int UpgradeGenome_Range = 2;
         //END
@@ -116,17 +117,15 @@ namespace PCmax
                 //    i++;
                 //}
                 
-                List<List<Gene>> newPopulation = new List<List<Gene>>();
                 
                 int mut = 0;
-                foreach (var chromosome in population)
+                for (int j = 0; j < population.Count; j++)
                 {
 
-                    var newChromosome = new List<Gene>();
-                    newChromosome = chromosome;
+                    var newChromosome = population[j];
 
                     //UPGRADE
-                    newChromosome = UpgradeGenome(newChromosome);
+                    //newChromosome = UpgradeGenome(newChromosome);
 
                     mut++;
                     if (mut > MUTATION_CHANCE)
@@ -135,13 +134,15 @@ namespace PCmax
                         Mutation(newChromosome);
                         mut = 0;
                     }
-
-                    newPopulation.Add(newChromosome);
                 }
 
-                if(data.BestVector != null) newPopulation[1] = new List<Gene>(data.BestVector);
+                if(data.BestVector != null) population[1] = new List<Gene>(data.BestVector);
                 List<(List<Gene> chromosome, int score)> newGeneration = new List<(List<Gene> chromosome, int score)>();
-                foreach (var chromosome in newPopulation)
+                int tempScore = 999999999;
+                var parents = new List<Gene>();
+                var parents2 = new List<Gene>();
+                //parents.Add(new Gene());
+                foreach (var chromosome in population)
                 {
                     var score = Scoring(chromosome);
                     //Console.WriteLine(score);
@@ -151,10 +152,24 @@ namespace PCmax
                         data.BestScore = score;
                         data.BestVector = chromosome;
                     }
+
+                    if (tempScore > score)
+                    {
+
+                        tempScore = score;
+                        parents2 = new List<Gene>(parents);
+                        parents = chromosome;
+                    }
                     newGeneration.Add((chromosome, score));
                 }
-                var parents = newGeneration.OrderBy(x => x.score).Take(2).ToList();
-                var supremechild = CrossOver(parents[0], parents[1]);
+                //var parents = newGeneration.OrderBy(x => x.score).Take(2).ToList();
+                var supremechild = CrossOver(parents, newGeneration.Skip(2).First().chromosome);
+                var scoreSupreme = Scoring(supremechild);
+                if (data.BestScore > scoreSupreme)
+                {
+                    data.BestScore = scoreSupreme;
+                    data.BestVector = supremechild;
+                }
                 //newPopulation.Add(supremechild);
                 newGeneration = newGeneration.OrderBy(x => x.score).ToList();
                 if (superPopulation.Count < SUPER_POPULATION)
@@ -174,7 +189,11 @@ namespace PCmax
                 //population = newPopulation;
                 
                 //Score after loop
-                Console.WriteLine(data.BestScore);
+                if (generationCount % 20 == 0)
+                {
+                    Console.WriteLine(data.BestScore);
+                    Console.WriteLine(generationCount);
+                }
 
             }
             //foreach (var chromosome in population)
@@ -192,13 +211,20 @@ namespace PCmax
 
         private int Scoring(List<Gene> tasks)
         {
+            int[] machines = new int[main.numberOfThreads];
             var max = 0;
-            for (int i = 0; i < main.TaskMachines.Count; i++)
+            tasks.ForEach(x =>
+                machines[x.machineId] += x.task);
+            for (int i = 0; i < main.numberOfThreads; i++)
             {
-                var maxValue = tasks.Where(x => x.machineId == i).Sum(y => y.task);
-                if (max < maxValue) max = maxValue;
-
+                if (max < machines[i]) max = machines[i];
             }
+            //for (int i = 0; i < main.TaskMachines.Count; i++)
+            //{
+            //    var maxValue = tasks.Where(x => x.machineId == i).Sum(y => y.task);
+            //    if (max < maxValue) max = maxValue;
+
+            //}
 
             //greedy.tasks = new List<Gene>(tasks);
             //greedy.taskMachines = new List<int>(main.TaskMachines);
@@ -241,12 +267,12 @@ namespace PCmax
         }
 
 #warning CROSSOVER
-        public List<Gene> CrossOver((List<Gene> chromosome, int score) parentOne, (List<Gene> chromosome, int score) parentTwo)
+        public List<Gene> CrossOver(List<Gene>  parentOne, List<Gene>  parentTwo)
         {
-            parentOne = (parentOne.chromosome.OrderBy(x => x.index).ToList(), parentOne.score);
-            parentTwo = (parentTwo.chromosome.OrderBy(x => x.index).ToList(), parentTwo.score);
-            List<Gene> supremeChild = parentOne.chromosome.Take(parentOne.chromosome.Count / 2).ToList();
-            foreach (var value in parentTwo.chromosome.Skip(parentOne.chromosome.Count / 2))
+            parentOne = parentOne.OrderBy(x => x.index).ToList();
+            parentTwo = parentTwo.OrderBy(x => x.index).ToList();
+            List<Gene> supremeChild = parentOne.Take(parentOne.Count / 2).ToList();
+            foreach (var value in parentTwo.Skip(parentOne.Count / 2))
             {
                 //if (!supremeChild.Exists(x => x.index == value.index)) 
                 supremeChild.Add(value);
