@@ -44,7 +44,6 @@ INSERT INTO Cart ( Count, CustomerId, OrderId) VALUES
 
 CREATE TABLE CartProduct (
   Id  int identity(1,1),
-  EAN number(13,0) NOT NULL ,
   Count int NOT NULL default 0,
   ProductId int NOT NULL,
   CartId int NOT NULL,
@@ -120,7 +119,15 @@ INSERT INTO Supplier ( Name) VALUES
 ('Agro S.A.'),
 ('Magro Z.O.O.');
 
+CREATE TABLE Sale (
+  Id  int identity(1,1),
+  ProductId int NOT NULL,
+  Percent int NOT NULL,
+  PRIMARY KEY (Id)
+) 
 
+INSERT INTO Sale ( ProductId, Percent) VALUES
+(1, 15);
 
 
 
