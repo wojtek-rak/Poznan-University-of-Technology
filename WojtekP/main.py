@@ -12,6 +12,8 @@ import sys
 import math
 import cv2 as cv
 import numpy as np
+import imutils
+from statistics import median
 
 
 imW = 658
@@ -83,14 +85,72 @@ def getB(x1, y1, x2, y2):
     b = y1 - m * x1
     return b
 
-def Hough (filePath):
-    print('Hough')
+def Slice (img, rotationDegrees):
+    rotated = imutils.rotate_bound(img, rotationDegrees)
+    global imW
+    global imH
+    imW = rotated.shape[1]
+    imH = rotated.shape[0]
 
-    #src = cv.imread(cv.samples.findFile(filePath), cv.IMREAD_GRAYSCALE)
-    #src = cv.imread(filePath, cv.IMREAD_GRAYSCALE)
-    src = cv.cvtColor(filePath, cv.COLOR_BGR2GRAY)
-    #src = filePath
-    filePath
+    src = cv.cvtColor(rotated, cv.COLOR_BGR2GRAY)
+    # 489, 652
+    dst = cv.Canny(src, 50, 200, None, 3)
+    cdst = cv.cvtColor(dst, cv.COLOR_GRAY2BGR)
+    #cdst = np.copy(dst)
+    cdstP = np.copy(cdst)
+
+    cv.line(cdst, (0, 0), (10, 10), (0, 255, 0), 3, cv.LINE_AA) #testlline
+
+    linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
+    lineB = [0, 0, 0, 0]
+    lineU = [0, imH, 0, imH]
+    lineL = [imW, 0, imW, 0]
+    lineR = [0, 0, 0, 0]
+    multip = 18
+    for i in range(0, len(linesP)):
+        line = linesP[i][0]
+
+        print(line)
+
+        if line[1] > lineB[1]:
+            if abs(line[0] - line[2]) > abs(line[1] - line[3]) * multip:
+                lineB = line
+        if line[1] < lineU[1]:
+            if abs(line[0] - line[2]) > abs(line[1] - line[3]) * multip:
+                lineU = line
+
+        if line[0] > lineR[0]:
+            if abs(line[0] - line[2]) < abs(line[1] - line[3]) * multip:
+                lineR = line
+        if line[0] < lineL[0]:
+            if abs(line[0] - line[2]) < abs(line[1] - line[3]) * multip:
+                lineL = line
+
+
+    #slaice
+    top_left_x = min([lineB[0], lineU[0], lineR[0], lineL[0]])
+    top_left_y = min([lineB[1], lineU[1], lineR[1], lineL[1]])
+    bot_right_x = max([lineB[0], lineU[0], lineR[0], lineL[0]])
+    bot_right_y = max([lineB[1], lineU[1], lineR[1], lineL[1]])
+
+    slaicedImage = dst[top_left_y:bot_right_y, top_left_x:bot_right_x]
+    cv.imshow('slaicedImage', slaicedImage)
+
+    return [top_left_y, bot_right_y, top_left_x, bot_right_x]
+
+def Hough (filePath, rotationDegrees, slices):
+
+    global imW
+    global imH
+
+    src = cv.imread(cv.samples.findFile(filePath), cv.IMREAD_GRAYSCALE)
+    #src = cv.cvtColor(filePath, cv.COLOR_BGR2GRAY)
+    rotated = imutils.rotate_bound(src, rotationDegrees)
+    slaicedImage = rotated[slices[0]:slices[1],slices[2]:slices[3]]
+    src = slaicedImage
+    imW = src.shape[1]
+    imH = src.shape[0]
+
     # 489, 652
     dst = cv.Canny(src, 50, 200, None, 3)
     cdst = cv.cvtColor(dst, cv.COLOR_GRAY2BGR)
@@ -98,15 +158,6 @@ def Hough (filePath):
     cdstP = np.copy(cdst)
 
     lines = cv.HoughLines(dst, 1, np.pi / 180, 150, None, 0, 0)
-
-    #print(lines)
-
-    lineL = [(0, 0), (0, 0)]
-    lineR = [(1000, 0), (1000, 0)]
-    lineB = []
-    lineU = []
-    hasP = False
-    hasPCount = 0
 
     if lines is not None:
         for i in range(0, len(lines)):
@@ -118,74 +169,22 @@ def Hough (filePath):
             y0 = b * rho
             pt1 = (int(x0 + 1000 * (-b)), int(y0 + 1000 * (a)))
             pt2 = (int(x0 - 1000 * (-b)), int(y0 - 1000 * (a)))
-            print (pt1, pt2)
-            # a = getA(pt1[0], pt1[1], pt2[0], pt2[1])
-            # b = getB(pt1[0], pt1[1], pt2[0], pt2[1])
-            a = getA(pt1[0], pt1[1], pt2[0], pt2[1])
-            b = getB(pt1[0], pt1[1], pt2[0], pt2[1])
-
-            if a == 1000000:
-                hasP = True
-                hasPCount += 1
-                if pt1[0] < (imW / 2) and pt1[0] > lineL[0][0]:
-                    lineL = [pt1, pt2]
-                if pt1[0] > (imW / 2) and pt1[0] < lineR[0][0]:
-                    lineR = [pt1, pt2]
-
-            if a > 1:
-
-
-
 
             cv.line(cdst, pt1, pt2, (0, 0, 255), 3, cv.LINE_AA)
 
-    #cv.line(cdst, (pt1[0], pt1[1], pt2[0], pt2[1]), (0, 255, 0), 3, cv.LINE_AA)
-    cv.line(cdst, (0, 0), (10, 10), (0, 255, 0), 3, cv.LINE_AA)
+    cv.line(cdst, (0, 0), (10, 10), (0, 255, 0), 3, cv.LINE_AA) #testlline
 
 
-
-
-
-
+    #for l in [lineB, lineU, lineR, lineL]:
+    #    print(l)
+    #    cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
 
     linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
-    # lineUL = [imW, 0, imW, 0]
-    # lineUR = [imW, 0, 0, 0]
-    # lineBL = [imW, imH, imW, imH]
-    # lineBR = [0, imH, 0, imH]
-
-    # lineUL = []
-    # lineUR = []
-    # lineBL = []
-    # lineBR = []
-
-    # for i in range(0, len(linesP)):
-    #     line = linesP[i][0]
-
-
-
-        # if line[1] < line[3]:
-        #     if line[1] > lineUL[1] and line[0] < lineUL[0] and (imW / 2) > line[0] and (imW / 2) > line[2] and abs(line[0] - line[2]) < abs(line[1] - line[3]):
-        #         lineUL = line
-        #     if line[1] > lineBR[1] and line[2] > lineBR[2] and (imW / 2) < line[0] and (imW / 2) < line[2] and abs(line[0] - line[2]) < abs(line[1] - line[3]):
-        #         lineBR = line
-        #
-        # if line[0] < line[2]:
-        #     if line[0] < lineUR[0] and line[1] > lineUR[1] and  (imH / 2) < line[0] and (imH / 2) < line[2] and abs(line[0] - line[2]) > abs(line[1] - line[3]):
-        #         lineUR = line
-        #     if line[0] < lineBL[0] and line[1] < lineBL[1] and (imH / 2) > line[0] and (imH / 2) > line[2] and abs(line[0] - line[2]) > abs(line[1] - line[3]):
-        #         lineBL = line
-
-    # for l in [lineUL, lineBR, lineUR, lineBL]:
-    #     print(l)
-    #     cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
-
     if linesP is not None:
         for i in range(0, len(linesP)):
             l = linesP[i][0]
             cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
 
-    #print(linesP)
 
 
 
@@ -197,6 +196,8 @@ def Hough (filePath):
     cv.imshow("Detected Lines (in red) - Probabilistic Line Transform", cdstP)
     cv.waitKey(0)
     cv.destroyAllWindows()
+
+
 
 def Bright(filename):
     image = cv.imread(cv.samples.findFile(filename))
@@ -234,10 +235,60 @@ def White(new_image):
 
 
 
-    cv.imshow('frame', frame)
-    cv.imshow('mask', mask)
-    cv.imshow('res', res)
+    # cv.imshow('frame', frame)
+    # cv.imshow('mask', mask)
+    # cv.imshow('res', res)
+
     return res
+
+def Rotate(image_to_rotate):
+    src = cv.cvtColor(image_to_rotate, cv.COLOR_BGR2GRAY)
+    dst = cv.Canny(src, 50, 200, None, 3)
+    cdst = cv.cvtColor(dst, cv.COLOR_GRAY2BGR)
+    # cdst = np.copy(dst)
+    cdstP = np.copy(cdst)
+
+    lines = cv.HoughLines(dst, 1, np.pi / 180, 150, None, 0, 0)
+
+    # print(lines)
+
+    lineL = [(0, 0), (0, 0)]
+    lineR = [(1000, 0), (1000, 0)]
+    lineB = []
+    lineU = []
+    hasP = False
+    hasPCount = 0
+
+    a_array = []
+
+    cv.line(cdst, (0, 0), (10, 10), (0, 255, 0), 3, cv.LINE_AA) #testlline
+    if lines is not None:
+        for i in range(0, len(lines)):
+            rho = lines[i][0][0]
+            theta = lines[i][0][1]
+            a = math.cos(theta)
+            b = math.sin(theta)
+            x0 = a * rho
+            y0 = b * rho
+            pt1 = (int(x0 + 1000 * (-b)), int(y0 + 1000 * (a)))
+            pt2 = (int(x0 - 1000 * (-b)), int(y0 - 1000 * (a)))
+            a = getA(pt1[0], pt1[1], pt2[0], pt2[1])
+            b = getB(pt1[0], pt1[1], pt2[0], pt2[1])
+            a_array.append(a)
+
+            print(a)
+            # if a > 1:
+            cv.line(cdst, pt1, pt2, (0, 0, 255), 3, cv.LINE_AA)
+    a_med = median(a_array)
+
+    rotationRadians = math.atan(a);
+    rad2deg = 180 / math.pi;
+    rotationDegrees = - rotationRadians * rad2deg;
+
+    rotated = imutils.rotate_bound(image_to_rotate, rotationDegrees)
+    #cv.imshow("Rotated (Correct)", rotated)
+    return rotationDegrees
+
 for path in planes:
 
     #image = Bright(path)
@@ -246,4 +297,6 @@ for path in planes:
 
     image = Bright(path)
     image = White(image)
-    Hough(image)
+    angleToRotate = Rotate(image)
+    slice = Slice(image, angleToRotate)
+    Hough(path, angleToRotate, slice)
