@@ -14,7 +14,7 @@ import cv2 as cv
 import numpy as np
 import imutils
 from statistics import median
-
+import pandas as pd
 
 imW = 658
 imH = 490
@@ -136,7 +136,9 @@ def Slice (img, rotationDegrees):
     slaicedImage = dst[top_left_y:bot_right_y, top_left_x:bot_right_x]
     cv.imshow('slaicedImage', slaicedImage)
 
-    return [top_left_y, bot_right_y, top_left_x, bot_right_x]
+    sliceMore = 20
+    sliceMoreY = 20
+    return [top_left_y + sliceMore + sliceMoreY, bot_right_y - sliceMore - sliceMoreY, top_left_x + sliceMore, bot_right_x - sliceMore]
 
 def Hough (filePath, rotationDegrees, slices):
 
@@ -157,20 +159,6 @@ def Hough (filePath, rotationDegrees, slices):
     #cdst = np.copy(dst)
     cdstP = np.copy(cdst)
 
-    lines = cv.HoughLines(dst, 1, np.pi / 180, 150, None, 0, 0)
-
-    if lines is not None:
-        for i in range(0, len(lines)):
-            rho = lines[i][0][0]
-            theta = lines[i][0][1]
-            a = math.cos(theta)
-            b = math.sin(theta)
-            x0 = a * rho
-            y0 = b * rho
-            pt1 = (int(x0 + 1000 * (-b)), int(y0 + 1000 * (a)))
-            pt2 = (int(x0 - 1000 * (-b)), int(y0 - 1000 * (a)))
-
-            cv.line(cdst, pt1, pt2, (0, 0, 255), 3, cv.LINE_AA)
 
     cv.line(cdst, (0, 0), (10, 10), (0, 255, 0), 3, cv.LINE_AA) #testlline
 
@@ -179,24 +167,114 @@ def Hough (filePath, rotationDegrees, slices):
     #    print(l)
     #    cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
 
+    plotList = []
+
+    linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
+    if linesP is not None:
+        for i in range(0, len(linesP)):
+            l = linesP[i][0]
+            cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
+            plotList.append(l[1])
+            plotList.append(l[3])
+    #for i in range(700):
+    #    plotList.append(i)
+    #plt.plot(plotList)
+    plotList.sort()
+    #td = pd.value_counts(plotList).sort_index()
+    #pd.value_counts(plotList).sort_index().plot(kind="bar")
+    #plt.show()
+
+    #print(pd.value_counts(plotList).sort_index())
+    leng = len(plotList)
+
+    partLines = [[],[],[],[],[],[],[],[]]
+    tempI = 0
+    part = 0
+    for i in plotList:
+
+        if tempI > (leng / 8) * (part + 1):
+            part += 1
+        partLines[part].append(i)
+        tempI += 1
+
+    averages = []
+    for i in range (0, imH, int(imH/8)):
+        averages.append(i)
+    # for partLine in partLines:
+    #     averages.append(average(partLine))
+    #
+    # cutParts = []
+    #
+    # it = 0
+    # last = 0
+    #
+    # for i in averages:
+    #     if it == 0:
+    #         last = i
+    #     else:
+    #         cutParts.append(average([last, i]))
+    #         last = i
+    #     it +=1
+
+
+    for i in averages:
+        cv.line(cdst, (0, int(i)), (500, int(i)), (0, 0, 255), 3, cv.LINE_AA)
+        #plotList.append(l[1])
+        #plotList.append(l[3])
+    #
+
+    #cv.imshow("Source", src)
+    #cv.imshow("Detected Lines (in red) - Standard Hough Line Transform", cdst)
+    #cv.imshow("Detected Lines (in red) - Probabilistic Line Transform", cdstP)
+    #cv.waitKey(0)
+    #cv.destroyAllWindows()
+
+    ite = 0
+    slaicedImages = []
+    lastAver = 0
+    slicePlus = 5
+    for i in averages:
+        if ite == 0:
+            lastAver = i
+        else:
+            if ite == 1:
+                slaicedImages.append(src[lastAver:i + slicePlus, 0:imW])
+            elif ite == 8:
+                slaicedImages.append(src[lastAver - slicePlus:i + slicePlus, 0:imW])
+            else:
+                slaicedImages.append(src[lastAver - slicePlus:i, 0:imW])
+            lastAver = i
+        ite += 1
+
+    #
+    # for i in slaicedImages:
+    #     cv.imshow("Iterator", i)
+    #     cv.waitKey(0)
+    #     cv.destroyAllWindows()
+    return slaicedImages
+
+def HoughOne (image):
+
+    global imW
+    global imH
+
+    src = cv.imread(cv.samples.findFile(filePath), cv.IMREAD_GRAYSCALE)
+    #src = cv.cvtColor(filePath, cv.COLOR_BGR2GRAY)
+    rotated = imutils.rotate_bound(src, rotationDegrees)
+    slaicedImage = rotated[slices[0]:slices[1],slices[2]:slices[3]]
+    src = slaicedImage
+    imW = src.shape[1]
+    imH = src.shape[0]
+
+    plotList = []
+
     linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
     if linesP is not None:
         for i in range(0, len(linesP)):
             l = linesP[i][0]
             cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
 
-
-
-
-
-
-
-    #cv.imshow("Source", src)
-    cv.imshow("Detected Lines (in red) - Standard Hough Line Transform", cdst)
-    cv.imshow("Detected Lines (in red) - Probabilistic Line Transform", cdstP)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
-
+    return slaicedImages
 
 
 def Bright(filename):
@@ -299,4 +377,7 @@ for path in planes:
     image = White(image)
     angleToRotate = Rotate(image)
     slice = Slice(image, angleToRotate)
-    Hough(path, angleToRotate, slice)
+    slaicedImages = Hough(path, angleToRotate, slice)
+
+    for i in slaicedImages:
+        HoughOne(i)
