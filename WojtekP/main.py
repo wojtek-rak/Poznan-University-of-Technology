@@ -69,10 +69,6 @@ planes = []
 for plane in planes0:
     planes.append('Zdjęcia pięciolinia/5/' + plane)
 
-plt.figure(figsize=(50, 26))
-plt.subplots_adjust(left=0, bottom=0, right=0.985, hspace=0, wspace=0)
-i = 1
-t = 140
 
 def getA(x1, y1, x2, y2):
     if x2-x1 == 0:
@@ -134,7 +130,7 @@ def Slice (img, rotationDegrees):
     bot_right_y = max([lineB[1], lineU[1], lineR[1], lineL[1]])
 
     slaicedImage = dst[top_left_y:bot_right_y, top_left_x:bot_right_x]
-    cv.imshow('slaicedImage', slaicedImage)
+    #cv.imshow('slaicedImage', slaicedImage)
 
     sliceMore = 20
     sliceMoreY = 20
@@ -253,28 +249,7 @@ def Hough (filePath, rotationDegrees, slices):
     #     cv.destroyAllWindows()
     return slaicedImages
 
-def HoughOne (image):
 
-    global imW
-    global imH
-
-    src = cv.imread(cv.samples.findFile(filePath), cv.IMREAD_GRAYSCALE)
-    #src = cv.cvtColor(filePath, cv.COLOR_BGR2GRAY)
-    rotated = imutils.rotate_bound(src, rotationDegrees)
-    slaicedImage = rotated[slices[0]:slices[1],slices[2]:slices[3]]
-    src = slaicedImage
-    imW = src.shape[1]
-    imH = src.shape[0]
-
-    plotList = []
-
-    linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
-    if linesP is not None:
-        for i in range(0, len(linesP)):
-            l = linesP[i][0]
-            cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
-
-    return slaicedImages
 
 
 def Bright(filename):
@@ -367,6 +342,48 @@ def Rotate(image_to_rotate):
     #cv.imshow("Rotated (Correct)", rotated)
     return rotationDegrees
 
+def HoughOne (image):
+
+    global imW
+    global imH
+
+    src = image#cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    # src = filePath
+
+    dst = cv.Canny(src, 50, 200, None, 3)
+    cdst = cv.cvtColor(dst, cv.COLOR_GRAY2BGR)
+    cdstP = np.copy(cdst)
+
+    imW = src.shape[1]
+    imH = src.shape[0]
+
+    plotList = []
+
+    linesP = cv.HoughLinesP(dst, 1, np.pi / 180, 50, None, 50, 10)
+    # if linesP is not None:
+    #     for i in range(0, len(linesP)):
+    #         l = linesP[i][0]
+    #         cv.line(cdstP, (l[0], l[1]), (l[2], l[3]), (0, 0, 255), 3, cv.LINE_AA)
+
+    print('Kappa')
+    print(linesP)
+
+    lineU = imH
+    lineB = 0
+    for i in linesP:
+        line = i[0]
+        if line[1] > lineB:
+            lineB = line[1]
+        if line[1] < lineU:
+            lineU = line[1]
+
+    # cv.line(cdstP, (0, lineU), (500, lineU), (0, 0, 255), 3, cv.LINE_AA)
+    # cv.line(cdstP, (0, lineB), (500, lineB), (0, 0, 255), 3, cv.LINE_AA)
+    # cv.imshow("Detected Lines (in red) - Probabilistic Line Transform", cdstP)
+    # cv.waitKey(0)
+    # cv.destroyAllWindows()
+    return [image, lineU, lineB]
+
 for path in planes:
 
     #image = Bright(path)
@@ -380,4 +397,4 @@ for path in planes:
     slaicedImages = Hough(path, angleToRotate, slice)
 
     for i in slaicedImages:
-        HoughOne(i)
+        HoughOne(i) # zwraca liste z [Obrazek, wsp y górnej lini, wsp x dolnej lini]
