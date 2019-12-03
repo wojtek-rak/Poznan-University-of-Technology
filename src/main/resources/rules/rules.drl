@@ -1,7 +1,51 @@
-package rules;
-dialect  "mvel"
+package si.shakespeare;
 
-rule "rules"
-    when
-    then
+import javax.swing.*;
+import org.kie.api.runtime.*;
+
+global JFrame frame;
+
+declare enum Question
+    WHAT_DOU_YOU_WANT_TO_DO("What do you want to do?", new String[]{"Take a nap", "Laugh", "Cry", "Watch guys run around with swords", "All of the above"}),
+    MURDER_AND_CANIBALISM("Do you find murder, dismemberment, and cannibalism...", new String[]{"Disturbing?", "Hilarious?"});
+
+    content : String
+    possibleOptions : String[]
+end
+
+declare Answer
+    question : Question @key
+    choice : String
+end
+
+function void ask(JFrame frame, KieRuntime krt, Question question) {
+    String[] possibleOptions = question.getPossibleOptions();
+    int answerVal = JOptionPane.showOptionDialog(frame, question.getContent(), "", JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, possibleOptions, 1);
+    Answer answer = new Answer(question);
+    answer.setChoice(possibleOptions[answerVal]);
+    krt.insert(answer);
+}
+
+function void showResult(JFrame frame, String shakespearePlay) {
+    JOptionPane.showMessageDialog(frame, shakespearePlay);
+}
+
+rule "init"
+then
+    ask(frame, kcontext.getKieRuntime(), Question.WHAT_DOU_YOU_WANT_TO_DO);
+end
+
+rule "Take a nap"
+when
+    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[0])
+then
+    showResult(frame, "Henry VIII");
+end
+
+rule "Laugh"
+when
+    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[1])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.MURDER_AND_CANIBALISM);
 end
