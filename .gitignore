@@ -70,6 +70,7 @@ cmake-build-*/
 *.iws
 .idea/
 .target/
+target/
 # IntelliJ
 out/
 

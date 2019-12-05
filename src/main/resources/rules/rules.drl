@@ -49,3 +49,18 @@ when
 then
     ask(frame, kcontext.getKieRuntime(), Question.MURDER_AND_CANIBALISM);
 end
+
+rule "Disturbing?"
+when
+    Answer(question == Question.MURDER_AND_CANIBALISM, choice == Question.MURDER_AND_CANIBALISM.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.MURDER_AND_CANIBALISM);
+end
+
+rule "Hilarious?"
+when
+    Answer(question == Question.MURDER_AND_CANIBALISM, choice == Question.MURDER_AND_CANIBALISM.getPossibleOptions()[1])
+then
+    showResult(frame, "Titus Andronicus");
+end
+
