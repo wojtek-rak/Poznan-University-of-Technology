@@ -6,7 +6,7 @@ import org.kie.api.runtime.*;
 global JFrame frame;
 
 declare enum Question
-    WHAT_DOU_YOU_WANT_TO_DO("What do you want to do?", new String[]{"Take a nap", "Laugh", "Cry", "Watch guys run around with swords", "All of the above"}),
+    WHAT_DOU_YOU_WANT_TO_DO("What do you want to do?", new String[]{"Take a nap", "Laugh", "Watch guys run around with swords", "All of the above"}),
     MURDER_AND_CANIBALISM("Do you find murder, dismemberment, and cannibalism...", new String[]{"Disturbing?", "Hilarious?"}),
     CROSS_DRESSING("Cross-dressing: Yea or Nay?", new String[]{"Yea!", "Nay."}),
     TWINS("Twins?", new String[]{"No! No twins!", "Twins are awesome."}),
@@ -58,6 +58,20 @@ when
     Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[1])
 then
     ask(frame, kcontext.getKieRuntime(), Question.MURDER_AND_CANIBALISM);
+end
+
+rule "Watch guys run around with swords"
+when
+    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[2])
+then
+    showResult(frame, "Troilus and Cressida");
+end
+
+rule "All of the above"
+when
+    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[3])
+then
+    showResult(frame, "Cymbeline");
 end
 
 rule "Disturbing?"
