@@ -8,7 +8,7 @@ global JFrame frame;
 declare enum Question
     WHAT_DOU_YOU_WANT_TO_DO("What do you want to do?", new String[]{"Take a nap", "Laugh", "Cry", "Watch guys run around with swords", "All of the above"}),
     MURDER_AND_CANIBALISM("Do you find murder, dismemberment, and cannibalism...", new String[]{"Disturbing?", "Hilarious?"}),
-    CROSS-DRESSING("Cross-dressing: Yea or Nay?", new String[]{"Yea!", "Nay."}),
+    CROSS_DRESSING("Cross-dressing: Yea or Nay?", new String[]{"Yea!", "Nay."}),
     TWINS("Twins?", new String[]{"No! No twins!", "Twins are awesome."}),
     PLACE_IN_FOREST("Can it be set in a forest?", new String[]{"Oooh,yes, I love forests.", "Why not in a city, for a change?"}),
     WHO_IN_FOREST("Who is in the forest?", new String[]{"Shepherds.", "Bandits."}),
@@ -64,7 +64,7 @@ rule "Disturbing?"
 when
     Answer(question == Question.MURDER_AND_CANIBALISM, choice == Question.MURDER_AND_CANIBALISM.getPossibleOptions()[0])
 then
-    ask(frame, kcontext.getKieRuntime(), Question.CROSS-DRESSING);
+    ask(frame, kcontext.getKieRuntime(), Question.CROSS_DRESSING);
 end
 
 rule "Hilarious?"
@@ -77,14 +77,14 @@ end
 
 rule "Yea!"
 when
-    Answer(question == Question.CROSS-DRESSING, choice == Question.CROSS-DRESSING.getPossibleOptions()[0])
+    Answer(question == Question.CROSS_DRESSING, choice == Question.CROSS_DRESSING.getPossibleOptions()[0])
 then
     ask(frame, kcontext.getKieRuntime(), Question.TWINS);
 end
 
 rule "Nay!"
 when
-    Answer(question == Question.CROSS-DRESSING, choice == Question.CROSS-DRESSING.getPossibleOptions()[1])
+    Answer(question == Question.CROSS_DRESSING, choice == Question.CROSS_DRESSING.getPossibleOptions()[1])
 then
     ask(frame, kcontext.getKieRuntime(), Question.HOW_ABOUT_TWINS);
 end
@@ -100,7 +100,7 @@ rule "There's no such thing."
 when
     Answer(question == Question.HOW_ABOUT_MAGIC, choice == Question.HOW_ABOUT_MAGIC.getPossibleOptions()[0])
 then
-    ask(frame, kcontext.getKieRuntime(), Question.NNNNNNNNNNNNNN);
+    ask(frame, kcontext.getKieRuntime(), Question.HOW_LIKE_LOVERS);
 end
 
 rule "Over-educated!"
@@ -114,7 +114,7 @@ rule "Quarrelsome!"
 when
     Answer(question == Question.HOW_LIKE_LOVERS, choice == Question.HOW_LIKE_LOVERS.getPossibleOptions()[1])
 then
-    ask(frame, kcontext.getKieRuntime(), Question.NONONONNON);
+    ask(frame, kcontext.getKieRuntime(), Question.VIOLENTLY);
 end
 
 rule "No, just argumentative."
@@ -135,7 +135,7 @@ rule "Reluctant."
 when
     Answer(question == Question.HOW_LIKE_LOVERS, choice == Question.HOW_LIKE_LOVERS.getPossibleOptions()[2])
 then
-    ask(frame, kcontext.getKieRuntime(), Question.NONONONNON);
+    ask(frame, kcontext.getKieRuntime(), Question.NUN_INVOLVED);
 end
 
 rule "...maybe?"
