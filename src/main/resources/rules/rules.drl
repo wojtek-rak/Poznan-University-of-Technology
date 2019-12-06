@@ -7,8 +7,18 @@ global JFrame frame;
 
 declare enum Question
     WHAT_DOU_YOU_WANT_TO_DO("What do you want to do?", new String[]{"Take a nap", "Laugh", "Cry", "Watch guys run around with swords", "All of the above"}),
-    MURDER_AND_CANIBALISM("Do you find murder, dismemberment, and cannibalism...", new String[]{"Disturbing?", "Hilarious?"});
-
+    MURDER_AND_CANIBALISM("Do you find murder, dismemberment, and cannibalism...", new String[]{"Disturbing?", "Hilarious?"}),
+    CROSS-DRESSING("Cross-dressing: Yea or Nay?", new String[]{"Yea!", "Nay."}),
+    TWINS("Twins?", new String[]{"No! No twins!", "Twins are awesome."}),
+    PLACE_IN_FOREST("Can it be set in a forest?", new String[]{"Oooh,yes, I love forests.", "Why not in a city, for a change?"}),
+    WHO_IN_FOREST("Who is in the forest?", new String[]{"Shepherds.", "Bandits."}),
+	HOW_ABOUT_TWINS("How about twins?", new String[]{"How contrived.", "Sounds like fun."}),
+	HOW_ABOUT_MAGIC("How about twins?", new String[]{"There's no such thing.", "Oooo, I love magic!"}),
+	WHAT_MAGIC("What kind of magic do you like?", new String[]{"Illusion!", "Fairies!", "Miracles!"}),
+	HOW_LIKE_LOVERS("Wow, you're a tough crowd. How do you like your lovers?", new String[]{"Over-educated!", "Quarrelsome!", "Reluctant.", "Married."}),
+	VIOLENTLY("Violently quarrelsome?", new String[]{"No, just argumentative.", "Bring it on!"}),
+	NUN_INVOLVED("Is there a nun involved?", new String[]{"...maybe?", "What? No! That's weird!"});
+	
     content : String
     possibleOptions : String[]
 end
@@ -54,7 +64,7 @@ rule "Disturbing?"
 when
     Answer(question == Question.MURDER_AND_CANIBALISM, choice == Question.MURDER_AND_CANIBALISM.getPossibleOptions()[0])
 then
-    ask(frame, kcontext.getKieRuntime(), Question.MURDER_AND_CANIBALISM);
+    ask(frame, kcontext.getKieRuntime(), Question.CROSS-DRESSING);
 end
 
 rule "Hilarious?"
@@ -63,4 +73,170 @@ when
 then
     showResult(frame, "Titus Andronicus");
 end
+
+
+rule "Yea!"
+when
+    Answer(question == Question.CROSS-DRESSING, choice == Question.CROSS-DRESSING.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.TWINS);
+end
+
+rule "Nay!"
+when
+    Answer(question == Question.CROSS-DRESSING, choice == Question.CROSS-DRESSING.getPossibleOptions()[1])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.HOW_ABOUT_TWINS);
+end
+
+rule "How contrived."
+when
+    Answer(question == Question.HOW_ABOUT_TWINS, choice == Question.HOW_ABOUT_TWINS.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.HOW_ABOUT_MAGIC);
+end
+
+rule "There's no such thing."
+when
+    Answer(question == Question.HOW_ABOUT_MAGIC, choice == Question.HOW_ABOUT_MAGIC.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.NNNNNNNNNNNNNN);
+end
+
+rule "Over-educated!"
+when
+    Answer(question == Question.HOW_LIKE_LOVERS, choice == Question.HOW_LIKE_LOVERS.getPossibleOptions()[0])
+then
+    showResult(frame, "Love's Lanour's Lost");
+end
+
+rule "Quarrelsome!"
+when
+    Answer(question == Question.HOW_LIKE_LOVERS, choice == Question.HOW_LIKE_LOVERS.getPossibleOptions()[1])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.NONONONNON);
+end
+
+rule "No, just argumentative."
+when
+    Answer(question == Question.VIOLENTLY, choice == Question.VIOLENTLY.getPossibleOptions()[0])
+then
+    showResult(frame, "Much Ado About Nothing");
+end
+
+rule "Bring it on!"
+when
+    Answer(question == Question.VIOLENTLY, choice == Question.VIOLENTLY.getPossibleOptions()[1])
+then
+    showResult(frame, "The Taming of the Shrew");
+end
+
+rule "Reluctant."
+when
+    Answer(question == Question.HOW_LIKE_LOVERS, choice == Question.HOW_LIKE_LOVERS.getPossibleOptions()[2])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.NONONONNON);
+end
+
+rule "...maybe?"
+when
+    Answer(question == Question.NUN_INVOLVED, choice == Question.NUN_INVOLVED.getPossibleOptions()[0])
+then
+    showResult(frame, "Measure for Measure");
+end
+
+rule "What? No! That's weird!"
+when
+    Answer(question == Question.NUN_INVOLVED, choice == Question.NUN_INVOLVED.getPossibleOptions()[1])
+then
+    showResult(frame, "All's Well That Ends Well");
+end
+
+rule "Married."
+when
+    Answer(question == Question.HOW_LIKE_LOVERS, choice == Question.HOW_LIKE_LOVERS.getPossibleOptions()[3])
+then
+    showResult(frame, "The Merry Wives of Windsor");
+end
+
+
+rule "Oooo, I love magic!"
+when
+    Answer(question == Question.HOW_ABOUT_MAGIC, choice == Question.HOW_ABOUT_MAGIC.getPossibleOptions()[1])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.WHAT_MAGIC);
+end
+
+rule "Illusion!"
+when
+    Answer(question == Question.WHAT_MAGIC, choice == Question.WHAT_MAGIC.getPossibleOptions()[0])
+then
+    showResult(frame, "The Tempests");
+end
+
+rule "Fairies!"
+when
+    Answer(question == Question.WHAT_MAGIC, choice == Question.WHAT_MAGIC.getPossibleOptions()[1])
+then
+    showResult(frame, "A Midsummer Night's Dream");
+end
+
+rule "Miracles!"
+when
+    Answer(question == Question.WHAT_MAGIC, choice == Question.WHAT_MAGIC.getPossibleOptions()[2])
+then
+    showResult(frame, "The WInter's Tale");
+end
+
+rule "Sounds like fun!"
+when
+    Answer(question == Question.HOW_ABOUT_TWINS, choice == Question.HOW_ABOUT_TWINS.getPossibleOptions()[1])
+then
+    showResult(frame, "The Comedy of Errors");
+end
+
+
+rule "No! No twins!"
+when
+    Answer(question == Question.TWINS, choice == Question.TWINS.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.PLACE_IN_FOREST);
+end
+
+rule "Twins are awesome."
+when
+    Answer(question == Question.TWINS, choice == Question.TWINS.getPossibleOptions()[1])
+then
+    showResult(frame, "Twelfth Night");
+end
+
+rule "Oooh,yes, I love forests."
+when
+    Answer(question == Question.PLACE_IN_FOREST, choice == Question.PLACE_IN_FOREST.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.WHO_IN_FOREST);
+end
+
+rule "Why not in a city, for a change?"
+when
+    Answer(question == Question.PLACE_IN_FOREST, choice == Question.PLACE_IN_FOREST.getPossibleOptions()[1])
+then
+    showResult(frame, "The Merchant of Venice");
+end
+
+rule "Shepherds."
+when
+    Answer(question == Question.WHO_IN_FOREST, choice == Question.WHO_IN_FOREST.getPossibleOptions()[0])
+then
+    showResult(frame, "As You Like It");
+end
+
+rule "Bandits."
+when
+    Answer(question == Question.WHO_IN_FOREST, choice == Question.WHO_IN_FOREST.getPossibleOptions()[1])
+then
+    showResult(frame, "The Two Gentelmen of Verona");
+end
+
+
 
