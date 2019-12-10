@@ -6,7 +6,7 @@ import org.kie.api.runtime.*;
 global JFrame frame;
 
 declare enum Question
-    WHAT_DOU_YOU_WANT_TO_DO("What do you want to do?", new String[]{"Take a nap", "Laugh", "Watch guys run around with swords", "All of the above"}),
+    WHAT_DOU_YOU_WANT_TO_DO("What do you want to do?", new String[]{"Take a nap", "Laugh", "Cry", "Watch guys run around with swords", "All of the above"}),
     MURDER_AND_CANIBALISM("Do you find murder, dismemberment, and cannibalism...", new String[]{"Disturbing?", "Hilarious?"}),
     CROSS_DRESSING("Cross-dressing: Yea or Nay?", new String[]{"Yea!", "Nay."}),
     TWINS("Twins?", new String[]{"No! No twins!", "Twins are awesome."}),
@@ -17,8 +17,15 @@ declare enum Question
 	WHAT_MAGIC("What kind of magic do you like?", new String[]{"Illusion!", "Fairies!", "Miracles!"}),
 	HOW_LIKE_LOVERS("Wow, you're a tough crowd. How do you like your lovers?", new String[]{"Over-educated!", "Quarrelsome!", "Reluctant.", "Married."}),
 	VIOLENTLY("Violently quarrelsome?", new String[]{"No, just argumentative.", "Bring it on!"}),
-	NUN_INVOLVED("Is there a nun involved?", new String[]{"...maybe?", "What? No! That's weird!"});
-	
+	NUN_INVOLVED("Is there a nun involved?", new String[]{"...maybe?", "What? No! That's weird!"}),
+	OPINION_ON_REVENGE("What's your opinion on revenge?", new String[]{"It's the best!", "It's pointless."}),
+	DEATH_TOLLS("How do you like your death tolls?", new String[]{"High! Bring on the bloodbath!", "Moderate, with side of angst.", "Very low. I'm squeamish."}),
+	MOST_IMPORTANT("What is the most important to you?", new String[]{"Love.", "Family.", "Power."}),
+	PICK_A_PARENT("Pick a parent.", new String[]{"Mum.", "Dad."}),
+	BEST_TYPE_OF_LOVE("Which is the best type of love?", new String[]{"Stupid immature love.", "Stupid mature love.", "Jealous obsession."}),
+	WORK_WITH("Who do you work best with?", new String[]{"Firends.", "Significant other.", "Everyone hates me."});
+
+
     content : String
     possibleOptions : String[]
 end
@@ -62,14 +69,14 @@ end
 
 rule "Watch guys run around with swords"
 when
-    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[2])
+    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[3])
 then
     showResult(frame, "Troilus and Cressida");
 end
 
 rule "All of the above"
 when
-    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[3])
+    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[4])
 then
     showResult(frame, "Cymbeline");
 end
@@ -252,5 +259,121 @@ then
     showResult(frame, "The Two Gentelmen of Verona");
 end
 
+rule "Bloodbath."
+when
+    Answer(question == Question.DEATH_TOLLS, choice == Question.DEATH_TOLLS.getPossibleOptions()[0])
+then
+    showResult(frame, "Titus Andronicus");
+end
 
+rule "With side of angst."
+when
+    Answer(question == Question.DEATH_TOLLS, choice == Question.DEATH_TOLLS.getPossibleOptions()[1])
+then
+    showResult(frame, "Hamlet");
+end
 
+rule "I'm squeamish."
+when
+    Answer(question == Question.DEATH_TOLLS, choice == Question.DEATH_TOLLS.getPossibleOptions()[2])
+then
+    showResult(frame, "Timon of Athens");
+end
+
+rule "Most important Love"
+when
+    Answer(question == Question.MOST_IMPORTANT, choice == Question.MOST_IMPORTANT.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.BEST_TYPE_OF_LOVE);
+end
+
+rule "Most important Family"
+when
+    Answer(question == Question.MOST_IMPORTANT, choice == Question.MOST_IMPORTANT.getPossibleOptions()[1])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.PICK_A_PARENT);
+end
+
+rule "Most important Power"
+when
+    Answer(question == Question.MOST_IMPORTANT, choice == Question.MOST_IMPORTANT.getPossibleOptions()[2])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.WORK_WITH);
+end
+
+rule "Friends"
+when
+    Answer(question == Question.WORK_WITH, choice == Question.WORK_WITH.getPossibleOptions()[0])
+then
+    showResult(frame, "Julius Caesar");
+end
+
+rule "Significant other"
+when
+    Answer(question == Question.WORK_WITH, choice == Question.WORK_WITH.getPossibleOptions()[1])
+then
+    showResult(frame, "Macbeth");
+end
+
+rule "Everyone hates me"
+when
+    Answer(question == Question.WORK_WITH, choice == Question.WORK_WITH.getPossibleOptions()[2])
+then
+    showResult(frame, "Richard II");
+end
+
+rule "Cry."
+when
+    Answer(question == Question.WHAT_DOU_YOU_WANT_TO_DO, choice == Question.WHAT_DOU_YOU_WANT_TO_DO.getPossibleOptions()[2])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.OPINION_ON_REVENGE);
+end
+
+rule "Revenge is the best."
+when
+    Answer(question == Question.OPINION_ON_REVENGE, choice == Question.OPINION_ON_REVENGE.getPossibleOptions()[0])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.DEATH_TOLLS);
+end
+
+rule "Revenge is pointless."
+when
+    Answer(question == Question.OPINION_ON_REVENGE, choice == Question.OPINION_ON_REVENGE.getPossibleOptions()[1])
+then
+    ask(frame, kcontext.getKieRuntime(), Question.MOST_IMPORTANT);
+end
+
+rule "Parent mum."
+when
+    Answer(question == Question.PICK_A_PARENT, choice == Question.PICK_A_PARENT.getPossibleOptions()[0])
+then
+    showResult(frame, "Coriolanus");
+end
+
+rule "Parent dad."
+when
+    Answer(question == Question.PICK_A_PARENT, choice == Question.PICK_A_PARENT.getPossibleOptions()[1])
+then
+    showResult(frame, "King Lear");
+end
+
+rule "Stupid immature love."
+when
+    Answer(question == Question.BEST_TYPE_OF_LOVE, choice == Question.BEST_TYPE_OF_LOVE.getPossibleOptions()[0])
+then
+    showResult(frame, "Romeo and Juliet");
+end
+
+rule "Stupid mature love."
+when
+    Answer(question == Question.BEST_TYPE_OF_LOVE, choice == Question.BEST_TYPE_OF_LOVE.getPossibleOptions()[1])
+then
+    showResult(frame, "Antony and Cleopatra");
+end
+
+rule "Jealous obsession."
+when
+    Answer(question == Question.BEST_TYPE_OF_LOVE, choice == Question.BEST_TYPE_OF_LOVE.getPossibleOptions()[2])
+then
+    showResult(frame, "Othello");
+end
