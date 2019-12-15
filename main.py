@@ -30,7 +30,8 @@ def mainMenu():
 
     # Print result
     print(digit)
-    time.sleep(0.5)
+    time.sleep(1)
+    mainMenu()
 
 def showMainMenu():
     #wyswietlanie na lcd
