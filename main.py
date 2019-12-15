@@ -25,7 +25,7 @@ def mainMenu():
         startGame()
     elif(digit == 2):
         runHighscore()
-    elif (digit == 3):
+    elif (digit == 7):
         runGameDifficulty()
 
     # Print result
@@ -35,20 +35,22 @@ def mainMenu():
 
 def showMainMenu():
     #wyswietlanie na lcd
-    print("Press 1 to start game, \n Press 2 to show highscore \n press 3 to change difficult")
+    print("Press 1 to start game, \nPress 2 to show highscore \nPress 7 to change difficult")
     return
 
 def runHighscore():
     showHighscore()
     digit = waitForMenu()
 
-    if (digit == 1):
+    if (digit == 4):
         mainMenu()
-    elif (digit == 2):
+    elif (digit == 5):
         resetHighScore()
+    else:
+        runHighscore()
 
 def showHighscore():
-    print("Highscore: " + str(getHighScore()) + "\nPress 1 to go back, \n Press 2 reset high score")
+    print("Highscore: " + str(getHighScore()) + "\nPress 4 to go back, \n Press 5 reset high score")
     # wyswietlanie na lcd
     return
 
