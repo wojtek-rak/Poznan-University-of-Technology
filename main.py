@@ -15,7 +15,7 @@ def waitForMenu():
         digit = kp.getKey()
         #digit = int(input())
 
-        return digit
+    return digit
 
 def mainMenu():
     showMainMenu()
