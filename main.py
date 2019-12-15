@@ -1,10 +1,10 @@
 import time
-#import RPi.GPIO as GPIO
-#from keypad import keypad
 
-#GPIO.setwarnings(False)
 
-#kp = keypad(columnCount=3)
+import RPi.GPIO as GPIO
+from keypad import keypad
+GPIO.setwarnings(False)
+kp = keypad(columnCount=3)
 
 gameDifficult = 1
 highScore = 0
@@ -12,8 +12,8 @@ highScore = 0
 def waitForMenu():
     digit = None
     while digit == None:
-        #digit = kp.getKey()
-        digit = int(input())
+        digit = kp.getKey()
+        #digit = int(input())
 
         return digit
 
