@@ -27,9 +27,9 @@ def mainMenu():
         runHighscore()
     elif (digit == 7):
         runGameDifficulty()
-    else:
-        time.sleep(1)
-        mainMenu()
+
+    time.sleep(1)
+    mainMenu()
 
 
 def showMainMenu():
