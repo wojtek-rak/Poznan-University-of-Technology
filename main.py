@@ -35,6 +35,7 @@ def mainMenu():
 
 def showMainMenu():
     #wyswietlanie na lcd
+    print("Press 1 to start game, \n Press 2 to show highscore \n press 3 to change difficult")
     return
 
 def runHighscore():
@@ -47,8 +48,8 @@ def runHighscore():
         resetHighScore()
 
 def showHighscore():
+    print("Highscore: " + str(getHighScore()) + "\nPress 1 to go back, \n Press 2 reset high score")
     # wyswietlanie na lcd
-    print(getHighScore())
     return
 
 def startGame():
@@ -72,7 +73,8 @@ def runGameDifficulty():
 
 def showGameDifficulty():
     global gameDifficult
-    print(gameDifficult)
+    print("Actual game difficult is: " + str(gameDifficult) + "\nPress 1-6 to set game difficult")
+
     # wyswietlanie na lcd
     return
 
@@ -83,6 +85,7 @@ def getHighScore():
 def setHighScore(number):
     global highScore
     highScore = number
+    print("HighScore set to " + str(number))
 
 if __name__== "__main__":
     mainMenu()
