@@ -27,6 +27,8 @@ def mainMenu():
         runHighscore()
     elif (digit == 7):
         runGameDifficulty()
+    elif (digit == 8):
+        return
 
     time.sleep(1)
     mainMenu()
@@ -34,7 +36,7 @@ def mainMenu():
 
 def showMainMenu():
     #wyswietlanie na lcd
-    print("Press 1 to start game, \nPress 2 to show highscore \nPress 7 to change difficult")
+    print("Press 1 to start game, \nPress 2 to show highscore \nPress 7 to change difficult\nPress 8 to quit")
     return
 
 def runHighscore():
