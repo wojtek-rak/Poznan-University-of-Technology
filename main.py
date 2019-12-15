@@ -1,9 +1,9 @@
 import time
 
 import RPi.GPIO as GPIO
-from keypad import keypad
+#from keypad import keypad
 GPIO.setwarnings(False)
-kp = keypad(columnCount=3)
+#kp = keypad(columnCount=3)
 
 # LCD ZMIENNE
 
@@ -41,8 +41,8 @@ highScore = 0
 def waitForMenu():
     digit = None
     while digit == None:
-        digit = kp.getKey()
-        #digit = int(input())
+        #digit = kp.getKey()
+        digit = int(input())
 
     return digit
 
