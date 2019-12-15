@@ -27,11 +27,10 @@ def mainMenu():
         runHighscore()
     elif (digit == 7):
         runGameDifficulty()
+    else:
+        time.sleep(1)
+        mainMenu()
 
-    # Print result
-    print(digit)
-    time.sleep(1)
-    mainMenu()
 
 def showMainMenu():
     #wyswietlanie na lcd
@@ -47,6 +46,7 @@ def runHighscore():
     elif (digit == 5):
         resetHighScore()
     else:
+        time.sleep(1)
         runHighscore()
 
 def showHighscore():
@@ -70,6 +70,7 @@ def runGameDifficulty():
         gameDifficult = digit
         return
     else:
+        time.sleep(1)
         runGameDifficulty()
 
 
