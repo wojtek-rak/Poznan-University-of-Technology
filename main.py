@@ -1,34 +1,27 @@
 import time
+import Adafruit_CharLCD as LCD
+
 
 import RPi.GPIO as GPIO
-#from keypad import keypad
+from keypad import keypad
 GPIO.setwarnings(False)
-#kp = keypad(columnCount=3)
+kp = keypad(columnCount=3)
 
-# LCD ZMIENNE
 
-# Define GPIO to LCD mapping
-LCD_RS = 2
-LCD_E = 3
-LCD_D4 = 4
-LCD_D5 = 24
-LCD_D6 = 23
-LCD_D7 = 18
+# Raspberry Pi pin setup
+lcd_rs = 2
+lcd_en = 3
+lcd_d4 = 4
+lcd_d5 = 24
+lcd_d6 = 23
+lcd_d7 = 18
+#lcd_backlight = 2
 
-# Define some device constants
-LCD_WIDTH = 16  # Maximum characters per line
-LCD_CHR = True
-LCD_CMD = False
+# Define LCD column and row size for 16x2 LCD.
+lcd_columns = 16
+lcd_rows = 2
 
-LCD_LINE_1 = 0x80  # LCD RAM address for the 1st line
-LCD_LINE_2 = 0xC0  # LCD RAM address for the 2nd line
-
-# Timing constants
-E_PULSE = 0.0005
-E_DELAY = 0.0005
-
-# LCD ZMIENNE
-
+lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows)
 
 
 # ZMIENNE GLOBALNE
@@ -64,7 +57,8 @@ def mainMenu():
 
 
 def showMainMenu():
-    #wyswietlanie na lcd
+    lcd.clear()
+    lcd.message('Main menu!')
     print("Press 1 to start game, \nPress 2 to show highscore \nPress 7 to change difficult\nPress 8 to quit")
     return
 
@@ -122,113 +116,11 @@ def setHighScore(number):
     print("HighScore set to " + str(number))
 
 
-def lcd_init():
-    # Initialise display
-    lcd_byte(0x33, LCD_CMD)  # 110011 Initialise
-    lcd_byte(0x32, LCD_CMD)  # 110010 Initialise
-    lcd_byte(0x06, LCD_CMD)  # 000110 Cursor move direction
-    lcd_byte(0x0C, LCD_CMD)  # 001100 Display On,Cursor Off, Blink Off
-    lcd_byte(0x28, LCD_CMD)  # 101000 Data length, number of lines, font size
-    lcd_byte(0x01, LCD_CMD)  # 000001 Clear display
-    time.sleep(E_DELAY)
-
-
-def lcd_byte(bits, mode):
-    # Send byte to data pins
-    # bits = data
-    # mode = True  for character
-    #        False for command
-
-    GPIO.output(LCD_RS, mode)  # RS
-
-    # High bits
-    GPIO.output(LCD_D4, False)
-    GPIO.output(LCD_D5, False)
-    GPIO.output(LCD_D6, False)
-    GPIO.output(LCD_D7, False)
-    if bits & 0x10 == 0x10:
-        GPIO.output(LCD_D4, True)
-    if bits & 0x20 == 0x20:
-        GPIO.output(LCD_D5, True)
-    if bits & 0x40 == 0x40:
-        GPIO.output(LCD_D6, True)
-    if bits & 0x80 == 0x80:
-        GPIO.output(LCD_D7, True)
-
-    # Toggle 'Enable' pin
-    lcd_toggle_enable()
-
-    # Low bits
-    GPIO.output(LCD_D4, False)
-    GPIO.output(LCD_D5, False)
-    GPIO.output(LCD_D6, False)
-    GPIO.output(LCD_D7, False)
-    if bits & 0x01 == 0x01:
-        GPIO.output(LCD_D4, True)
-    if bits & 0x02 == 0x02:
-        GPIO.output(LCD_D5, True)
-    if bits & 0x04 == 0x04:
-        GPIO.output(LCD_D6, True)
-    if bits & 0x08 == 0x08:
-        GPIO.output(LCD_D7, True)
-
-    # Toggle 'Enable' pin
-    lcd_toggle_enable()
-
-
-def lcd_toggle_enable():
-    # Toggle enable
-    time.sleep(E_DELAY)
-    GPIO.output(LCD_E, True)
-    time.sleep(E_PULSE)
-    GPIO.output(LCD_E, False)
-    time.sleep(E_DELAY)
-
-
-def lcd_string(message, line):
-    # Send string to display
-
-    message = message.ljust(LCD_WIDTH, " ")
-
-    lcd_byte(line, LCD_CMD)
-
-    for i in range(LCD_WIDTH):
-        lcd_byte(ord(message[i]), LCD_CHR)
-
-
-def initLcd():
-    # Main program block
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)  # Use BCM GPIO numbers
-    GPIO.setup(LCD_E, GPIO.OUT)  # E
-    GPIO.setup(LCD_RS, GPIO.OUT)  # RS
-    GPIO.setup(LCD_D4, GPIO.OUT)  # DB4
-    GPIO.setup(LCD_D5, GPIO.OUT)  # DB5
-    GPIO.setup(LCD_D6, GPIO.OUT)  # DB6
-    GPIO.setup(LCD_D7, GPIO.OUT)  # DB7
-
-    # Initialise display
-    lcd_init()
-
-    lcd_string("Rasbperry Pi", LCD_LINE_1)
-    lcd_string("16x2 LCD Test", LCD_LINE_2)
-
-    time.sleep(3)
-
-    lcd_string("MELER", LCD_LINE_1)
-    lcd_string("MELELLELEE", LCD_LINE_2)
-
-    time.sleep(3)
-
-    lcd_string("Rasbperry Pi", LCD_LINE_1)
-    lcd_string("16x2 LCD Test", LCD_LINE_2)
-
-    time.sleep(3)
-
-
 if __name__== "__main__":
-    initLcd()
+    global lcd
 
+    lcd.clear()
+    lcd.message('Hello\nworld!')
     mainMenu()
 
 
