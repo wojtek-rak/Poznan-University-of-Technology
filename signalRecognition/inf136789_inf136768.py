@@ -48,6 +48,8 @@ try:
     signal = np.asarray(signal)
     signal = SignlChan(signal)
     siglen = len(signal)
+    if (siglen > 150000):
+        siglen = 150000
     sigb = signal[int(siglen / 5):int((siglen / 5) * 4)]
 
     [Ys, Xs] = hps(sigb.size, sigb * hann(len(sigb)), rate)

@@ -21,4 +21,4 @@ print(count)
 #f = os.system('python .\inf136789_inf136768.py trainall\001_K.wav')
 
 
-##
+#77 na 91
