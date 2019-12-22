@@ -1,5 +1,7 @@
 package com.sbd.databases.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,11 +20,16 @@ public class Cart
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "CustomerId", nullable = false)
+    @JsonBackReference
     private Customer customer;
     @Column(name = "Count", nullable = false)
     private Integer count;
     @Column(name = "Confirmed", nullable = false)
     private Boolean confirmed;
     @OneToMany(mappedBy = "cart")
+    @JsonManagedReference
     private List<CartProduct> cartProducts;
+    @OneToOne(mappedBy = "cart")
+    @JsonManagedReference
+    private ShopOrder shopOrder;
 }

@@ -1,5 +1,6 @@
 package com.sbd.databases.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +19,6 @@ public class Sale
     private Integer percentDiscount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductId", nullable = false)
+    @JsonBackReference
     private Product product;
 }

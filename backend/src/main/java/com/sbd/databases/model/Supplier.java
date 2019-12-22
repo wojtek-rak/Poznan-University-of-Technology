@@ -1,5 +1,6 @@
 package com.sbd.databases.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,5 +18,6 @@ public class Supplier
     private Integer id;
     private String name;
     @OneToMany(mappedBy = "supplier")
+    @JsonManagedReference
     private List<Category> categories;
 }

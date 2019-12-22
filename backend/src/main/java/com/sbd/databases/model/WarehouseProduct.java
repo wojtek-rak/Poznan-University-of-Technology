@@ -1,5 +1,6 @@
 package com.sbd.databases.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,5 +22,6 @@ public class WarehouseProduct
     private Integer warehouseCode;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductId")
+    @JsonBackReference
     private Product product;
 }

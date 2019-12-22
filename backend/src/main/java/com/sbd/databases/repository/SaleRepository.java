@@ -1,10 +1,10 @@
 package com.sbd.databases.repository;
 
-import com.sbd.databases.model.WarehouseProduct;
+import com.sbd.databases.model.Sale;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WarehouseProductRepository extends JpaRepository<WarehouseProduct, Integer>
+public interface SaleRepository extends JpaRepository<Sale, Integer>
 {
 }

@@ -1,5 +1,6 @@
 package com.sbd.databases.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +18,10 @@ public class CartProduct
     private Integer count;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductId", nullable = false)
+    @JsonBackReference
     private Product product;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CartId", nullable = false)
+    @JsonBackReference
     private Cart cart;
 }

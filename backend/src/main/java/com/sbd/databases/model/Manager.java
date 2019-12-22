@@ -1,5 +1,6 @@
 package com.sbd.databases.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,5 +24,6 @@ public class Manager
     @Column(name = "Password", nullable = false)
     private String password;
     @OneToMany(mappedBy = "manager")
+    @JsonManagedReference
     private List<ShopOrder> shopOrders;
 }
