@@ -8,8 +8,12 @@ import com.sbd.databases.model.ShopOrder;
 import com.sbd.databases.repository.CartRepository;
 import com.sbd.databases.repository.ShopOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,23 +51,38 @@ public class CartService
         return new CartWithProductsDTO(cart);
     }
 
-    public CartWithShopOrderDTO checkoutCartOfCustomer(Customer customer, AddressDTO addressDTO)
+    @Transactional
+    public CartWithShopOrderDTO checkoutCartOfCustomer(Customer customer, AddressDTO addressDTO) throws ResponseStatusException
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
-        cart.setConfirmed(true);
-        cartRepository.save(cart);
+        if (!cart.getCartProducts().isEmpty())
+        {
+            cart.setConfirmed(true);
+//            cart.setCount(cart.getCartProducts().stream().mapToInt(CartProduct::getCount).sum());
+            cartRepository.save(cart);
 
-        ShopOrder shopOrder = new ShopOrder();
-        shopOrder.setAddress(addressDTO.toString());
-        shopOrder.setManager(managerService.getAvailableManager());
-        shopOrder.setCustomer(customer);
-        shopOrder.setCart(cart);
-        shopOrderRepository.save(shopOrder);
+            Cart cartNew = new Cart();
+            cartNew.setConfirmed(false);
+            cartNew.setCustomer(customer);
+            cartNew.setCount(0);
+            cartRepository.save(cartNew);
 
-        CartWithProductsDTO cartWithProductsDTO = new CartWithProductsDTO(cart);
-        ShopOrderDTO shopOrderDTO = new ShopOrderDTO(shopOrder);
+            ShopOrder shopOrder = new ShopOrder();
+            shopOrder.setAddress(addressDTO.toString());
+            shopOrder.setManager(managerService.getAvailableManager());
+            shopOrder.setCustomer(customer);
+            shopOrder.setCart(cart);
+            shopOrderRepository.save(shopOrder);
 
-        return new CartWithShopOrderDTO(cartWithProductsDTO, shopOrderDTO);
+            CartWithProductsDTO cartWithProductsDTO = new CartWithProductsDTO(cart);
+            ShopOrderDTO shopOrderDTO = new ShopOrderDTO(shopOrder);
+
+            return new CartWithShopOrderDTO(cartWithProductsDTO, shopOrderDTO);
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart is empty.");
+        }
     }
 
     public List<CartWithShopOrderDTO> getCartsOfCustomer(Customer customer)
@@ -97,6 +116,28 @@ public class CartService
         cartProduct.setCart(cart);
         cartProductService.save(cartProduct);
         cartProducts.add(cartProduct);
+        cart.setCartProducts(cartProducts);
+
+        return new CartWithProductsDTO(cart);
+    }
+
+    public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, DeleteProductDTO deleteProductDTO)
+    {
+        Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
+        List<CartProduct> cartProducts = cart.getCartProducts();
+
+        Iterator<CartProduct> iterator = cartProducts.iterator();
+        while (iterator.hasNext())
+        {
+            CartProduct cartProduct = iterator.next();
+            if (cartProduct.getProduct().getId().equals(deleteProductDTO.getProductId()))
+            {
+                cartProductService.delete(cartProduct);
+                iterator.remove();
+                break;
+            }
+        }
+
         cart.setCartProducts(cartProducts);
 
         return new CartWithProductsDTO(cart);

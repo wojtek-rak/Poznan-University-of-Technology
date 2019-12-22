@@ -20,4 +20,24 @@ public class ManagerService
     {
         return managerRepository.getOne(1);
     }
+
+    public Boolean existsByUsername(String username)
+    {
+        return managerRepository.existsByUsername(username);
+    }
+
+    public void save(Manager manager)
+    {
+        managerRepository.save(manager);
+    }
+
+    public Manager findById(Integer id)
+    {
+        return managerRepository.findById(id).orElse(null);
+    }
+
+    public Manager findByUsername(String username)
+    {
+        return managerRepository.findByUsername(username).orElse(null);
+    }
 }

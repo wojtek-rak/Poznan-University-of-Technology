@@ -1,6 +1,7 @@
 package com.sbd.databases.repository;
 
 import com.sbd.databases.model.Customer;
+import com.sbd.databases.model.Manager;
 import com.sbd.databases.model.ShopOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface ShopOrderRepository extends JpaRepository<ShopOrder, Integer>
 {
     ShopOrder getFirstByCustomerAndId(Customer customer, Integer id);
+
+    ShopOrder getFirstByManagerAndId(Manager manager, Integer id);
 }

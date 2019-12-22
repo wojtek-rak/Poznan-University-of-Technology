@@ -4,6 +4,7 @@ import com.sbd.databases.filter.JwtTokenUtil;
 import com.sbd.databases.model.DTO.AddressDTO;
 import com.sbd.databases.model.DTO.CartWithProductsDTO;
 import com.sbd.databases.model.DTO.CartWithShopOrderDTO;
+import com.sbd.databases.model.DTO.DeleteProductDTO;
 import com.sbd.databases.service.CartService;
 import com.sbd.databases.service.CustomerService;
 import com.sbd.databases.service.ShopOrderService;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/my-profile")
@@ -59,6 +61,25 @@ public class CustomerProfileController
             String customerName = jwtTokenUtil.getCustomerNameFromRequest(request);
             return cartService.checkoutCartOfCustomer(customerService.getCustomerByName(customerName), addressDTO);
         }
+        catch (ResponseStatusException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/cart")
+    @ResponseBody
+    public CartWithProductsDTO deleteProductFromCart(HttpServletRequest request, @RequestBody DeleteProductDTO deleteProductDTO)
+    {
+        try
+        {
+            String customerName = jwtTokenUtil.getCustomerNameFromRequest(request);
+            return cartService.deleteProductFromCartOfCustomer(customerService.getCustomerByName(customerName), deleteProductDTO);
+        }
         catch (Exception e)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -72,7 +93,11 @@ public class CustomerProfileController
         try
         {
             String customerName = jwtTokenUtil.getCustomerNameFromRequest(request);
-            return cartService.getCartsOfCustomer(customerService.getCustomerByName(customerName));
+            List<CartWithShopOrderDTO> cartWithShopOrderDTOS = cartService.getCartsOfCustomer(customerService.getCustomerByName(customerName));
+            return cartWithShopOrderDTOS
+                    .stream()
+                    .filter(cartWithShopOrderDTO -> cartWithShopOrderDTO.getShopOrder() != null)
+                    .collect(Collectors.toList());
         }
         catch (Exception e)
         {

@@ -14,6 +14,6 @@ public class CartWithShopOrderDTO
     public CartWithShopOrderDTO(Cart cart)
     {
         this.cart = new CartWithProductsDTO(cart);
-        this.shopOrder = new ShopOrderDTO(cart.getShopOrder());
+        this.shopOrder = cart.getShopOrder() == null ? null : new ShopOrderDTO(cart.getShopOrder());
     }
 }

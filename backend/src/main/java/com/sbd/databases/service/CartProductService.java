@@ -20,4 +20,9 @@ public class CartProductService
     {
         cartProductRepository.save(cartProduct);
     }
+
+    public void delete(CartProduct cartProduct)
+    {
+        cartProductRepository.delete(cartProduct);
+    }
 }
