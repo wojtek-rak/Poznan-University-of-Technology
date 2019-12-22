@@ -58,28 +58,12 @@ public class DataLoader implements ApplicationRunner
         category.setSupplier(supplier);
         categoryRepository.save(category);
 
-        WarehouseProduct warehouseProduct1 = new WarehouseProduct();
-        warehouseProduct1.setCount(20);
-        warehouseProduct1.setWarehouseCode(12312312);
-        warehouseProductRepository.save(warehouseProduct1);
-
-        WarehouseProduct warehouseProduct2 = new WarehouseProduct();
-        warehouseProduct2.setCount(12);
-        warehouseProduct2.setWarehouseCode(234123);
-        warehouseProductRepository.save(warehouseProduct2);
-
-        WarehouseProduct warehouseProduct3 = new WarehouseProduct();
-        warehouseProduct3.setCount(46);
-        warehouseProduct3.setWarehouseCode(777);
-        warehouseProductRepository.save(warehouseProduct3);
-
         Product product1 = new Product();
         product1.setEan(new BigDecimal("213232212123"));
         product1.setCategory(category);
         product1.setName("Mały Książe");
         product1.setVat(new BigDecimal(23));
         product1.setPrice(new BigDecimal("19.99"));
-        product1.setWarehouseProduct(warehouseProduct1);
         productRepository.save(product1);
 
         Product product2 = new Product();
@@ -88,7 +72,6 @@ public class DataLoader implements ApplicationRunner
         product2.setName("Duży Głód");
         product2.setVat(new BigDecimal(10));
         product2.setPrice(new BigDecimal("27.99"));
-        product2.setWarehouseProduct(warehouseProduct2);
         productRepository.save(product2);
 
         Product product3 = new Product();
@@ -97,8 +80,25 @@ public class DataLoader implements ApplicationRunner
         product3.setName("Dżuma");
         product3.setVat(new BigDecimal(11));
         product3.setPrice(new BigDecimal("17.49"));
-        product3.setWarehouseProduct(warehouseProduct3);
         productRepository.save(product3);
+
+        WarehouseProduct warehouseProduct1 = new WarehouseProduct();
+        warehouseProduct1.setCount(20);
+        warehouseProduct1.setWarehouseCode(12312312);
+        warehouseProduct1.setProduct(product1);
+        warehouseProductRepository.save(warehouseProduct1);
+
+        WarehouseProduct warehouseProduct2 = new WarehouseProduct();
+        warehouseProduct2.setCount(12);
+        warehouseProduct2.setWarehouseCode(234123);
+        warehouseProduct2.setProduct(product2);
+        warehouseProductRepository.save(warehouseProduct2);
+
+        WarehouseProduct warehouseProduct3 = new WarehouseProduct();
+        warehouseProduct3.setCount(46);
+        warehouseProduct3.setWarehouseCode(777);
+        warehouseProduct3.setProduct(product3);
+        warehouseProductRepository.save(warehouseProduct3);
 
         Cart cart1 = new Cart();
         cart1.setConfirmed(false);

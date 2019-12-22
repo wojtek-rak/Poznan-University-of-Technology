@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "productId")
 public class Product
 {
     @Id

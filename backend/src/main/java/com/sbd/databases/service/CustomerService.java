@@ -1,7 +1,10 @@
 package com.sbd.databases.service;
 
+import com.sbd.databases.filter.JwtTokenUtil;
 import com.sbd.databases.model.Cart;
 import com.sbd.databases.model.Customer;
+import com.sbd.databases.model.DTO.CustomerLoginDTO;
+import com.sbd.databases.model.DTO.CustomerSignUpDTO;
 import com.sbd.databases.repository.CartRepository;
 import com.sbd.databases.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +12,44 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class CustomerService
 {
+    private final JwtTokenUtil jwtTokenUtil;
     private final CustomerRepository customerRepository;
     private final CartRepository cartRepository;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, CartRepository cartRepository)
+    public CustomerService(JwtTokenUtil jwtTokenUtil, CustomerRepository customerRepository, CartRepository cartRepository)
     {
+        this.jwtTokenUtil = jwtTokenUtil;
         this.customerRepository = customerRepository;
         this.cartRepository = cartRepository;
+    }
+
+    public void createCustomer(CustomerSignUpDTO customerSignUpDTO)
+    {
+        if (existCustomerByName(customerSignUpDTO.getName()))
+        {
+            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "Customer with such name exists.");
+        }
+        else
+        {
+            Customer customer = new Customer();
+            customer.setName(customerSignUpDTO.getName());
+            customer.setAddress(customerSignUpDTO.getAddress() == null ? null : customerSignUpDTO.getAddress().toString());
+            customer.setPhone(customerSignUpDTO.getPhone());
+
+            Cart cart = new Cart();
+            cart.setCount(0);
+            cart.setCustomer(customer);
+            cart.setConfirmed(false);
+
+            customerRepository.save(customer);
+            cartRepository.save(cart);
+        }
     }
 
     public boolean existCustomerByName(String name)
@@ -29,26 +57,33 @@ public class CustomerService
         return customerRepository.existsCustomerByName(name);
     }
 
-    public void addCustomer(Customer customer)
+    public Customer getCustomerFromRequest(HttpServletRequest request) throws ResponseStatusException
     {
-        if (existCustomerByName(customer.getName()))
+        Integer customerId;
+
+        try
         {
-            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "Customer with such name exists.");
+            customerId = jwtTokenUtil.getIdFromRequest(request);
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        return customerRepository.getOne(customerId);
+    }
+
+    public String loginCustomer(CustomerLoginDTO customerLoginDTO)
+    {
+        Customer customer = customerRepository.getCustomerByName(customerLoginDTO.getName());
+
+        if (customer != null)
+        {
+            return jwtTokenUtil.generateToken(customer);
         }
         else
         {
-            Cart cart = new Cart();
-            cart.setCustomer(customer);
-            cart.setConfirmed(false);
-            customer.setCarts(Collections.singletonList(cart));
-
-            cartRepository.save(cart);
-            customerRepository.save(customer);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid username or password.");
         }
-    }
-
-    public Customer getCustomerByName(String name)
-    {
-        return customerRepository.getCustomerByName(name);
     }
 }

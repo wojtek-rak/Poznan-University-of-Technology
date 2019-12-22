@@ -7,7 +7,9 @@ import com.sbd.databases.model.Manager;
 import com.sbd.databases.model.ShopOrder;
 import com.sbd.databases.repository.ShopOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,5 +46,15 @@ public class ShopOrderService
         shopOrderRepository.save(shopOrder);
 
         return new ManagerShopOrderDTO(shopOrder);
+    }
+
+    public ManagerShopOrderDTO getManagerShopOrderById(Integer id)
+    {
+        return new ManagerShopOrderDTO(shopOrderRepository.getOne(id));
+    }
+
+    public ManagerShopOrderDTO confirmShopOrder(Manager manager, Integer id)
+    {
+        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Implement this"); // TODO: 22.12.2019 call procedure on database
     }
 }

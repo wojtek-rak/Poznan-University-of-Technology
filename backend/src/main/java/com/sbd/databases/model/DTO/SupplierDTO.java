@@ -1,7 +1,6 @@
 package com.sbd.databases.model.DTO;
 
 import com.sbd.databases.model.Supplier;
-import lombok.Builder;
 import lombok.Data;
 
 @Data

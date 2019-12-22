@@ -13,13 +13,11 @@ import java.util.stream.Collectors;
 public class ProductService
 {
     private final ProductRepository repository;
-    private final CategoryService categoryService;
 
     @Autowired
-    public ProductService(ProductRepository repository, CategoryService categoryService)
+    public ProductService(ProductRepository repository)
     {
         this.repository = repository;
-        this.categoryService = categoryService;
     }
 
     public List<ProductDTO> findAll()

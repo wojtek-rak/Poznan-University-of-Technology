@@ -6,9 +6,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Data
-public class AddProductDTO
+public class CartProductCountDTO
 {
     @NotNull(message = "Can't be empty")
-    @Positive(message = "Must be positive.")
+    @Positive
     private Integer count;
 }

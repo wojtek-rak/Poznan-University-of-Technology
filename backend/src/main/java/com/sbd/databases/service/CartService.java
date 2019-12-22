@@ -42,12 +42,6 @@ public class CartService
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
 
-        List<CartProductDTO> cartProductDTOS = cart
-                .getCartProducts()
-                .stream()
-                .map(CartProductDTO::new)
-                .collect(Collectors.toList());
-
         return new CartWithProductsDTO(cart);
     }
 
@@ -58,7 +52,6 @@ public class CartService
         if (!cart.getCartProducts().isEmpty())
         {
             cart.setConfirmed(true);
-//            cart.setCount(cart.getCartProducts().stream().mapToInt(CartProduct::getCount).sum());
             cartRepository.save(cart);
 
             Cart cartNew = new Cart();
@@ -94,14 +87,14 @@ public class CartService
                 .collect(Collectors.toList());
     }
 
-    public CartWithProductsDTO addProductToCart(AddProductDTO addProductDTO, Customer customer)
+    public CartWithProductsDTO addProductToCart(Integer id, AddProductDTO addProductDTO, Customer customer)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
         List<CartProduct> cartProducts = cart.getCartProducts();
 
         for (CartProduct cartProduct : cartProducts)
         {
-            if (cartProduct.getProduct().getId().equals(addProductDTO.getId()))
+            if (cartProduct.getProduct().getId().equals(id))
             {
                 cartProduct.setCount(cartProduct.getCount() + addProductDTO.getCount());
                 cartProductService.save(cartProduct);
@@ -112,7 +105,7 @@ public class CartService
 
         CartProduct cartProduct = new CartProduct();
         cartProduct.setCount(addProductDTO.getCount());
-        cartProduct.setProduct(productService.findById(addProductDTO.getId()));
+        cartProduct.setProduct(productService.findById(id));
         cartProduct.setCart(cart);
         cartProductService.save(cartProduct);
         cartProducts.add(cartProduct);
@@ -121,7 +114,7 @@ public class CartService
         return new CartWithProductsDTO(cart);
     }
 
-    public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, DeleteProductDTO deleteProductDTO)
+    public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, Integer productId)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
         List<CartProduct> cartProducts = cart.getCartProducts();
@@ -130,10 +123,32 @@ public class CartService
         while (iterator.hasNext())
         {
             CartProduct cartProduct = iterator.next();
-            if (cartProduct.getProduct().getId().equals(deleteProductDTO.getProductId()))
+            if (cartProduct.getProduct().getId().equals(productId))
             {
                 cartProductService.delete(cartProduct);
                 iterator.remove();
+                break;
+            }
+        }
+
+        cart.setCartProducts(cartProducts);
+
+        return new CartWithProductsDTO(cart);
+    }
+
+    public CartWithProductsDTO updateProductCountInCartOfCustomer(Customer customer, Integer cartProductId, Integer count)
+    {
+        Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
+        List<CartProduct> cartProducts = cart.getCartProducts();
+
+        Iterator<CartProduct> iterator = cartProducts.iterator();
+        while (iterator.hasNext())
+        {
+            CartProduct cartProduct = iterator.next();
+            if (cartProduct.getId().equals(cartProductId))
+            {
+                cartProduct.setCount(count);
+                cartProductService.save(cartProduct);
                 break;
             }
         }

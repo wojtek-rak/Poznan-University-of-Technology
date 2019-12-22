@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ManagerLoginDTO
 {
-    @NotNull
+    @NotNull(message = "Can't be empty")
     private String username;
-    @NotNull
+    @NotNull(message = "Can't be empty")
     private String password;
 }

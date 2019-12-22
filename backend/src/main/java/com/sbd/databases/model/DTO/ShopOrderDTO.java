@@ -10,13 +10,6 @@ public class ShopOrderDTO
     private String address;
     private Boolean confirmed;
 
-    public ShopOrderDTO(Integer id, AddressDTO addressDTO)
-    {
-        this.id = id;
-        this.address = addressDTO.toString();
-        this.confirmed = true; // TODO: 21.12.2019 Shop order should be confirmed in database
-    }
-
     public ShopOrderDTO(ShopOrder shopOrder)
     {
         this.id = shopOrder.getId();

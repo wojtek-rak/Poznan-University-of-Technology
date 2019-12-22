@@ -1,15 +1,14 @@
 package com.sbd.databases.controller;
 
-import com.sbd.databases.filter.JwtTokenUtil;
-import com.sbd.databases.model.DTO.AssignShopOrderDTO;
 import com.sbd.databases.model.DTO.ManagerLoginDTO;
 import com.sbd.databases.model.DTO.ManagerShopOrderDTO;
-import com.sbd.databases.model.DTO.ManagerSignupDTO;
+import com.sbd.databases.model.DTO.ManagerSignUpDTO;
 import com.sbd.databases.model.Manager;
 import com.sbd.databases.service.ManagerService;
 import com.sbd.databases.service.ShopOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,14 +19,12 @@ import java.util.List;
 @RequestMapping("/manager")
 public class ManagerController
 {
-    private final JwtTokenUtil jwtTokenUtil;
     private final ManagerService managerService;
     private final ShopOrderService shopOrderService;
 
     @Autowired
-    public ManagerController(JwtTokenUtil jwtTokenUtil, ManagerService managerService, ShopOrderService shopOrderService)
+    public ManagerController(ManagerService managerService, ShopOrderService shopOrderService)
     {
-        this.jwtTokenUtil = jwtTokenUtil;
         this.managerService = managerService;
         this.shopOrderService = shopOrderService;
     }
@@ -36,12 +33,19 @@ public class ManagerController
     @ResponseBody
     public String login(@RequestBody ManagerLoginDTO managerLoginDTO)
     {
-        return jwtTokenUtil.generateToken(managerLoginDTO);
+        if (managerService.existsByUsername(managerLoginDTO.getUsername()))
+        {
+            return managerService.loginManager(managerLoginDTO);
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager with such username does not exist in our database.");
+        }
     }
 
-    @PostMapping("/secure/signup")
+    @PostMapping("/secure/sign-up")
     @ResponseBody
-    public Manager signup(@RequestBody ManagerSignupDTO managerSignupDTO)
+    public Manager signUp(@RequestBody @Validated ManagerSignUpDTO managerSignupDTO)
     {
         if (!managerService.existsByUsername(managerSignupDTO.getUsername()))
         {
@@ -63,16 +67,43 @@ public class ManagerController
     @ResponseBody
     public List<ManagerShopOrderDTO> getShopOrders()
     {
-        List<ManagerShopOrderDTO> shopOrderServiceAll = shopOrderService.findAll();
-        return shopOrderServiceAll;
+        try
+        {
+            return shopOrderService.findAll();
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @PutMapping("/secure/shop-orders")
+    @GetMapping("/secure/shop-orders/{id}")
     @ResponseBody
-    public ManagerShopOrderDTO assignShopOrder(HttpServletRequest request, @RequestBody AssignShopOrderDTO assignShopOrderDTO)
+    public ManagerShopOrderDTO getShopOrder(@PathVariable Integer id)
     {
-        Manager manager = jwtTokenUtil.getManagerFromRequest(request, assignShopOrderDTO.getManagerId());
-        return shopOrderService.assignManager(manager, assignShopOrderDTO.getShopOrderId());
+        try
+        {
+            return shopOrderService.getManagerShopOrderById(id);
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
+    @PutMapping("/secure/shop-orders/{id}")
+    @ResponseBody
+    public ManagerShopOrderDTO assignShopOrder(HttpServletRequest request, @PathVariable Integer id)
+    {
+        Manager manager = managerService.getManagerFromRequest(request);
+        return shopOrderService.assignManager(manager, id);
+    }
+
+    @PostMapping("/secure/shop-orders/{id}")
+    @ResponseBody
+    public ManagerShopOrderDTO confirmShopOrder(HttpServletRequest request, @PathVariable Integer id)
+    {
+        Manager manager = managerService.getManagerFromRequest(request);
+        return shopOrderService.confirmShopOrder(manager, id);
+    }
 }

@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -21,12 +19,8 @@ public class Customer
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id", insertable = false, updatable = false)
     private Integer id;
-    @Size(min = 2, max = 255, message = "Customer name should be minimum 2 character and maximum 255 character long")
-    @NotNull
     @Column(name = "Name", nullable = false)
     private String name;
-    @Size(min = 2, max = 255, message = "Address should be minimum 2 character and maximum 255 character long")
-    @NotNull
     @Column(name = "Address", nullable = false)
     private String address;
     @Column(name = "Phone")

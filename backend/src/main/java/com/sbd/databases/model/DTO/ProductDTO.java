@@ -4,7 +4,6 @@ import com.sbd.databases.model.Product;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,11 +36,11 @@ public class ProductDTO
     {
         BigDecimal calculatedPrice = new BigDecimal(String.valueOf(price));
 
-        for (SaleDTO sale: sales)
+        for (SaleDTO sale : sales)
         {
             BigDecimal discountMultiplier = new BigDecimal(String.valueOf((new BigDecimal("100.00")
-                            .subtract(new BigDecimal(
-                                    String.valueOf(sale.getPercentDiscount()))))
+                    .subtract(new BigDecimal(
+                            String.valueOf(sale.getPercentDiscount()))))
                     .divide(new BigDecimal("100.00"), BigDecimal.ROUND_CEILING)));
             calculatedPrice = calculatedPrice.multiply(discountMultiplier);
         }
