@@ -19,6 +19,7 @@ public class WarehouseProduct
     @Column(name = "Id", insertable = false, updatable = false)
     private Integer id;
     private Integer count;
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer warehouseCode;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductId")

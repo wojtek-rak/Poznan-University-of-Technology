@@ -3,6 +3,8 @@ package com.sbd.databases.model.DTO;
 import com.sbd.databases.model.Product;
 import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -11,14 +13,37 @@ import java.util.stream.Collectors;
 @Data
 public class ProductDTO
 {
+    @Null
     private Integer id;
+    @NotNull
+    @Size(min = 1, max = 255)
     private String name;
+    @NotNull
     private BigDecimal ean;
+    @NotNull
+    @Positive
     private BigDecimal price;
+    @NotNull
+    @Max(value = 100)
+    @Min(value = 0)
     private BigDecimal vat;
+    @Valid
+    @NotNull
     private CategoryDTO category;
+    @Valid
     private List<SaleDTO> sales;
+    @Null
     private BigDecimal calculatedPrice;
+
+    public ProductDTO(@NotNull @Size(min = 1, max = 255) String name, @NotNull BigDecimal ean, @NotNull @Positive BigDecimal price, @NotNull @Max(value = 100) @Min(value = 0) BigDecimal vat, @Valid @NotNull CategoryDTO category, @Valid List<SaleDTO> sales)
+    {
+        this.name = name;
+        this.ean = ean;
+        this.price = price;
+        this.vat = vat;
+        this.category = category;
+        this.sales = sales;
+    }
 
     public ProductDTO(Product product)
     {

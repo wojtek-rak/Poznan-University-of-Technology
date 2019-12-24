@@ -37,4 +37,9 @@ public class ProductService
                 .map(ProductDTO::new)
                 .collect(Collectors.toList());
     }
+
+    public void save(Product product)
+    {
+        repository.save(product);
+    }
 }

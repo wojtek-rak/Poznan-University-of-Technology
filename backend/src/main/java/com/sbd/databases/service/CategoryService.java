@@ -1,5 +1,6 @@
 package com.sbd.databases.service;
 
+import com.sbd.databases.model.Category;
 import com.sbd.databases.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,5 +14,10 @@ public class CategoryService
     public CategoryService(CategoryRepository categoryRepository)
     {
         this.categoryRepository = categoryRepository;
+    }
+
+    public void save(Category category)
+    {
+        categoryRepository.save(category);
     }
 }
