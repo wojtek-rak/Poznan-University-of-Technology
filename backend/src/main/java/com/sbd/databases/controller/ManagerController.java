@@ -2,7 +2,6 @@ package com.sbd.databases.controller;
 
 import com.sbd.databases.model.DTO.ManagerLoginDTO;
 import com.sbd.databases.model.DTO.ManagerShopOrderDTO;
-import com.sbd.databases.model.DTO.ManagerSignUpDTO;
 import com.sbd.databases.model.Manager;
 import com.sbd.databases.service.ManagerService;
 import com.sbd.databases.service.ShopOrderService;
