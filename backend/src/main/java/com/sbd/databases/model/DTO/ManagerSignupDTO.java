@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class ManagerSignUpDTO
+public class ManagerSignupDTO
 {
     @NotNull(message = "Can't be empty")
     @Size(min = 2, max = 255, message = "Name should be between 2 and 255 characters long.")
