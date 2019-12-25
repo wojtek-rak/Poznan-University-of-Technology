@@ -2,13 +2,11 @@ package com.sbd.databases.controller;
 
 import com.sbd.databases.model.DTO.ManagerLoginDTO;
 import com.sbd.databases.model.DTO.ManagerShopOrderDTO;
-import com.sbd.databases.model.DTO.SignUpManagerDTO;
 import com.sbd.databases.model.Manager;
 import com.sbd.databases.service.ManagerService;
 import com.sbd.databases.service.ShopOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,26 +38,6 @@ public class ManagerController
         else
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager with such username does not exist in our database.");
-        }
-    }
-
-    @PostMapping("/secure/sign-up")
-    @ResponseBody
-    public Manager signUp(@RequestBody @Validated SignUpManagerDTO signUpDTO)
-    {
-        if (!managerService.existsByUsername(signUpDTO.getUsername()))
-        {
-            Manager manager = new Manager();
-            manager.setName(signUpDTO.getName());
-            manager.setUsername(signUpDTO.getUsername());
-            manager.setPassword(signUpDTO.getPassword());
-            managerService.save(manager);
-
-            return manager;
-        }
-        else
-        {
-            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "Manager with such name exists.");
         }
     }
 
