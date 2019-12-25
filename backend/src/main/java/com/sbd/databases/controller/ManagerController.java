@@ -2,7 +2,7 @@ package com.sbd.databases.controller;
 
 import com.sbd.databases.model.DTO.ManagerLoginDTO;
 import com.sbd.databases.model.DTO.ManagerShopOrderDTO;
-import com.sbd.databases.model.DTO.ManagerSignUpDTO;
+import com.sbd.databases.model.DTO.SignUpManagerDTO;
 import com.sbd.databases.model.Manager;
 import com.sbd.databases.service.ManagerService;
 import com.sbd.databases.service.ShopOrderService;
@@ -45,14 +45,14 @@ public class ManagerController
 
     @PostMapping("/secure/sign-up")
     @ResponseBody
-    public Manager signUp(@RequestBody @Validated ManagerSignUpDTO managerSignupDTO)
+    public Manager signUp(@RequestBody @Validated SignUpManagerDTO signUpDTO)
     {
-        if (!managerService.existsByUsername(managerSignupDTO.getUsername()))
+        if (!managerService.existsByUsername(signUpDTO.getUsername()))
         {
             Manager manager = new Manager();
-            manager.setName(managerSignupDTO.getName());
-            manager.setUsername(managerSignupDTO.getUsername());
-            manager.setPassword(managerSignupDTO.getPassword());
+            manager.setName(signUpDTO.getName());
+            manager.setUsername(signUpDTO.getUsername());
+            manager.setPassword(signUpDTO.getPassword());
             managerService.save(manager);
 
             return manager;
