@@ -19,7 +19,7 @@ public class WarehouseProductDTO
     @NotNull
     @PositiveOrZero
     private Integer count;
-    @Null
+    @NotNull
     private Integer warehouseCode;
 
     public WarehouseProductDTO(WarehouseProduct warehouseProduct)
@@ -30,9 +30,10 @@ public class WarehouseProductDTO
         this.warehouseCode = warehouseProduct.getWarehouseCode();
     }
 
-    public WarehouseProductDTO(@NotNull @Valid ProductDTO product, @NotNull @PositiveOrZero Integer count)
+    public WarehouseProductDTO(@NotNull @Valid ProductDTO product, @NotNull @PositiveOrZero Integer count, @NotNull Integer warehouseCode)
     {
         this.product = product;
         this.count = count;
+        this.warehouseCode = warehouseCode;
     }
 }
