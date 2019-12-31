@@ -74,7 +74,7 @@ public class CartService
         }
         else
         {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart is empty.");
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Cart is empty.");
         }
     }
 
@@ -87,6 +87,7 @@ public class CartService
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public CartWithProductsDTO addProductToCart(Integer id, AddProductDTO addProductDTO, Customer customer)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
@@ -96,7 +97,7 @@ public class CartService
         {
             if (cartProduct.getProduct().getId().equals(id))
             {
-                cartProduct.setCount(cartProduct.getCount() + addProductDTO.getCount());
+                cartProduct.setCount(addProductDTO.getCount());
                 cartProductService.save(cartProduct);
 
                 return new CartWithProductsDTO(cart);
@@ -114,6 +115,7 @@ public class CartService
         return new CartWithProductsDTO(cart);
     }
 
+    @Transactional
     public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, Integer productId)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
@@ -127,28 +129,6 @@ public class CartService
             {
                 cartProductService.delete(cartProduct);
                 iterator.remove();
-                break;
-            }
-        }
-
-        cart.setCartProducts(cartProducts);
-
-        return new CartWithProductsDTO(cart);
-    }
-
-    public CartWithProductsDTO updateProductCountInCartOfCustomer(Customer customer, Integer cartProductId, Integer count)
-    {
-        Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
-        List<CartProduct> cartProducts = cart.getCartProducts();
-
-        Iterator<CartProduct> iterator = cartProducts.iterator();
-        while (iterator.hasNext())
-        {
-            CartProduct cartProduct = iterator.next();
-            if (cartProduct.getId().equals(cartProductId))
-            {
-                cartProduct.setCount(count);
-                cartProductService.save(cartProduct);
                 break;
             }
         }

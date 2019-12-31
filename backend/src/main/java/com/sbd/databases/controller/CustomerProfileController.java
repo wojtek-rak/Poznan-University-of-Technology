@@ -1,8 +1,8 @@
 package com.sbd.databases.controller;
 
 import com.sbd.databases.model.Customer;
+import com.sbd.databases.model.DTO.AddProductDTO;
 import com.sbd.databases.model.DTO.AddressDTO;
-import com.sbd.databases.model.DTO.CartProductCountDTO;
 import com.sbd.databases.model.DTO.CartWithProductsDTO;
 import com.sbd.databases.model.DTO.CartWithShopOrderDTO;
 import com.sbd.databases.service.CartService;
@@ -47,7 +47,13 @@ public class CustomerProfileController
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 
@@ -60,13 +66,15 @@ public class CustomerProfileController
             Customer customer = customerService.getCustomerFromRequest(request);
             return cartService.checkoutCartOfCustomer(customer, addressDTO);
         }
-        catch (ResponseStatusException e)
-        {
-            throw e;
-        }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 
@@ -81,23 +89,35 @@ public class CustomerProfileController
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 
     @PutMapping("/cart/{cartProductId}")
     @ResponseBody
-    public CartWithProductsDTO changeProductCount(HttpServletRequest request, @RequestBody @Validated CartProductCountDTO cartProductCountDTO, @PathVariable Integer cartProductId)
+    public CartWithProductsDTO changeProductCount(HttpServletRequest request, @RequestBody @Validated AddProductDTO addProductDTO, @PathVariable Integer cartProductId)
     {
         try
         {
             Customer customer = customerService.getCustomerFromRequest(request);
 
-            return cartService.updateProductCountInCartOfCustomer(customer, cartProductId, cartProductCountDTO.getCount());
+            return cartService.addProductToCart(cartProductId, addProductDTO, customer);
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 
@@ -117,7 +137,13 @@ public class CustomerProfileController
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 
@@ -133,7 +159,13 @@ public class CustomerProfileController
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 }

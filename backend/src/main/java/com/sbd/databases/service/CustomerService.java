@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 @Service
 public class CustomerService
@@ -29,11 +30,12 @@ public class CustomerService
         this.cartRepository = cartRepository;
     }
 
-    public void createCustomer(CustomerSignUpDTO customerSignUpDTO)
+    @Transactional
+    public void createCustomer(CustomerSignUpDTO customerSignUpDTO) throws ResponseStatusException
     {
         if (existCustomerByName(customerSignUpDTO.getName()))
         {
-            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "Customer with such name exists.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Customer with such name exists.");
         }
         else
         {
@@ -67,13 +69,13 @@ public class CustomerService
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not view this page.");
         }
 
         return customerRepository.getOne(customerId);
     }
 
-    public String loginCustomer(CustomerLoginDTO customerLoginDTO)
+    public String loginCustomer(CustomerLoginDTO customerLoginDTO) throws ResponseStatusException
     {
         Customer customer = customerRepository.getCustomerByName(customerLoginDTO.getName());
 
@@ -83,7 +85,7 @@ public class CustomerService
         }
         else
         {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid username or password.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid customer name.");
         }
     }
 }

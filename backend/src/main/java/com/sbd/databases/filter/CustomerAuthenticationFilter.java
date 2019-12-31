@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
 @Component
-public class ManagerAuthenticationFilter implements javax.servlet.Filter
+public class CustomerAuthenticationFilter implements javax.servlet.Filter
 {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public ManagerAuthenticationFilter(JwtTokenUtil jwtTokenUtil)
+    public CustomerAuthenticationFilter(JwtTokenUtil jwtTokenUtil)
     {
         this.jwtTokenUtil = jwtTokenUtil;
     }
@@ -32,7 +32,7 @@ public class ManagerAuthenticationFilter implements javax.servlet.Filter
             HttpServletRequest request = (HttpServletRequest) servletRequest;
 
             Claims claims = jwtTokenUtil.getAllClaimsFromToken(jwtTokenUtil.getTokenFromRequest(request));
-            if (claims.get("roles", String.class).equals(RolesEnum.MANAGER.name()))
+            if (claims.get("roles", String.class).equals(RolesEnum.CUSTOMER.name()))
             {
                 servletRequest.setAttribute("claims", claims);
                 filterChain.doFilter(servletRequest, servletResponse);

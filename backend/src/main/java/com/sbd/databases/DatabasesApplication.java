@@ -1,5 +1,6 @@
 package com.sbd.databases;
 
+import com.sbd.databases.filter.CustomerAuthenticationFilter;
 import com.sbd.databases.filter.JwtTokenUtil;
 import com.sbd.databases.filter.ManagerAuthenticationFilter;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
@@ -22,11 +23,22 @@ public class DatabasesApplication
 
     @Autowired
     @Bean
-    public FilterRegistrationBean<ManagerAuthenticationFilter> filterRegistrationBean(JwtTokenUtil jwtTokenUtil)
+    public FilterRegistrationBean<ManagerAuthenticationFilter> filterRegistrationBeanManager(JwtTokenUtil jwtTokenUtil)
     {
         FilterRegistrationBean<ManagerAuthenticationFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new ManagerAuthenticationFilter(jwtTokenUtil));
         filterRegistrationBean.setUrlPatterns(Collections.singletonList("/manager/secure/*"));
+
+        return filterRegistrationBean;
+    }
+
+    @Autowired
+    @Bean
+    public FilterRegistrationBean<CustomerAuthenticationFilter> filterRegistrationBeanCustomer(JwtTokenUtil jwtTokenUtil)
+    {
+        FilterRegistrationBean<CustomerAuthenticationFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new CustomerAuthenticationFilter(jwtTokenUtil));
+        filterRegistrationBean.setUrlPatterns(Collections.singletonList("/my-profile/*"));
 
         return filterRegistrationBean;
     }

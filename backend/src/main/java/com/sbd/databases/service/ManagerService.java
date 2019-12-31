@@ -42,14 +42,22 @@ public class ManagerService
     public Manager getManagerFromRequest(HttpServletRequest request)
     {
         Integer managerId = jwtTokenUtil.getIdFromRequest(request);
-        Manager manager = managerRepository.getOne(managerId);
 
-        return manager;
+        return managerRepository.getOne(managerId);
     }
 
-    public String loginManager(ManagerLoginDTO managerLoginDTO)
+    public String loginManager(ManagerLoginDTO managerLoginDTO) throws ResponseStatusException
     {
-        Manager manager = managerRepository.getByUsername(managerLoginDTO.getUsername());
+        Manager manager;
+
+        if (existsByUsername(managerLoginDTO.getUsername()))
+        {
+            manager = managerRepository.getByUsername(managerLoginDTO.getUsername());
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid username or password.");
+        }
 
         if (manager != null && manager.getPassword().equals(managerLoginDTO.getPassword()))
         {
