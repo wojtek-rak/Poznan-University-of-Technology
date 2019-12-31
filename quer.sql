@@ -208,3 +208,37 @@ ALTER TABLE Sale
 ;
 
 
+
+
+--function
+
+/****** Object:  UserDefinedFunction [dbo].[CalculateCart]    Script Date: 31.12.2019 16:51:46 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER FUNCTION [dbo].[CalculateCart] (@cartId int)  
+RETURNS numeric (13, 2)
+WITH EXECUTE AS CALLER  
+AS  
+BEGIN  
+    DECLARE @ISOweek numeric (13, 2);  
+	SELECT @ISOweek = SUM(cp.Count * p.Price)  FROM CartProduct cp
+	JOIN Product p on p.Id = cp.ProductId 
+	WHERE cp.CartId = @cartId;
+    RETURN(@ISOweek);  
+END;  
+
+
+--PROC 2 
+
+ALTER PROCEDURE ConfirmShopOrder   
+    @ShopOrderId int 
+AS   
+    SET NOCOUNT ON;  
+    select * from WarehouseProduct;
+select * from ShopOrder;
+SELECT * from CartProduct cp
+where cp.CartId = (select  CartId from ShopOrder
+where id = 1);
+GO  
