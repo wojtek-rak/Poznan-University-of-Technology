@@ -1,1 +1,7 @@
-<p>customer works!</p>
+<div *ngIf="fail === false">
+  <p>customer works!</p>
+</div>
+
+<div class="fail" *ngIf="fail === true">
+  An error occured. Try again later.
+</div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {GlobalVariables} from './logic/global-variables';
+import {GlobalVariables} from '../logic/global-variables';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class CustomerService {
 
   constructor(private http: HttpClient) {}
 
-  public getStoreProducts(id: number) {
+  public getStoreProducts() {
     return this.http.get(this.host + 'store/products' );
   }
 
