@@ -37,12 +37,24 @@ public class StoreController
     @ResponseBody
     public List<ProductDTO> getProducts(@RequestParam(required = false) Integer categoryId)
     {
-        if (categoryId != null)
+        try
         {
-            return productService.findByCategoryId(categoryId);
+            if (categoryId != null)
+            {
+                return productService.findByCategoryId(categoryId);
+            }
+
+            return productService.findAll();
+        }
+        catch (Exception e)
+        {
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        return productService.findAll();
     }
 
     @PutMapping("/products/{id}")

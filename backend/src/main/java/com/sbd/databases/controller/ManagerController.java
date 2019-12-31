@@ -34,14 +34,7 @@ public class ManagerController
     @ResponseBody
     public String login(@RequestBody ManagerLoginDTO managerLoginDTO)
     {
-        if (managerService.existsByUsername(managerLoginDTO.getUsername()))
-        {
-            return managerService.loginManager(managerLoginDTO);
-        }
-        else
-        {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager with such username does not exist in our database.");
-        }
+        return managerService.loginManager(managerLoginDTO);
     }
 
     @PostMapping("/secure/sign-up")
@@ -74,7 +67,13 @@ public class ManagerController
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 
@@ -88,7 +87,13 @@ public class ManagerController
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
         }
     }
 
@@ -96,15 +101,41 @@ public class ManagerController
     @ResponseBody
     public ManagerShopOrderDTO assignShopOrder(HttpServletRequest request, @PathVariable Integer id)
     {
-        Manager manager = managerService.getManagerFromRequest(request);
-        return shopOrderService.assignManager(manager, id);
+        try
+        {
+            Manager manager = managerService.getManagerFromRequest(request);
+            return shopOrderService.assignManager(manager, id);
+        }
+        catch (Exception e)
+        {
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
+        }
     }
 
     @PostMapping("/secure/shop-orders/{id}")
     @ResponseBody
     public ManagerShopOrderDTO confirmShopOrder(HttpServletRequest request, @PathVariable Integer id)
     {
-        Manager manager = managerService.getManagerFromRequest(request);
-        return shopOrderService.confirmShopOrder(manager, id);
+        try
+        {
+            Manager manager = managerService.getManagerFromRequest(request);
+            return shopOrderService.confirmShopOrder(manager, id);
+        }
+        catch (Exception e)
+        {
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
+        }
     }
 }
