@@ -19,10 +19,18 @@ export class CustomerService {
   }
 
   public getCartProducts() {
-    let headers: Headers;
-    headers = new Headers({
-      'Authorization': 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJQYXRyY2phIiwicm9sZXMiOiJDVVNUT01FUiIsImlhdCI6MTU3ODE0Njg5M30.pTO6cytRb20LhgfoUF85adhNXHczwGykPx7ryu-oYS06tMoVBLVb5U9jL1fGQBVB'//GlobalVariables.token
-    });
+    // let headers: Headers;
+    // headers = new Headers({
+    //   'Authorization': ''//GlobalVariables.token
+    // });
+
+    let headers = new HttpHeaders();
+    headers = headers.append(
+      "Authorization",
+      "Bearer " + "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJQYXRyY2phIiwicm9sZXMiOiJDVVNUT01FUiIsImlhdCI6MTU3ODE0Njg5M30.pTO6cytRb20LhgfoUF85adhNXHczwGykPx7ryu-oYS06tMoVBLVb5U9jL1fGQBVB"
+    );
+    headers = headers.append("Content-Type", "application/json");
+
     return this.http.get(this.host + 'my-profile/cart', { headers: headers });
   }
 
