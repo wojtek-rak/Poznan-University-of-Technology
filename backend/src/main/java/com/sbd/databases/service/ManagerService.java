@@ -60,6 +60,7 @@ public class ManagerService
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public String loginManager(ManagerLoginDTO managerLoginDTO) throws ResponseStatusException
     {
         Manager manager;
@@ -75,7 +76,17 @@ public class ManagerService
 
         if (manager != null && manager.getPassword().equals(managerLoginDTO.getPassword()))
         {
-            return jwtTokenUtil.generateToken(manager);
+            if (manager.getToken() != null)
+            {
+                return manager.getToken();
+            }
+            else
+            {
+                String token = jwtTokenUtil.generateToken(manager);
+                manager.setToken(token);
+                managerRepository.save(manager);
+                return token;
+            }
         }
         else
         {

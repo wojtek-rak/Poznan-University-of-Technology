@@ -90,6 +90,7 @@ public class CustomerService
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public String loginCustomer(CustomerLoginDTO customerLoginDTO) throws ResponseStatusException
     {
         Customer customer = customerRepository.getCustomerByName(customerLoginDTO.getName());
