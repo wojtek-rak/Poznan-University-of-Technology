@@ -3,6 +3,7 @@ package com.sbd.databases;
 import com.sbd.databases.filter.CustomerAuthenticationFilter;
 import com.sbd.databases.filter.JwtTokenUtil;
 import com.sbd.databases.filter.ManagerAuthenticationFilter;
+import com.sbd.databases.filter.SimpleCorsFilter;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +20,15 @@ public class DatabasesApplication
     public static void main(String[] args)
     {
         SpringApplication.run(DatabasesApplication.class, args);
+    }
+
+    @Bean
+    public FilterRegistrationBean<SimpleCorsFilter> filterRegistrationBeanCors()
+    {
+        FilterRegistrationBean<SimpleCorsFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new SimpleCorsFilter());
+
+        return filterRegistrationBean;
     }
 
     @Autowired

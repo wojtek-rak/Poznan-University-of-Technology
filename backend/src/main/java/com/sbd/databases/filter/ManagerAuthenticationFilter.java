@@ -4,17 +4,14 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
 @Component
-public class ManagerAuthenticationFilter implements javax.servlet.Filter
+public class ManagerAuthenticationFilter implements Filter
 {
     private final JwtTokenUtil jwtTokenUtil;
 
