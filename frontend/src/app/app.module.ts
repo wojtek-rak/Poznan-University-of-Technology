@@ -8,21 +8,26 @@ import { AppRoutingModule } from './app-routing.module';
 import {RouterModule} from '@angular/router';
 import { SelectRoleComponent } from './select-role/select-role.component';
 import {HttpClientModule} from '@angular/common/http';
+import { SignCustomerComponent } from './sign-customer/sign-customer.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {CookieService} from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
     AppComponent,
     ManagerComponent,
     CustomerComponent,
-    SelectRoleComponent
+    SelectRoleComponent,
+    SignCustomerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     RouterModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

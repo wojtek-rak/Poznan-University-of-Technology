@@ -1,5 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {CustomerService} from '../Services/customer.service';
+import {GlobalVariables} from '../logic/global-variables';
+import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-customer',
@@ -13,10 +16,16 @@ export class CustomerComponent implements OnInit {
   private loading = false;
   private fail = false;
 
-  constructor(private customerService: CustomerService) { }
+  constructor(private customerService: CustomerService, private router: Router) { }
 
   ngOnInit() {
-    this.getData();
+    console.log(this.customerService.token);
+    if (!this.customerService.token) {
+      this.router.navigate(['/customer-sign']);
+    } else {
+      this.getData();
+    }
+
   }
 
   getData() {
@@ -33,6 +42,7 @@ export class CustomerComponent implements OnInit {
         this.showErrorMsg();
       }
     );
+    console.log('tera cienzke');
     this.customerService.getCartProducts().subscribe(
       res => {
         this.cart = res as Cart;

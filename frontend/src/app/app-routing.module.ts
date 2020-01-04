@@ -4,6 +4,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {SelectRoleComponent} from './select-role/select-role.component';
 import {CustomerComponent} from './customer/customer.component';
 import {ManagerComponent} from './manager/manager.component';
+import {SignCustomerComponent} from './sign-customer/sign-customer.component';
 
 const routes: Routes = [
   {
@@ -16,9 +17,14 @@ const routes: Routes = [
     data: { depth: 1},
   },
   {
+    path: 'customer-sign',
+    component: SignCustomerComponent,
+    data: { depth: 2},
+  },
+  {
     path: 'manager',
     component: ManagerComponent,
-    data: { depth: 2},
+    data: { depth: 3},
   },
 ];
 

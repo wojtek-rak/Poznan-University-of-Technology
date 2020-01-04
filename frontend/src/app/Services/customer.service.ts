@@ -1,14 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {GlobalVariables} from '../logic/global-variables';
+import {Router} from '@angular/router';
+import {CookieService} from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
+
+  constructor(private http: HttpClient,
+              private cookieService: CookieService) {
+
+  }
   private host = GlobalVariables.host;
 
-  constructor(private http: HttpClient) {}
+  private HttpHeaders;
+
+  public get token() {
+    return this.cookieService.get('Token');
+  }
+  public set token(value: string) {
+    this.cookieService.set( 'Token', value );
+  }
 
   public getStoreProducts() {
     return this.http.get(this.host + 'store/products' );
@@ -19,19 +33,35 @@ export class CustomerService {
   }
 
   public getCartProducts() {
-    // let headers: Headers;
-    // headers = new Headers({
-    //   'Authorization': ''//GlobalVariables.token
-    // });
+    const token = this.token;
+    const headers = this.getHeader(token);
 
-    let headers = new HttpHeaders();
-    headers = headers.append(
-      "Authorization",
-      "Bearer " + "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJQYXRyY2phIiwicm9sZXMiOiJDVVNUT01FUiIsImlhdCI6MTU3ODE0Njg5M30.pTO6cytRb20LhgfoUF85adhNXHczwGykPx7ryu-oYS06tMoVBLVb5U9jL1fGQBVB"
-    );
-    headers = headers.append("Content-Type", "application/json");
-
-    return this.http.get(this.host + 'my-profile/cart', { headers: headers });
+    return this.http.get(this.host + 'my-profile/cart', { headers });
   }
 
+  public postSignUp(body: any) {
+    let headers = new HttpHeaders();
+    headers = this.addContentTypeToHeader(headers);
+    return this.http.post(this.host + 'sign-up', body, {headers});
+  }
+
+  public postLogin(body: any) {
+    let headers = new HttpHeaders();
+    headers = this.addContentTypeToHeader(headers);
+    return this.http.post(this.host + 'login', body, {headers, responseType: 'text'});
+  }
+
+  private getHeader(token: string): HttpHeaders {
+    let headers = new HttpHeaders();
+    headers = headers.append(
+      'Authorization',
+      'Bearer ' + token
+    );
+    return headers;
+  }
+
+  private addContentTypeToHeader(headers: HttpHeaders): HttpHeaders {
+    headers = headers.append("Content-Type", "application/json");
+    return headers;
+  }
 }
