@@ -5,3 +5,35 @@
 <div class="fail" *ngIf="fail === true">
   An error occured. Try again later.
 </div>
+
+
+<div class="product-wrapper">
+  <div
+    *ngFor="let product of (products); let i = index"
+    class="product-element"
+  >
+    <h3 class="product-title">
+      <span>{{ product.name }}</span>
+    </h3>
+    <span>{{ product.category.name }} <i class="icon-heart-1"></i></span>
+    <div class="product-author">
+      <div *ngIf="product.calculatedPrice == product.price">
+          <span>{{ product.price }} <i class="icon-comment"></i></span>
+      </div>
+      <div *ngIf="product.calculatedPrice != product.price">
+        <s><span>{{ product.price }}<i class="icon-comment"></i></span></s>
+        <span>&nbsp;&nbsp;{{ product.calculatedPrice }} <i class="icon-comment"></i></span>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="removeProduct(i)">-</button>
+      &nbsp;
+      <button (click)="addProduct(i)">+</button>
+      &nbsp;
+      <span>{{ product.count }}<i class="icon-comment"></i></span>
+    </div>
+    <div class="buttons">
+      <button (click)="addToCart(i)">Add to Cart</button>
+    </div>
+  </div>
+</div>

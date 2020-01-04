@@ -1,0 +1,23 @@
+.product-wrapper {
+  display: grid;
+  grid-template-columns: 300px 300px 300px 300px;
+  margin: 0 auto;
+  grid-gap: 30px;
+}
+
+.product-element {
+  border: green;
+}
+
+
+.product-element .product-author {
+  margin-top: 4px;
+  font-size: 18px;
+
+  text-align: center;
+  align-content: center;
+}
+
+.buttons {
+  padding: 10px;
+}
