@@ -48,8 +48,7 @@ public class GuestController
     {
         try
         {
-            customerService.createCustomer(customer);
-            return customer;
+            return customerService.createCustomer(customer);
         }
         catch (Exception e)
         {

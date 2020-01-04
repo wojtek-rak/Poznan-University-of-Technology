@@ -32,7 +32,7 @@ public class ManagerController
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(@RequestBody ManagerLoginDTO managerLoginDTO)
+    public String login(@RequestBody @Validated ManagerLoginDTO managerLoginDTO)
     {
         return managerService.loginManager(managerLoginDTO);
     }
@@ -55,6 +55,13 @@ public class ManagerController
         {
             throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "Manager with such name exists.");
         }
+    }
+
+    @PostMapping("/secure/logout")
+    @ResponseBody
+    public String logout(@RequestBody ManagerLoginDTO managerLoginDTO)
+    {
+        return managerService.logoutManager(managerLoginDTO);
     }
 
     @GetMapping("/secure/shop-orders")

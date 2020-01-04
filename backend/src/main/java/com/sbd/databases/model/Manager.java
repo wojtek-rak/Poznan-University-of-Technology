@@ -23,6 +23,8 @@ public class Manager
     private String username;
     @Column(name = "Password", nullable = false)
     private String password;
+    @Column(name = "Token")
+    private String token;
     @OneToMany(mappedBy = "manager")
     @JsonManagedReference
     private List<ShopOrder> shopOrders;

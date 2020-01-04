@@ -1,10 +1,7 @@
 package com.sbd.databases.controller;
 
 import com.sbd.databases.model.Customer;
-import com.sbd.databases.model.DTO.AddProductDTO;
-import com.sbd.databases.model.DTO.AddressDTO;
-import com.sbd.databases.model.DTO.CartWithProductsDTO;
-import com.sbd.databases.model.DTO.CartWithShopOrderDTO;
+import com.sbd.databases.model.DTO.*;
 import com.sbd.databases.service.CartService;
 import com.sbd.databases.service.CustomerService;
 import com.sbd.databases.service.ShopOrderService;
@@ -157,6 +154,25 @@ public class CustomerProfileController
             Customer customer = customerService.getCustomerFromRequest(request);
 
             return shopOrderService.getCartWithShopOrderByCustomerAndOrderId(customer, id);
+        }
+        catch (Exception e)
+        {
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
+        }
+    }
+
+    @PostMapping("/logout")
+    public String logout(@RequestBody @Validated CustomerLoginDTO customer)
+    {
+        try
+        {
+            return customerService.logoutCustomer(customer);
         }
         catch (Exception e)
         {

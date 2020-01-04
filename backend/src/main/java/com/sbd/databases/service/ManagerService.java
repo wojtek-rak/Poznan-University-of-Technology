@@ -29,11 +29,6 @@ public class ManagerService
         return managerRepository.getOne(1);
     }
 
-    public Boolean existsByUsername(String username)
-    {
-        return managerRepository.existsByUsername(username);
-    }
-
     public void save(Manager manager)
     {
         managerRepository.save(manager);
@@ -41,9 +36,28 @@ public class ManagerService
 
     public Manager getManagerFromRequest(HttpServletRequest request)
     {
-        Integer managerId = jwtTokenUtil.getIdFromRequest(request);
+        String name;
 
-        return managerRepository.getOne(managerId);
+        String token = jwtTokenUtil.getTokenFromRequest(request);
+
+        try
+        {
+            name = jwtTokenUtil.getNameFromToken(token);
+            Manager manager = managerRepository.getByUsername(name);
+
+            if (manager.getToken().equals(token))
+            {
+                return manager;
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not view this page.");
+        }
     }
 
     public String loginManager(ManagerLoginDTO managerLoginDTO) throws ResponseStatusException
@@ -67,5 +81,18 @@ public class ManagerService
         {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid username or password.");
         }
+    }
+
+    public Boolean existsByUsername(String username)
+    {
+        return managerRepository.existsByUsername(username);
+    }
+
+    public String logoutManager(ManagerLoginDTO managerLoginDTO)
+    {
+        Manager manager = managerRepository.getByUsername(managerLoginDTO.getUsername());
+        manager.setToken(null);
+
+        return managerLoginDTO.getUsername();
     }
 }

@@ -31,7 +31,7 @@ public class CustomerService
     }
 
     @Transactional
-    public void createCustomer(CustomerSignUpDTO customerSignUpDTO) throws ResponseStatusException
+    public CustomerSignUpDTO createCustomer(CustomerSignUpDTO customerSignUpDTO) throws ResponseStatusException
     {
         if (existCustomerByName(customerSignUpDTO.getName()))
         {
@@ -43,6 +43,9 @@ public class CustomerService
             customer.setName(customerSignUpDTO.getName());
             customer.setAddress(customerSignUpDTO.getAddress() == null ? null : customerSignUpDTO.getAddress().toString());
             customer.setPhone(customerSignUpDTO.getPhone());
+            String token = jwtTokenUtil.generateToken(customer);
+            customer.setToken(token);
+            customerSignUpDTO.setToken(token);
 
             Cart cart = new Cart();
             cart.setCount(0);
@@ -51,6 +54,8 @@ public class CustomerService
 
             customerRepository.save(customer);
             cartRepository.save(cart);
+
+            return customerSignUpDTO;
         }
     }
 
@@ -61,18 +66,28 @@ public class CustomerService
 
     public Customer getCustomerFromRequest(HttpServletRequest request) throws ResponseStatusException
     {
-        Integer customerId;
+        String customerName;
+
+        String token = jwtTokenUtil.getTokenFromRequest(request);
 
         try
         {
-            customerId = jwtTokenUtil.getIdFromRequest(request);
+            customerName = jwtTokenUtil.getNameFromToken(token);
+            Customer customer = customerRepository.getCustomerByName(customerName);
+
+            if (customer.getToken().equals(token))
+            {
+                return customer;
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
         catch (Exception e)
         {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not view this page.");
         }
-
-        return customerRepository.getOne(customerId);
     }
 
     public String loginCustomer(CustomerLoginDTO customerLoginDTO) throws ResponseStatusException
@@ -81,11 +96,30 @@ public class CustomerService
 
         if (customer != null)
         {
-            return jwtTokenUtil.generateToken(customer);
+            if (customer.getToken() != null)
+            {
+                return customer.getToken();
+            }
+            else
+            {
+                String token = jwtTokenUtil.generateToken(customer);
+                customer.setToken(token);
+                customerRepository.save(customer);
+                return token;
+            }
         }
         else
         {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid customer name.");
         }
+    }
+
+    public String logoutCustomer(CustomerLoginDTO customerLoginDTO)
+    {
+        Customer customer = customerRepository.getCustomerByToken(customerLoginDTO.getName());
+        customer.setToken(null);
+        customerRepository.save(customer);
+        return customer.getName();
+
     }
 }
