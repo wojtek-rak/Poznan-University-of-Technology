@@ -62,8 +62,9 @@ export class SignCustomerComponent implements OnInit {
 
     const customer: Customer = {
       name: value.name,
-      address: address,
-      phone: value.phone
+      address,
+      phone: value.phone,
+      token: ''
     };
 
     this.customerService.postSignUp(customer).subscribe(
