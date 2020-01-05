@@ -41,7 +41,18 @@ public class CustomerService
         {
             Customer customer = new Customer();
             customer.setName(customerSignUpDTO.getName());
-            customer.setAddress(customerSignUpDTO.getAddress() == null ? null : customerSignUpDTO.getAddress().toString());
+
+            String address = customerSignUpDTO.getStreet()
+                    + " "
+                    + customerSignUpDTO.getHomeNumber()
+                    + ", "
+                    + customerSignUpDTO.getPostcode()
+                    + " "
+                    + customerSignUpDTO.getCity()
+                    + ", "
+                    + customerSignUpDTO.getEmail();
+
+            customer.setAddress(address);
             customer.setPhone(customerSignUpDTO.getPhone());
             String token = jwtTokenUtil.generateToken(customer);
             customer.setToken(token);
