@@ -1,7 +1,10 @@
 package com.sbd.databases.controller;
 
 import com.sbd.databases.model.Customer;
-import com.sbd.databases.model.DTO.*;
+import com.sbd.databases.model.DTO.AddProductDTO;
+import com.sbd.databases.model.DTO.AddressDTO;
+import com.sbd.databases.model.DTO.CartWithProductsDTO;
+import com.sbd.databases.model.DTO.CartWithShopOrderDTO;
 import com.sbd.databases.service.CartService;
 import com.sbd.databases.service.CustomerService;
 import com.sbd.databases.service.ShopOrderService;
@@ -168,10 +171,12 @@ public class CustomerProfileController
     }
 
     @PostMapping("/logout")
-    public String logout(@RequestBody @Validated CustomerLoginDTO customer)
+    public String logout(HttpServletRequest request)
     {
         try
         {
+            Customer customer = customerService.getCustomerFromRequest(request);
+
             return customerService.logoutCustomer(customer);
         }
         catch (Exception e)

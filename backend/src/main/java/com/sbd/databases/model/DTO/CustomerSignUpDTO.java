@@ -11,7 +11,6 @@ public class CustomerSignUpDTO
     @Size(min = 2, max = 255)
     private String name;
     @NotNull(message = "Can't be empty")
-    @NotNull(message = "Can't be empty")
     private String street;
     @NotNull(message = "Can't be empty")
     @Pattern(regexp = "[0-9]+[a-zA-Z/]?[0-9]*")

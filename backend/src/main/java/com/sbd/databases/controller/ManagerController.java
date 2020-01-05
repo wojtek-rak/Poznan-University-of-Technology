@@ -59,9 +59,11 @@ public class ManagerController
 
     @PostMapping("/secure/logout")
     @ResponseBody
-    public String logout(@RequestBody ManagerLoginDTO managerLoginDTO)
+    public String logout(HttpServletRequest request)
     {
-        return managerService.logoutManager(managerLoginDTO);
+        Manager manager = managerService.getManagerFromRequest(request);
+
+        return managerService.logoutManager(manager);
     }
 
     @GetMapping("/secure/shop-orders")

@@ -16,6 +16,7 @@ public class Supplier
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id", insertable = false, updatable = false)
     private Integer id;
+    @Column(name = "Name")
     private String name;
     @OneToMany(mappedBy = "supplier")
     @JsonManagedReference

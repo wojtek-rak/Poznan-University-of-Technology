@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -19,6 +17,7 @@ public class Category
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id", insertable = false, updatable = false)
     private Integer id;
+    @Column(name = "Name", nullable = false, unique = true)
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SupplierId", nullable = false)

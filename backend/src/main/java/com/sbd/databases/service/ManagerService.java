@@ -99,11 +99,10 @@ public class ManagerService
         return managerRepository.existsByUsername(username);
     }
 
-    public String logoutManager(ManagerLoginDTO managerLoginDTO)
+    public String logoutManager(Manager manager)
     {
-        Manager manager = managerRepository.getByUsername(managerLoginDTO.getUsername());
         manager.setToken(null);
 
-        return managerLoginDTO.getUsername();
+        return manager.getUsername();
     }
 }

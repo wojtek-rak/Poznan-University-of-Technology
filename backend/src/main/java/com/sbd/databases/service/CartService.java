@@ -57,7 +57,6 @@ public class CartService
             Cart cartNew = new Cart();
             cartNew.setConfirmed(false);
             cartNew.setCustomer(customer);
-            cartNew.setCount(0);
             cartRepository.save(cartNew);
 
             ShopOrder shopOrder = new ShopOrder();

@@ -16,6 +16,7 @@ public class ShopOrder
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id", insertable = false, updatable = false)
     private Integer id;
+    @Column(name = "address", nullable = false)
     private String address;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CustomerId", nullable = false)

@@ -18,11 +18,12 @@ public class WarehouseProduct
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id", insertable = false, updatable = false)
     private Integer id;
+    @Column(name = "count", nullable = false)
     private Integer count;
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "warehouseCode", nullable = false, unique = true)
     private Integer warehouseCode;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ProductId")
+    @JoinColumn(name = "ProductId", nullable = false)
     @JsonBackReference
     private Product product;
 }

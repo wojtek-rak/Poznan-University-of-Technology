@@ -22,8 +22,6 @@ public class Cart
     @JoinColumn(name = "CustomerId", nullable = false)
     @JsonBackReference
     private Customer customer;
-    @Column(name = "Count", nullable = false)
-    private Integer count;
     @Column(name = "Confirmed", nullable = false)
     private Boolean confirmed;
     @OneToMany(mappedBy = "cart")

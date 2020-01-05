@@ -59,7 +59,6 @@ public class CustomerService
             customerSignUpDTO.setToken(token);
 
             Cart cart = new Cart();
-            cart.setCount(0);
             cart.setCustomer(customer);
             cart.setConfirmed(false);
 
@@ -126,9 +125,8 @@ public class CustomerService
         }
     }
 
-    public String logoutCustomer(CustomerLoginDTO customerLoginDTO)
+    public String logoutCustomer(Customer customer)
     {
-        Customer customer = customerRepository.getCustomerByToken(customerLoginDTO.getName());
         customer.setToken(null);
         customerRepository.save(customer);
         return customer.getName();

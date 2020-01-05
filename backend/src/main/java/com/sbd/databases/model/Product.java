@@ -18,9 +18,13 @@ public class Product
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id", insertable = false, updatable = false)
     private Integer id;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "ean", nullable = false, unique = true)
     private BigDecimal ean;
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
+    @Column(name = "vat", nullable = false)
     private BigDecimal vat;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonManagedReference
