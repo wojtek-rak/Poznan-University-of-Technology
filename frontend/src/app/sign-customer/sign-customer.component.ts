@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {CustomerService} from '../Services/customer.service';
-import {Customer} from '../logic/models/Customer';
+import {Address, Customer} from '../logic/models/Customer';
 import {GlobalVariables} from '../logic/global-variables';
 import {Router} from '@angular/router';
 
@@ -52,7 +52,21 @@ export class SignCustomerComponent implements OnInit {
   onSubmitSignUp(value: any) {
     console.warn('Your order has been submitted', value);
 
-    this.customerService.postSignUp(value).subscribe(
+    const address: Address = {
+      street: value.street,
+      homeNumber: value.homeNumber,
+      postcode: value.postcode,
+      city: value.city,
+      email: value.email
+    };
+
+    const customer: Customer = {
+      name: value.name,
+      address: address,
+      phone: value.phone
+    };
+
+    this.customerService.postSignUp(customer).subscribe(
       res => {
         this.customer = res as Customer;
         console.log(res);
