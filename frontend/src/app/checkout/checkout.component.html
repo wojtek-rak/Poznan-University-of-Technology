@@ -1,0 +1,64 @@
+<h1>Cart</h1>
+<div class="cart-wrapper">
+  <div
+    *ngFor="let product of (cart.cartProducts); let i = index"
+    class="cart-element"
+  >
+    <h3 class="cart-title">
+      <span>{{ product.name }}</span>
+    </h3>
+    <span>Ilość: {{ product.count }} <i class="icon-heart-1"></i></span>
+    <div class="cart-author">
+      <span>Cena: {{ product.price * product.count }} <i class="icon-comment"></i></span>
+    </div>
+  </div>
+  <h2>Cena łączna: {{cart.totalPrice}}</h2>
+
+</div>
+<form [formGroup]="checkoutForm" (ngSubmit)="checkout(checkoutForm.value)">
+
+  <div>
+    <label for="street">
+      Street
+    </label>
+    <input id="street" type="text" formControlName="street">
+  </div>
+
+  <div>
+    <label for="homeNumber">
+      HomeNumber
+    </label>
+    <input id="homeNumber" type="text" formControlName="homeNumber">
+  </div>
+
+  <div>
+    <label for="postcode">
+      Postcode
+    </label>
+    <input id="postcode" type="text" formControlName="postcode">
+  </div>
+
+  <div>
+    <label for="city">
+      City
+    </label>
+    <input id="city" type="text" formControlName="city">
+  </div>
+
+  <div>
+    <label for="email">
+      Email
+    </label>
+    <input id="email" type="text" formControlName="email">
+  </div>
+
+  <div>
+    <label for="phone">
+      Phone
+    </label>
+    <input id="phone" type="text" formControlName="phone">
+  </div>
+
+
+  <button class="button" type="submit">Checkout</button>
+</form>

@@ -5,6 +5,8 @@ import {SelectRoleComponent} from './select-role/select-role.component';
 import {CustomerComponent} from './customer/customer.component';
 import {ManagerComponent} from './manager/manager.component';
 import {SignCustomerComponent} from './sign-customer/sign-customer.component';
+import {CheckoutComponent} from './checkout/checkout.component';
+import {ShopOrdersComponent} from './shop-orders/shop-orders.component';
 
 const routes: Routes = [
   {
@@ -22,9 +24,19 @@ const routes: Routes = [
     data: { depth: 2},
   },
   {
+    path: 'checkout',
+    component: CheckoutComponent,
+    data: { depth: 3},
+  },
+  {
+    path: 'shop-orders',
+    component: ShopOrdersComponent,
+    data: { depth: 4},
+  },
+  {
     path: 'manager',
     component: ManagerComponent,
-    data: { depth: 3},
+    data: { depth: 6},
   },
 ];
 

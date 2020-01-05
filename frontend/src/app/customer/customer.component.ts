@@ -70,9 +70,20 @@ export class CustomerComponent implements OnInit {
     this.products[index].count += 1;
   }
 
-  addToCart(i: number) {
-    //this.customerService.addToCart();
+  addToCart(index: number) {
+    this.customerService.putProductToCart(this.products[index].id, this.products[index].count).subscribe(
+      res => {
+        console.log(res);
+        this.cart = res as Cart;
+      },
+      err => {
+        this.showErrorMsg();
+      }
+    );
   }
 
 
+  checkout() {
+    this.router.navigate(['/checkout']);
+  }
 }

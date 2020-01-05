@@ -65,6 +65,21 @@ export class CustomerService {
     return this.http.put(this.host + 'my-profile/cart/' + productNumber, body, {headers});
   }
 
+  public putCheckoutCart(body: any) {
+    const token = this.token;
+    let headers = this.getHeader(token);
+
+    headers = this.addContentTypeToHeader(headers);
+    console.log(body);
+    return this.http.put(this.host + 'my-profile/cart/checkout', body, {headers});
+  }
+
+  public getOrders() {
+    const token = this.token;
+    const headers = this.getHeader(token);
+
+    return this.http.get(this.host + 'my-profile/shop-orders', { headers });
+  }
 
   private getHeader(token: string): HttpHeaders {
     let headers = new HttpHeaders();

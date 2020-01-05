@@ -11,6 +11,8 @@ import {HttpClientModule} from '@angular/common/http';
 import { SignCustomerComponent } from './sign-customer/sign-customer.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {CookieService} from 'ngx-cookie-service';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { ShopOrdersComponent } from './shop-orders/shop-orders.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import {CookieService} from 'ngx-cookie-service';
     ManagerComponent,
     CustomerComponent,
     SelectRoleComponent,
-    SignCustomerComponent
+    SignCustomerComponent,
+    CheckoutComponent,
+    ShopOrdersComponent
   ],
   imports: [
     BrowserModule,

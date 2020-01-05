@@ -7,7 +7,7 @@
 </div>
 
 
-<div class="product-wrapper">
+<div class="product-wrapper split left">
   <div
     *ngFor="let product of (products); let i = index"
     class="product-element"
@@ -18,7 +18,7 @@
     <span>{{ product.category.name }} <i class="icon-heart-1"></i></span>
     <div class="product-author">
       <div *ngIf="product.calculatedPrice == product.price">
-          <span>{{ product.price }} <i class="icon-comment"></i></span>
+        <span>{{ product.price }} <i class="icon-comment"></i></span>
       </div>
       <div *ngIf="product.calculatedPrice != product.price">
         <s><span>{{ product.price }}<i class="icon-comment"></i></span></s>
@@ -34,6 +34,28 @@
     </div>
     <div class="buttons">
       <button (click)="addToCart(i)">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<div class="split right">
+  <h1>Cart</h1>
+  <div class="cart-wrapper">
+    <div
+      *ngFor="let product of (cart.cartProducts); let i = index"
+      class="cart-element"
+    >
+      <h3 class="cart-title">
+        <span>{{ product.name }}</span>
+      </h3>
+      <span>Amount: {{ product.count }} <i class="icon-heart-1"></i></span>
+      <div class="cart-author">
+        <span>Price: {{ product.price * product.count }} <i class="icon-comment"></i></span>
+      </div>
+    </div>
+    <h2>Total price: {{cart.totalPrice}}</h2>
+    <div class="buttons">
+      <button (click)="checkout()">Checkout</button>
     </div>
   </div>
 </div>
