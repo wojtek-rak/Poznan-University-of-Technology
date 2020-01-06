@@ -13,6 +13,8 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {CookieService} from 'ngx-cookie-service';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ShopOrdersComponent } from './shop-orders/shop-orders.component';
+import { SignManagerComponent } from './sign-manager/sign-manager.component';
+import { ProductsComponent } from './products/products.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { ShopOrdersComponent } from './shop-orders/shop-orders.component';
     SelectRoleComponent,
     SignCustomerComponent,
     CheckoutComponent,
-    ShopOrdersComponent
+    ShopOrdersComponent,
+    SignManagerComponent,
+    ProductsComponent
   ],
   imports: [
     BrowserModule,

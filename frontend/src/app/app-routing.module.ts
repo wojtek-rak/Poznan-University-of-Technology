@@ -7,6 +7,8 @@ import {ManagerComponent} from './manager/manager.component';
 import {SignCustomerComponent} from './sign-customer/sign-customer.component';
 import {CheckoutComponent} from './checkout/checkout.component';
 import {ShopOrdersComponent} from './shop-orders/shop-orders.component';
+import {SignManagerComponent} from './sign-manager/sign-manager.component';
+import {ProductsComponent} from './products/products.component';
 
 const routes: Routes = [
   {
@@ -37,6 +39,16 @@ const routes: Routes = [
     path: 'manager',
     component: ManagerComponent,
     data: { depth: 6},
+  },
+  {
+    path: 'manager-sign',
+    component: SignManagerComponent,
+    data: { depth: 7},
+  },
+  {
+    path: 'products',
+    component: ProductsComponent,
+    data: { depth: 8},
   },
 ];
 
