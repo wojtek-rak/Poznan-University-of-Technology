@@ -37,6 +37,11 @@ export class ManagerService {
     return this.http.get(this.host + 'manager/secure/shop-orders', {headers});
   }
 
+  public getWareHouseProducts() {
+    const headers = this.getHeader(this.managerToken);
+    return this.http.get(this.host + 'manager/secure/warehouse/products', {headers});
+  }
+
   private getHeader(token: string): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.append(

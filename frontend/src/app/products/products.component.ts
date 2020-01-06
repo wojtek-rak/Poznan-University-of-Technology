@@ -9,6 +9,8 @@ import {Router} from '@angular/router';
 })
 export class ProductsComponent implements OnInit {
 
+  private wareHouseCodes: WareHouseCode[] = [];
+
   constructor(private managerService: ManagerService, private router: Router) { }
 
   ngOnInit() {
@@ -22,7 +24,18 @@ export class ProductsComponent implements OnInit {
   }
 
   getData() {
-
+    this.managerService.getWareHouseProducts().subscribe(
+      res => {
+        this.wareHouseCodes = res as WareHouseCode[];
+        console.log(res);
+      },
+      err => {
+        console.log('ERROR DURING REQUEST');
+      }
+    );
   }
 
+  addToWarehouses() {
+
+  }
 }

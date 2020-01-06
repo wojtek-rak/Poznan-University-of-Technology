@@ -1,1 +1,27 @@
-<p>products works!</p>
+<div class="product-wrapper split left">
+  <div
+    *ngFor="let wareHouseCode of (wareHouseCodes); let i = index"
+    class="product-element"
+  >
+    <h3 class="product-title">
+      <span>{{ wareHouseCode.product.name }}</span>
+    </h3>
+    <span>Warehouse code: {{ wareHouseCode.warehouseCode }} <i class="icon-heart-1"></i></span><br>
+    <span>Product count: {{ wareHouseCode.count }} <i class="icon-heart-1"></i></span><br>
+    <span>{{ wareHouseCode.product.category.name }} <i class="icon-heart-1"></i></span>
+    <div class="product-author">
+      <div *ngIf="wareHouseCode.product.calculatedPrice == wareHouseCode.product.price">
+        <span>{{ wareHouseCode.product.price }} <i class="icon-comment"></i></span>
+      </div>
+      <div *ngIf="wareHouseCode.product.calculatedPrice != wareHouseCode.product.price">
+        <s><span>{{ wareHouseCode.product.price }}<i class="icon-comment"></i></span></s>
+        <span>&nbsp;&nbsp;{{ wareHouseCode.product.calculatedPrice }} <i class="icon-comment"></i></span>
+      </div>
+    </div>
+
+  </div>
+  <p></p>
+  <div class="buttons">
+    <button (click)="addToWarehouses()">Add products to warehouses</button>
+  </div>
+</div>
