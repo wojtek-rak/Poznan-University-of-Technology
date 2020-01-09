@@ -1,0 +1,37 @@
+<div class="upbar-wrapper">
+  <div class="customer-sign">
+    <a routerLink="customer-sign" [class.activated]="currentUrl == '/customer-sign'" class="headerButon">
+      <i class="material-icons">Customer-sign</i>
+    </a>
+  </div>
+  <div class="customer">
+    <a routerLink="customer" [class.activated]="currentUrl == '/customer'" class="headerButon">
+      <i class="material-icons">Products</i>
+    </a>
+  </div>
+  <div class="checkout">
+    <a routerLink="checkout" [class.activated]="currentUrl == '/checkout'" class="headerButon">
+      <i class="material-icons">Checkout</i>
+    </a>
+  </div>
+  <div class="shop-orders">
+    <a  routerLink="shop-orders" [class.activated]="currentUrl == '/shop-orders'" class="headerButon">
+      <i class="material-icons">Customer-shop-orders</i>
+    </a>
+  </div>
+  <div class="manager-sign">
+    <a  routerLink="manager-sign" [class.activated]="currentUrl == '/manager-sign'" class="headerButon">
+      <i class="material-icons">Manager-sign</i>
+    </a>
+  </div>
+  <div class="manager">
+    <a  routerLink="manager" [class.activated]="currentUrl == '/manager'" class="headerButon">
+      <i class="material-icons">Manager-orders</i>
+    </a>
+  </div>
+  <div class="products">
+    <a  routerLink="products" [class.activated]="currentUrl == '/products'" class="headerButon">
+      <i class="material-icons">Products</i>
+    </a>
+  </div>
+</div>

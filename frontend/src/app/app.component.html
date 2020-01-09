@@ -1,4 +1,10 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
-  <router-outlet></router-outlet>
+
+  <div class="header" *ngIf="currentUrl != '/'">
+    <app-upbar></app-upbar>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
 </div>
