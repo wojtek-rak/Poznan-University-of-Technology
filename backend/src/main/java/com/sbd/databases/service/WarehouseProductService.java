@@ -4,7 +4,9 @@ import com.sbd.databases.model.*;
 import com.sbd.databases.model.DTO.*;
 import com.sbd.databases.repository.WarehouseProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -74,5 +76,36 @@ public class WarehouseProductService
         warehouseProductRepository.save(warehouseProduct);
 
         return warehouseProductDTO;
+    }
+
+    public List<WarehouseProductDTO> fillWarehouse()
+    {
+        try
+        {
+            warehouseProductRepository.fillWarehouse();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getClass());
+        }
+
+        return warehouseProductRepository.findAll().stream().map(WarehouseProductDTO::new).collect(Collectors.toList());
+    }
+
+    public void updateProduct(CartProduct cartProduct)
+    {
+        WarehouseProduct warehouseProduct = cartProduct.getProduct().getWarehouseProduct();
+        int newCount = warehouseProduct.getCount() - cartProduct.getCount();
+
+        if (newCount >= 0)
+        {
+            warehouseProduct.setCount(newCount);
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There is too small amount of products in a warehouse!");
+        }
+
+        warehouseProductRepository.save(warehouseProduct);
     }
 }

@@ -34,4 +34,11 @@ public class WarehouseController
     {
         return warehouseProductService.addProductToWarehouse(warehouseProductDTO);
     }
+
+    @PostMapping("/products/fill")
+    @ResponseBody
+    public List<WarehouseProductDTO> fillWarehouse()
+    {
+        return warehouseProductService.fillWarehouse();
+    }
 }

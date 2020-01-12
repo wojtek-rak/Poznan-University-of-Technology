@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @Table(name = "WarehouseProduct")
+@NamedStoredProcedureQuery(name = "fillWarehouse", procedureName = "fillWarehouse")
 public class WarehouseProduct
 {
     @Id

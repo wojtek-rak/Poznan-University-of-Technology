@@ -30,4 +30,6 @@ public class ShopOrder
     @JoinColumn(name = "CartId", nullable = false)
     @JsonBackReference
     private Cart cart;
+    @Column(name = "Confirmed")
+    private Boolean confirmed;
 }

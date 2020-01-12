@@ -26,9 +26,10 @@ public class CartService
     private final ShopOrderRepository shopOrderRepository;
     private final ProductService productService;
     private final CartProductService cartProductService;
+    private final WarehouseProductService warehouseProductService;
 
     @Autowired
-    public CartService(CartRepository cartRepository, ProductService productService, CustomerService customerService, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService1, CartProductService cartProductService)
+    public CartService(CartRepository cartRepository, ProductService productService, CustomerService customerService, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService1, CartProductService cartProductService, WarehouseProductService warehouseProductService)
     {
         this.cartRepository = cartRepository;
         this.customerService = customerService;
@@ -36,6 +37,7 @@ public class CartService
         this.shopOrderRepository = shopOrderRepository;
         this.productService = productService1;
         this.cartProductService = cartProductService;
+        this.warehouseProductService = warehouseProductService;
     }
 
     public CartWithProductsDTO getNotConfirmedCartOfCustomer(Customer customer)
@@ -64,7 +66,12 @@ public class CartService
             shopOrder.setManager(managerService.getAvailableManager());
             shopOrder.setCustomer(customer);
             shopOrder.setCart(cart);
+            shopOrder.setConfirmed(false);
             shopOrderRepository.save(shopOrder);
+
+            cart.getCartProducts()
+                    .forEach(warehouseProductService::updateProduct);
+
 
             CartWithProductsDTO cartWithProductsDTO = new CartWithProductsDTO(cart);
             ShopOrderDTO shopOrderDTO = new ShopOrderDTO(shopOrder);

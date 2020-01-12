@@ -14,6 +14,6 @@ public class ShopOrderDTO
     {
         this.id = shopOrder.getId();
         this.address = shopOrder.getAddress();
-        this.confirmed = true; // TODO: 21.12.2019 Shop order should be confirmed in database
+        this.confirmed = shopOrder.getConfirmed();
     }
 }
