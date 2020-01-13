@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8E3DC65A23CB869700CB3462 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E3DC65923CB869700CB3462 /* main.cpp */; };
+		8E3DC66523CB919500CB3462 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E3DC66323CB919500CB3462 /* server.cpp */; };
+		8E3DC66823CCB49700CB3462 /* event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E3DC66623CCB49700CB3462 /* event.cpp */; };
+		8E3DC66B23CCB96000CB3462 /* saveManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E3DC66923CCB96000CB3462 /* saveManager.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +26,12 @@
 
 /* Begin PBXFileReference section */
 		8E3DC65623CB869700CB3462 /* NetworkServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NetworkServer; sourceTree = BUILT_PRODUCTS_DIR; };
-		8E3DC65923CB869700CB3462 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		8E3DC66323CB919500CB3462 /* server.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
+		8E3DC66423CB919500CB3462 /* server.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = server.hpp; sourceTree = "<group>"; };
+		8E3DC66623CCB49700CB3462 /* event.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = event.cpp; sourceTree = "<group>"; };
+		8E3DC66723CCB49700CB3462 /* event.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = event.hpp; sourceTree = "<group>"; };
+		8E3DC66923CCB96000CB3462 /* saveManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = saveManager.cpp; sourceTree = "<group>"; };
+		8E3DC66A23CCB96000CB3462 /* saveManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = saveManager.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +64,12 @@
 		8E3DC65823CB869700CB3462 /* NetworkServer */ = {
 			isa = PBXGroup;
 			children = (
-				8E3DC65923CB869700CB3462 /* main.cpp */,
+				8E3DC66923CCB96000CB3462 /* saveManager.cpp */,
+				8E3DC66A23CCB96000CB3462 /* saveManager.hpp */,
+				8E3DC66323CB919500CB3462 /* server.cpp */,
+				8E3DC66423CB919500CB3462 /* server.hpp */,
+				8E3DC66623CCB49700CB3462 /* event.cpp */,
+				8E3DC66723CCB49700CB3462 /* event.hpp */,
 			);
 			path = NetworkServer;
 			sourceTree = "<group>";
@@ -119,7 +131,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E3DC65A23CB869700CB3462 /* main.cpp in Sources */,
+				8E3DC66523CB919500CB3462 /* server.cpp in Sources */,
+				8E3DC66B23CCB96000CB3462 /* saveManager.cpp in Sources */,
+				8E3DC66823CCB49700CB3462 /* event.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

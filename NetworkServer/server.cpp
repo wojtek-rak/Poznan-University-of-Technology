@@ -1,18 +1,4 @@
-#include <iostream>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-#include <pthread.h>
-#include <string>
-
-#include "calendar.hpp"
+#include "server.hpp"
 
 
 struct cln
@@ -30,35 +16,45 @@ fd_set mask;
 fd_set wmask;
 fd_set rmask;
 int fdmax, fda, rc;
-char buf [100];
 struct timeval timeoutVal;
-Calendar calendar[100];
-
+Event events[50];
+int lockedEvent[50];
 
 void* readMessage(void *t_data)
 {
     //free resources when killed
     pthread_detach(pthread_self());
     struct threadFd *th_data = (struct threadFd*)t_data;
-
-    int loggedUserId = -1;
-    int readResult = 1;
     
     
+    char buf [256];
     char buffer[256];
     
     read((*th_data).clientFd, buffer, 256);
     std::string message(buffer);
     
-
-    read((*th_data).clientFd, buffer, 256);
+    int clientFd = (*th_data).clientFd;
         
-    if ((message.substr(0, 12).compare("GET_CALENDER")) == 0)
+    if ((message.substr(0, 12).compare("GET_CALENDAR")) == 0)
     {
-        strcpy(buf, "EWELINA\n");
+        strcpy(buf, message.substr(12, 14).c_str());
+        //ZWRACA LICZBĘ STRON A NASTĘPNIE TYLE WIADOMOŚCI
+        //GET_All_events
     }
-    else if (strcmp(buffer, "136720") == 0) {
-        strcpy(buf, "WERONIKA\n");
+    else if ((message.substr(0, 12).compare("GET_CALENSSS")) == 0)
+    {
+        int event_id = atoi(message.substr(13, 16).c_str());
+        //GET_Specific_event
+    }
+    else if ((message.substr(0, 12).compare("ADD_CALENDAR")) == 0)
+    {
+        strcpy(buf, message.substr(12, 14).c_str());
+        //ADD_event
+    }
+    else if ((message.substr(0, 15).compare("REMOVE_CALENDAR")) == 0)
+    {
+        strcpy(buf, message.substr(12, 14).c_str());
+        //REMOVE_event
     }
     else {
         strcpy(buf, "NIE ZNALEZIONO\n");
