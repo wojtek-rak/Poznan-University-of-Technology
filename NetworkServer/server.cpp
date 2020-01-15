@@ -40,6 +40,7 @@ void* readMessage(void *t_data)
     {
         //ZWRACA LICZBĘ STRON A NASTĘPNIE TYLE WIADOMOŚCI
         std::string s = std::to_string(numberOfEvents / 8 + 1);
+        s += "<??>";
         strcpy(buf, s.c_str());
         
         FD_SET((*th_data).clientFd, &mask);
@@ -60,11 +61,11 @@ void* readMessage(void *t_data)
                     res += std::to_string(j) + "," + events[j].date + "," + events[j].title;
                     
                     counter++;
-                    if(counter >= 8) break;
+                    if(counter >= 7) break;
                 }
             }
             
-            
+            res += "<??>";
             strcpy(buf, res.c_str());
             FD_SET(clientFd, &mask);
             
@@ -103,7 +104,7 @@ void* readMessage(void *t_data)
                 events[i].description = description;
                 numberOfEvents++;
                 SaveManager::SaveEvents(numberOfEvents, events);
-                strcpy(buf, "DONE");
+                strcpy(buf, "DONE<??>");
                 FD_SET(clientFd, &mask);
                 
                 write(clientFd, buf, 256);
@@ -118,23 +119,20 @@ void* readMessage(void *t_data)
         numberOfEvents--;
         lockedEvent[event_id] = -1;
         SaveManager::SaveEvents(numberOfEvents, events, true, event_id);
-        strcpy(buf, "DONE");
+        strcpy(buf, "DONE<??>");
         FD_SET(clientFd, &mask);
         
         write(clientFd, buf, 256);
         memset(buf,0,strlen(buf));
     }
     else {
-        strcpy(buf, "ERROR NOT FOUND");
+        strcpy(buf, "ERROR NOT FOUND<??>");
         FD_SET(clientFd, &mask);
-        
         write(clientFd, buf, 256);
         memset(buf,0,strlen(buf));
 
     }
-    FD_CLR(clientFd, &wmask);
-    FD_CLR(clientFd, &mask);
-    FD_CLR(clientFd, &rmask);
+    close(clientFd);
     pthread_exit(NULL);
 }
 
