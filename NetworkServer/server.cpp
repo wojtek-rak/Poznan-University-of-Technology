@@ -19,6 +19,7 @@ int fdmax, fda, rc;
 struct timeval timeoutVal;
 Event events[50];
 int lockedEvent[50];
+int numberOfEvents;
 
 void* readMessage(void *t_data)
 {
@@ -37,36 +38,101 @@ void* readMessage(void *t_data)
         
     if ((message.substr(0, 12).compare("GET_CALENDAR")) == 0)
     {
-        strcpy(buf, message.substr(12, 14).c_str());
         //ZWRACA LICZBĘ STRON A NASTĘPNIE TYLE WIADOMOŚCI
-        //GET_All_events
+        std::string s = std::to_string(numberOfEvents / 8 + 1);
+        strcpy(buf, s.c_str());
+        
+        FD_SET((*th_data).clientFd, &mask);
+        write((*th_data).clientFd, buf, 20);
+        memset(buf,0,strlen(buf));
+        
+        int lastVal = 0;
+        std::string res = "";
+        for (int i = 0; i < numberOfEvents / 8 + 1; i++)
+        {
+            int counter = 0;
+            for(int j = lastVal; j < 50; j++)
+            {
+                lastVal = j;
+                if(lockedEvent[j] != -1)
+                {
+                    if(counter > 0) res += ".";
+                    res += std::to_string(j) + "," + events[j].date + "," + events[j].title;
+                    
+                    counter++;
+                    if(counter >= 8) break;
+                }
+            }
+            
+            
+            strcpy(buf, res.c_str());
+            FD_SET(clientFd, &mask);
+            
+            write(clientFd, buf, 256);
+            memset(buf,0,strlen(buf));
+        }
     }
-    else if ((message.substr(0, 12).compare("GET_CALENSSS")) == 0)
+    else if ((message.substr(0, 16).compare("GET_SINGLE_EVENT")) == 0)
+    {
+        //DONE
+        int event_id = atoi(message.substr(17, 20).c_str());
+
+        std::string mes = events[event_id].title + "." + events[event_id].owner + "." + events[event_id].date + "." + events[event_id].description;
+        
+        strcpy(buf, mes.c_str());
+        
+        FD_SET(clientFd, &mask);
+        
+        write(clientFd, buf, 256);
+        memset(buf,0,strlen(buf));
+    }
+    else if ((message.substr(0, 9).compare("ADD_EVENT")) == 0)
+    {
+        std::string title = message.substr(10, 30);
+        std::string owner = message.substr(31, 41);
+        std::string date = message.substr(42, 48);
+        std::string description = message.substr(49, 249);
+        for (int i = 0; i < 50; i++)
+        {
+            if(lockedEvent[i] == -1)
+            {
+                lockedEvent[i] = i;
+                events[i].title = title;
+                events[i].owner = owner;
+                events[i].date = date;
+                events[i].description = description;
+                numberOfEvents++;
+                SaveManager::SaveEvents(numberOfEvents, events);
+                strcpy(buf, "DONE");
+                FD_SET(clientFd, &mask);
+                
+                write(clientFd, buf, 256);
+                memset(buf,0,strlen(buf));
+                break;
+            }
+        }
+    }
+    else if ((message.substr(0, 12).compare("REMOVE_EVENT")) == 0)
     {
         int event_id = atoi(message.substr(13, 16).c_str());
-        //GET_Specific_event
-    }
-    else if ((message.substr(0, 12).compare("ADD_CALENDAR")) == 0)
-    {
-        strcpy(buf, message.substr(12, 14).c_str());
-        //ADD_event
-    }
-    else if ((message.substr(0, 15).compare("REMOVE_CALENDAR")) == 0)
-    {
-        strcpy(buf, message.substr(12, 14).c_str());
-        //REMOVE_event
+        numberOfEvents--;
+        lockedEvent[event_id] = -1;
+        SaveManager::SaveEvents(numberOfEvents, events, true, event_id);
+        strcpy(buf, "DONE");
+        FD_SET(clientFd, &mask);
+        
+        write(clientFd, buf, 256);
+        memset(buf,0,strlen(buf));
     }
     else {
-        strcpy(buf, "NIE ZNALEZIONO\n");
+        strcpy(buf, "ERROR NOT FOUND");
+        FD_SET(clientFd, &mask);
+        
+        write(clientFd, buf, 256);
+        memset(buf,0,strlen(buf));
+
     }
-    // koniec
-    
-    
-    FD_SET((*th_data).clientFd, &mask);
-    
-    write((*th_data).clientFd, buf, 20);
-    memset(buf,0,strlen(buf));
-    close((*th_data).clientFd);
+    close(clientFd);
     
     pthread_exit(NULL);
 }
@@ -96,13 +162,82 @@ void processRequest(int connection_socket_descriptor)
 
 
 int main(int argc, char *argv[]) {
+    //INIT DATA
+    
+    numberOfEvents = 0;
+    for(int i = 0; i < 50; i++)
+    {
+        lockedEvent[i] = -1;
+    }
+    
+//    events[0].title = "Wdrozenie";
+//    events[0].owner = "wrak";
+//    events[0].date = "200103";
+//    events[0].description = "wdrozenie zaplanowane na godzine 15";
+//
+//    events[1].title = "Deploy";
+//    events[1].owner = "krak";
+//    events[1].date = "191229";
+//    events[1].description = "Deploy zaplanowane na godzine 17";
+//
+//    events[2].title = "Retro";
+//    events[2].owner = "crak";
+//    events[2].date = "200119";
+//    events[2].description = "Retro godzina 13";
+//
+//    lockedEvent[0] = 0;
+//    lockedEvent[1] = 1;
+//    lockedEvent[2] = 2;
+//
+//    numberOfEvents++;
+//    numberOfEvents++;
+//    numberOfEvents++;
+//    SaveManager::SaveEvents(numberOfEvents, events);
+    std::ifstream infileCustomers;
+    char selector;
+    std::string title;
+    std::string description;
+    std::string owner;
+    std::string date;
+    
+    infileCustomers.open("events.txt");
+    while (infileCustomers >> selector)
+    {
+        //std::stringstream ss;
+        switch (selector)
+        {
+        case 't':
+            infileCustomers >> title;
+            events[numberOfEvents].title = title;
+            break;
+        case 'o':
+            infileCustomers >> owner;
+            events[numberOfEvents].owner = owner;
+            break;
+        case 'd':
+            infileCustomers >> date;
+            events[numberOfEvents].date = date;
+            break;
+        case 'c':
+            //infileCustomers >> description;
+            getline (infileCustomers, description);
+            events[numberOfEvents].description = description;
+            numberOfEvents++;
+            break;
+        default:
+            break;
+        }
+    }
+    infileCustomers.close();
+    
+    
+    //INIT SERVER
     socklen_t slt;
     struct sockaddr_in s_addr;
 
     s_addr.sin_family = AF_INET;
     s_addr.sin_port = htons(1234);
     s_addr.sin_addr.s_addr = INADDR_ANY;
-
     int fd = socket(PF_INET, SOCK_STREAM, 0);
     int on = 1;
 

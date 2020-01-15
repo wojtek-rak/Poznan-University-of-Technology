@@ -1,0 +1,3 @@
+t Wdrozenie o wrak d 200103 c wdrozenie zaplanowane na godzine 15
+t Deploy o krak d 191229 c Deploy zaplanowane na godzine 17
+t Retro o crak d 200119 c Retro godzina 13

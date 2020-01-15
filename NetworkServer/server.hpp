@@ -14,6 +14,9 @@
 #include <sys/wait.h>
 #include <pthread.h>
 #include <string>
+#include <sstream>
+#include <fstream>
 
+#include "saveManager.hpp"
 #include "event.hpp"
 #endif /* server_hpp */
