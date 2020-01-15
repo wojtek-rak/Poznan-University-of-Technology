@@ -132,8 +132,9 @@ void* readMessage(void *t_data)
         memset(buf,0,strlen(buf));
 
     }
-    close(clientFd);
-    
+    FD_CLR(clientFd, &wmask);
+    FD_CLR(clientFd, &mask);
+    FD_CLR(clientFd, &rmask);
     pthread_exit(NULL);
 }
 
@@ -272,7 +273,6 @@ int main(int argc, char *argv[]) {
             printf("new connection from: %s\n", inet_ntoa((struct in_addr)c->caddr.sin_addr));
             
             processRequest(c->cfd);
-
         }
     }
 
