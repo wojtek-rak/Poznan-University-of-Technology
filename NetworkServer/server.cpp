@@ -47,12 +47,12 @@ void* readMessage(void *t_data)
         write((*th_data).clientFd, buf, 20);
         memset(buf,0,strlen(buf));
         
-        int lastVal = 0;
+        int lastVal = -1;
         std::string res = "";
         for (int i = 0; i < numberOfEvents / 8 + 1; i++)
         {
             int counter = 0;
-            for(int j = lastVal; j < 50; j++)
+            for(int j = lastVal + 1; j < 50; j++)
             {
                 lastVal = j;
                 if(lockedEvent[j] != -1)
@@ -67,6 +67,7 @@ void* readMessage(void *t_data)
             
             res += "<??>";
             strcpy(buf, res.c_str());
+            res = "";
             FD_SET(clientFd, &mask);
             
             write(clientFd, buf, 256);
@@ -80,6 +81,7 @@ void* readMessage(void *t_data)
 
         std::string mes = events[event_id].title + "." + events[event_id].owner + "." + events[event_id].date + "." + events[event_id].description;
         
+        mes += "<??>";
         strcpy(buf, mes.c_str());
         
         FD_SET(clientFd, &mask);
@@ -89,10 +91,10 @@ void* readMessage(void *t_data)
     }
     else if ((message.substr(0, 9).compare("ADD_EVENT")) == 0)
     {
-        std::string title = message.substr(10, 30);
-        std::string owner = message.substr(31, 41);
-        std::string date = message.substr(42, 48);
-        std::string description = message.substr(49, 249);
+        std::string title = message.substr(10, 20);
+        std::string owner = message.substr(31, 10);
+        std::string date = message.substr(42, 6);
+        std::string description = message.substr(49, 200);
         for (int i = 0; i < 50; i++)
         {
             if(lockedEvent[i] == -1)
@@ -221,6 +223,7 @@ int main(int argc, char *argv[]) {
             //infileCustomers >> description;
             getline (infileCustomers, description);
             events[numberOfEvents].description = description;
+            lockedEvent[numberOfEvents] = numberOfEvents;
             numberOfEvents++;
             break;
         default:
