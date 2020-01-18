@@ -48,7 +48,7 @@ void* readMessage(void *t_data)
                 {
                     //ZWRACA LICZBĘ STRON A NASTĘPNIE TYLE WIADOMOŚCI
                     std::string s = std::to_string(numberOfEvents / 7 + 1);
-                    s += "<??>";
+                    s += "<XD>";
                     strcpy(buf, s.c_str());
                     
                     //FD_SET((*th_data).clientFd, &mask);
@@ -74,7 +74,7 @@ void* readMessage(void *t_data)
                             }
                         }
                         
-                        res += "<??>";
+                        res += "<XD>";
                         strcpy(buf, res.c_str());
                         res = "";
                         //FD_SET(clientFd, &mask);
@@ -91,7 +91,7 @@ void* readMessage(void *t_data)
 
                     std::string mes = events[event_id].title + "." + events[event_id].owner + "." + events[event_id].date + "." + events[event_id].description;
                     
-                    mes += "<??>";
+                    mes += "<XD>";
                     strcpy(buf, mes.c_str());
                     
                     //FD_SET(clientFd, &mask);
@@ -116,7 +116,7 @@ void* readMessage(void *t_data)
                             events[i].description = description;
                             numberOfEvents++;
                             SaveManager::SaveEvents(numberOfEvents, events);
-                            strcpy(buf, "DONE<??>");
+                            strcpy(buf, "DONE<XD>");
                             //FD_SET(clientFd, &mask);
                             
                             write(clientFd, buf, 256);
@@ -132,7 +132,7 @@ void* readMessage(void *t_data)
                     numberOfEvents--;
                     lockedEvent[event_id] = -1;
                     SaveManager::SaveEvents(numberOfEvents, events, true, event_id);
-                    strcpy(buf, "DONE<??>");
+                    strcpy(buf, "DONE<XD>");
                     //FD_SET(clientFd, &mask);
                     
                     write(clientFd, buf, 256);
@@ -140,7 +140,7 @@ void* readMessage(void *t_data)
                     memset(buf,0,strlen(buf));
                 }
                 else {
-                    strcpy(buf, "ERROR NOT FOUND<??>");
+                    strcpy(buf, "ERROR NOT FOUND<XD>");
                     //FD_SET(clientFd, &mask);
                     write(clientFd, buf, 256);
                     std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
@@ -178,7 +178,7 @@ void processRequest(int connection_socket_descriptor)
     pthread_t thread1;
 
     //create struct to send it to thread
-    struct threadFd *t_data;
+    struct threadFd *t_data = new threadFd;
     (*t_data).clientFd = connection_socket_descriptor;
     
     create_result = pthread_create(&thread1, NULL, readMessage, (void *)t_data);
