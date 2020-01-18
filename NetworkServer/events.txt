@@ -1,9 +1,2 @@
-t Wdrozenie o wrak d 200103 c wdrozenie zaplanowane na godzine 15
-t Deploy o krak d 191229 c Deploy zaplanowane na godzine 17
-t Retro o crak d 200119 c Retro godzina 13
-t Trak o wrak d 200119 c Trak godzina 13
-t Test o mrak d 310119 c Test godzina 13
-t Krak o krakk d 210119 c Krak godzina 13
-t Lakk o lakk d 220119 c Lakk godzina 13
-t Takk o takk d 220119 c Takk godzina 13
-
+t DoMaca               o Wolix      d 200117 c Teraz                                                                                                                                                                                                   
+t DoWindowsa           o Timeput    d 200117 c Put pront                                                                                                                                                                                               
