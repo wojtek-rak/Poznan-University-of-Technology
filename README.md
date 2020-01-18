@@ -1,9 +1,5 @@
 #  System współdzielonego kalendarza sieciowego (1 osoba)
 
-Aplikacja servera: cpp
-
-Aplikacja klienta: ASP.NET Core 2.1 MVC
-
 OPIS PROTOKOŁU KOMUNIKACYJNEGO
 =====
 Protokół komunikacyjny opiera się na 4 wiadomościach i odpowiedziach na nie. 
@@ -62,4 +58,48 @@ Wiadomość od klienta o treści:
 Wiadomość zwrotna od servera:
 
 `DONE`
+
+Opis implementacji
+=======
+
+Aplikacja servera: cpp
+---
+
+Główna część kodu znajduje się w `server.cpp`. Dodatkowo jest też `saveManager.cpp` który odpowiada za zapis eventów do pliku txt (taka lokalna db). A także `event.cpp` gdzie znajduje się główna klasa biznesowa.
+
+W klasie `server.cpp` wszystko zaczyna się w klasie main tam inicjalizujemy eventy z pliku do pamięci i wchodzimy do głównej pętli while która ma za zadanie akceptować połączenia. Po przyjściu pierwszej wiadomości od klienta w metodzie processRequest tworzony jest nowy wątek dla tego klienta i wywoływana jest metoda readMessage. Tam znajduje się druga pentla while dla danego klienta, tam też przetwarzane, czytane i wysyłane są wszystkie wiadomości. Po zerwaniu połączenia wątek jest uśmiercany.
+
+
+Aplikacja klienta: ASP.NET Core 2.1 MVC
+---
+
+Aplikacja napisana w ASP.NET Core 2.1 MVC. Znajduje się tam Jeden kontroler i dwa główne widoki, pierwszy odpowiada za wyświetlanie kalendarza, dugi za wyświetlanie i tworzenie nowego eventu.
+
+
+Sposób kompilacji
+===
+
+
+Aplikacja servera: cpp
+---
+
+Kompilacja: 
+`g++ -Wall server.cpp event.cpp saveManager.cpp -o main`
+
+Odpalenie: 
+`./main`
+
+Aplikacja klienta: ASP.NET Core 2.1 MVC
+---
+
+W appsettings.json w sekcji `IpSettings` należy podać odpowiednią wartość IP:
+
+`"IpSettings": {
+    "Ip": "192.168.0.15",
+    "Port": 1234
+  }`
+
+Opublikowaną w Visual Studio aplikację możana włączyć za pomocą komendy (w przypadku odpalenia większej liczby istnacji należy zmienić port 5001 na inny):
+
+`dotnet .\NetworkCalendar.dll  --urls="http://localhost:5001"`
 
