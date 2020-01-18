@@ -17,10 +17,12 @@ GET_CALENDAR
 -------
 
 Wiadomość od klienta o treści:
-GET_CALENDAR
+
+`GET_CALENDAR`
 
 Pierwsza wiadomość zwrotna od servera:
-{liczba kolejnych wiadomości}
+
+`{liczba kolejnych wiadomości}`
 
 Kolejne wiadomości od servera:
 
@@ -32,26 +34,32 @@ GET_SINGLE_EVENT
 -------
 
 Wiadomość od klienta o treści:
-GET_SINGLE_EVENT.{idEventu 3 znaki}
+
+`GET_SINGLE_EVENT.{idEventu 3 znaki}`
 
 Wiadomość zwrotna od servera:
-{tytuł}.{właściciel}.{data w postaci yyMMdd}.{opis wydarzenia}
+
+`{tytuł}.{właściciel}.{data w postaci yyMMdd}.{opis wydarzenia}`
 
 ADD_EVENT
 -------
 
 Wiadomość od klienta o treści:
-ADD_EVENT.{tytuł 20 znaków}.{właściciel 10 znaków}.{data w postaci yyMMdd}.{opis wydarzenia 200 znaków}
+
+`ADD_EVENT.{tytuł 20 znaków}.{właściciel 10 znaków}.{data w postaci yyMMdd}.{opis wydarzenia 200 znaków}`
 
 Wiadomość zwrotna od servera:
-DONE
+
+`DONE`
 
 REMOVE_EVENT
 -------
 
 Wiadomość od klienta o treści:
-REMOVE_EVENT.{idEventu 3 znaki}
+
+`REMOVE_EVENT.{idEventu 3 znaki}`
 
 Wiadomość zwrotna od servera:
-DONE
+
+`DONE`
 
