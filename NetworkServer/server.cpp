@@ -1,5 +1,6 @@
 #include "server.hpp"
 
+int counter = 0;
 
 struct cln
 {
@@ -30,109 +31,138 @@ void* readMessage(void *t_data)
     
     char buf [256];
     char buffer[256];
-    
-    read((*th_data).clientFd, buffer, 256);
-    std::string message(buffer);
-    
+    int connection = 1;
     int clientFd = (*th_data).clientFd;
-        
-    if ((message.substr(0, 12).compare("GET_CALENDAR")) == 0)
+    int ctn = 0;
+    while(connection == 1)
     {
-        //ZWRACA LICZBĘ STRON A NASTĘPNIE TYLE WIADOMOŚCI
-        std::string s = std::to_string(numberOfEvents / 8 + 1);
-        s += "<??>";
-        strcpy(buf, s.c_str());
-        
-        FD_SET((*th_data).clientFd, &mask);
-        write((*th_data).clientFd, buf, 20);
-        memset(buf,0,strlen(buf));
-        
-        int lastVal = -1;
-        std::string res = "";
-        for (int i = 0; i < numberOfEvents / 8 + 1; i++)
+        try
         {
-            int counter = 0;
-            for(int j = lastVal + 1; j < 50; j++)
+            memset(buffer, 0, sizeof(buffer));
+            read(clientFd, buffer, 256);
+            std::string message(buffer);
+            std::cout << "FD: " << clientFd << " get message: " << message <<  std::endl;
+            if(message != "")
             {
-                lastVal = j;
-                if(lockedEvent[j] != -1)
+                if ((message.substr(0, 12).compare("GET_CALENDAR")) == 0)
                 {
-                    if(counter > 0) res += ".";
-                    res += std::to_string(j) + "," + events[j].date + "," + events[j].title;
+                    //ZWRACA LICZBĘ STRON A NASTĘPNIE TYLE WIADOMOŚCI
+                    std::string s = std::to_string(numberOfEvents / 7 + 1);
+                    s += "<??>";
+                    strcpy(buf, s.c_str());
                     
-                    counter++;
-                    if(counter >= 7) break;
+                    //FD_SET((*th_data).clientFd, &mask);
+                    write((*th_data).clientFd, buf, 256);
+                    std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
+                    memset(buf,0,strlen(buf));
+                    
+                    int lastVal = 50;
+                    std::string res = "";
+                    for (int i = 0; i < numberOfEvents / 7 + 1; i++)
+                    {
+                        int counter = 0;
+                        for(int j = lastVal - 1; j > -1; j--)
+                        {
+                            lastVal = j;
+                            if(lockedEvent[j] != -1)
+                            {
+                                if(counter > 0) res += ".";
+                                res += std::to_string(j) + "," + events[j].date + "," + events[j].title;
+                                
+                                counter++;
+                                if(counter >= 7) break;
+                            }
+                        }
+                        
+                        res += "<??>";
+                        strcpy(buf, res.c_str());
+                        res = "";
+                        //FD_SET(clientFd, &mask);
+                        usleep(30);
+                        write(clientFd, buf, 256);
+                        std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
+                        memset(buf,0,strlen(buf));
+                    }
+                }
+                else if ((message.substr(0, 16).compare("GET_SINGLE_EVENT")) == 0)
+                {
+                    //DONE
+                    int event_id = atoi(message.substr(17, 20).c_str());
+
+                    std::string mes = events[event_id].title + "." + events[event_id].owner + "." + events[event_id].date + "." + events[event_id].description;
+                    
+                    mes += "<??>";
+                    strcpy(buf, mes.c_str());
+                    
+                    //FD_SET(clientFd, &mask);
+                    
+                    write(clientFd, buf, 256);
+                    memset(buf,0,strlen(buf));
+                }
+                else if ((message.substr(0, 9).compare("ADD_EVENT")) == 0)
+                {
+                    std::string title = message.substr(10, 20);
+                    std::string owner = message.substr(31, 10);
+                    std::string date = message.substr(42, 6);
+                    std::string description = message.substr(49, 200);
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if(lockedEvent[i] == -1)
+                        {
+                            lockedEvent[i] = i;
+                            events[i].title = title;
+                            events[i].owner = owner;
+                            events[i].date = date;
+                            events[i].description = description;
+                            numberOfEvents++;
+                            SaveManager::SaveEvents(numberOfEvents, events);
+                            strcpy(buf, "DONE<??>");
+                            //FD_SET(clientFd, &mask);
+                            
+                            write(clientFd, buf, 256);
+                            std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
+                            memset(buf,0,strlen(buf));
+                            break;
+                        }
+                    }
+                }
+                else if ((message.substr(0, 12).compare("REMOVE_EVENT")) == 0)
+                {
+                    int event_id = atoi(message.substr(13, 16).c_str());
+                    numberOfEvents--;
+                    lockedEvent[event_id] = -1;
+                    SaveManager::SaveEvents(numberOfEvents, events, true, event_id);
+                    strcpy(buf, "DONE<??>");
+                    //FD_SET(clientFd, &mask);
+                    
+                    write(clientFd, buf, 256);
+                    std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
+                    memset(buf,0,strlen(buf));
+                }
+                else {
+                    strcpy(buf, "ERROR NOT FOUND<??>");
+                    //FD_SET(clientFd, &mask);
+                    write(clientFd, buf, 256);
+                    std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
+                    memset(buf,0,strlen(buf));
+
                 }
             }
-            
-            res += "<??>";
-            strcpy(buf, res.c_str());
-            res = "";
-            FD_SET(clientFd, &mask);
-            
-            write(clientFd, buf, 256);
-            memset(buf,0,strlen(buf));
-        }
-    }
-    else if ((message.substr(0, 16).compare("GET_SINGLE_EVENT")) == 0)
-    {
-        //DONE
-        int event_id = atoi(message.substr(17, 20).c_str());
-
-        std::string mes = events[event_id].title + "." + events[event_id].owner + "." + events[event_id].date + "." + events[event_id].description;
-        
-        mes += "<??>";
-        strcpy(buf, mes.c_str());
-        
-        FD_SET(clientFd, &mask);
-        
-        write(clientFd, buf, 256);
-        memset(buf,0,strlen(buf));
-    }
-    else if ((message.substr(0, 9).compare("ADD_EVENT")) == 0)
-    {
-        std::string title = message.substr(10, 20);
-        std::string owner = message.substr(31, 10);
-        std::string date = message.substr(42, 6);
-        std::string description = message.substr(49, 200);
-        for (int i = 0; i < 50; i++)
-        {
-            if(lockedEvent[i] == -1)
-            {
-                lockedEvent[i] = i;
-                events[i].title = title;
-                events[i].owner = owner;
-                events[i].date = date;
-                events[i].description = description;
-                numberOfEvents++;
-                SaveManager::SaveEvents(numberOfEvents, events);
-                strcpy(buf, "DONE<??>");
-                FD_SET(clientFd, &mask);
-                
-                write(clientFd, buf, 256);
-                memset(buf,0,strlen(buf));
-                break;
+            else{
+                ctn++;
+                if(ctn > 100)
+                {
+                    close(clientFd);
+                    pthread_exit(NULL);
+                }
             }
         }
-    }
-    else if ((message.substr(0, 12).compare("REMOVE_EVENT")) == 0)
-    {
-        int event_id = atoi(message.substr(13, 16).c_str());
-        numberOfEvents--;
-        lockedEvent[event_id] = -1;
-        SaveManager::SaveEvents(numberOfEvents, events, true, event_id);
-        strcpy(buf, "DONE<??>");
-        FD_SET(clientFd, &mask);
+        catch(...)
+        {
+            close(clientFd);
+            pthread_exit(NULL);
+        }
         
-        write(clientFd, buf, 256);
-        memset(buf,0,strlen(buf));
-    }
-    else {
-        strcpy(buf, "ERROR NOT FOUND<??>");
-        FD_SET(clientFd, &mask);
-        write(clientFd, buf, 256);
-        memset(buf,0,strlen(buf));
-
     }
     close(clientFd);
     pthread_exit(NULL);
@@ -140,6 +170,8 @@ void* readMessage(void *t_data)
 
 void processRequest(int connection_socket_descriptor)
 {
+    counter++;
+    if (counter > 10) return;
     int create_result = 0;
 
     //thread ref
@@ -248,15 +280,13 @@ int main(int argc, char *argv[]) {
     bind(fd, (struct sockaddr*) & s_addr,sizeof(s_addr));
     listen(fd, 15);
     
-    FD_ZERO(&mask);
-    FD_ZERO(&wmask);
     FD_ZERO(&rmask);
     fdmax = fd;
     while(1)
     {
         struct cln* c = new cln;
         FD_SET(fd, &rmask);
-        wmask = mask;
+        //wmask = mask;
         timeoutVal.tv_sec = 5 * 60;
         timeoutVal.tv_usec = 0;
         rc = select(fdmax + 1, &rmask, &wmask, (fd_set*) 0, &timeoutVal);
@@ -265,10 +295,8 @@ int main(int argc, char *argv[]) {
             printf("Timeout.\n");
             continue;
         }
-        fda = rc;
         if(FD_ISSET(fd, &rmask))
         {
-            fda -= 1;
             slt = sizeof(c->caddr);
             c->cfd = accept(fd, (struct sockaddr*)&c->caddr, &slt);
             printf("new connection from: %s\n", inet_ntoa((struct in_addr)c->caddr.sin_addr));
