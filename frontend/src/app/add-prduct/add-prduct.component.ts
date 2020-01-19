@@ -52,7 +52,7 @@ export class AddPrductComponent implements OnInit {
     const product: Product = {
       name: value.name,
       ean: value.ean,
-      prive: value.price,
+      price: value.price,
       vat: value.vat,
       category: category,
       sales: sales
