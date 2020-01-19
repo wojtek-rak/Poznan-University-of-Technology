@@ -22,9 +22,10 @@ Event events[50];
 int lockedEvent[50];
 int numberOfEvents;
 
+
+//Zarządzanie połączonym klientem
 void* readMessage(void *t_data)
 {
-    //free resources when killed
     pthread_detach(pthread_self());
     struct threadFd *th_data = (struct threadFd*)t_data;
     
@@ -51,7 +52,6 @@ void* readMessage(void *t_data)
                     s += "<XD>";
                     strcpy(buf, s.c_str());
                     
-                    //FD_SET((*th_data).clientFd, &mask);
                     write((*th_data).clientFd, buf, 256);
                     std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
                     memset(buf,0,strlen(buf));
@@ -77,7 +77,6 @@ void* readMessage(void *t_data)
                         res += "<XD>";
                         strcpy(buf, res.c_str());
                         res = "";
-                        //FD_SET(clientFd, &mask);
                         usleep(30);
                         write(clientFd, buf, 256);
                         std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
@@ -86,7 +85,6 @@ void* readMessage(void *t_data)
                 }
                 else if ((message.substr(0, 16).compare("GET_SINGLE_EVENT")) == 0)
                 {
-                    //DONE
                     int event_id = atoi(message.substr(17, 20).c_str());
 
                     std::string mes = events[event_id].title + "." + events[event_id].owner + "." + events[event_id].date + "." + events[event_id].description;
@@ -94,7 +92,6 @@ void* readMessage(void *t_data)
                     mes += "<XD>";
                     strcpy(buf, mes.c_str());
                     
-                    //FD_SET(clientFd, &mask);
                     
                     write(clientFd, buf, 256);
                     memset(buf,0,strlen(buf));
@@ -117,8 +114,7 @@ void* readMessage(void *t_data)
                             numberOfEvents++;
                             SaveManager::SaveEvents(numberOfEvents, events);
                             strcpy(buf, "DONE<XD>");
-                            //FD_SET(clientFd, &mask);
-                            
+                   
                             write(clientFd, buf, 256);
                             std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
                             memset(buf,0,strlen(buf));
@@ -133,15 +129,14 @@ void* readMessage(void *t_data)
                     lockedEvent[event_id] = -1;
                     SaveManager::SaveEvents(numberOfEvents, events, true, event_id);
                     strcpy(buf, "DONE<XD>");
-                    //FD_SET(clientFd, &mask);
-                    
+ 
                     write(clientFd, buf, 256);
                     std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
                     memset(buf,0,strlen(buf));
                 }
                 else {
                     strcpy(buf, "ERROR NOT FOUND<XD>");
-                    //FD_SET(clientFd, &mask);
+
                     write(clientFd, buf, 256);
                     std::cout << "FD: " << clientFd << " send message: " << buf <<  std::endl;
                     memset(buf,0,strlen(buf));
@@ -168,6 +163,7 @@ void* readMessage(void *t_data)
     pthread_exit(NULL);
 }
 
+//Tworzenie wątku dla clienta
 void processRequest(int connection_socket_descriptor)
 {
     counter++;
@@ -195,37 +191,14 @@ void processRequest(int connection_socket_descriptor)
 
 
 int main(int argc, char *argv[]) {
-    //INIT DATA
     
+    //INIT DATA
     numberOfEvents = 0;
     for(int i = 0; i < 50; i++)
     {
         lockedEvent[i] = -1;
     }
     
-//    events[0].title = "Wdrozenie";
-//    events[0].owner = "wrak";
-//    events[0].date = "200103";
-//    events[0].description = "wdrozenie zaplanowane na godzine 15";
-//
-//    events[1].title = "Deploy";
-//    events[1].owner = "krak";
-//    events[1].date = "191229";
-//    events[1].description = "Deploy zaplanowane na godzine 17";
-//
-//    events[2].title = "Retro";
-//    events[2].owner = "crak";
-//    events[2].date = "200119";
-//    events[2].description = "Retro godzina 13";
-//
-//    lockedEvent[0] = 0;
-//    lockedEvent[1] = 1;
-//    lockedEvent[2] = 2;
-//
-//    numberOfEvents++;
-//    numberOfEvents++;
-//    numberOfEvents++;
-//    SaveManager::SaveEvents(numberOfEvents, events);
     std::ifstream infileCustomers;
     char selector;
     std::string title;
@@ -282,11 +255,12 @@ int main(int argc, char *argv[]) {
     
     FD_ZERO(&rmask);
     fdmax = fd;
+    //Pęatla akceptująca nowe połączenia
     while(1)
     {
         struct cln* c = new cln;
         FD_SET(fd, &rmask);
-        //wmask = mask;
+
         timeoutVal.tv_sec = 5 * 60;
         timeoutVal.tv_usec = 0;
         rc = select(fdmax + 1, &rmask, &wmask, (fd_set*) 0, &timeoutVal);
