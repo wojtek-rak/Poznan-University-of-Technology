@@ -9,6 +9,7 @@ import {CheckoutComponent} from './checkout/checkout.component';
 import {ShopOrdersComponent} from './shop-orders/shop-orders.component';
 import {SignManagerComponent} from './sign-manager/sign-manager.component';
 import {ProductsComponent} from './products/products.component';
+import {AddPrductComponent} from './add-prduct/add-prduct.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,11 @@ const routes: Routes = [
   {
     path: 'products',
     component: ProductsComponent,
+    data: { depth: 8},
+  },
+  {
+    path: 'add-product',
+    component: AddPrductComponent,
     data: { depth: 8},
   },
 ];

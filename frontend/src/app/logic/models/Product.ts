@@ -5,7 +5,7 @@ interface Product {
   price: number;
   vat: number;
   category: Category;
-  sales: any[];
+  sales: Sales[];
   calculatedPrice: number;
   count: number;
 }

@@ -1,0 +1,5 @@
+interface WarehousePRoduct {
+  product: Product;
+  warehouseCode: number;
+  count: number;
+}

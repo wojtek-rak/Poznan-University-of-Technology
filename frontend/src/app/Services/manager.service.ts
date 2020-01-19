@@ -42,6 +42,18 @@ export class ManagerService {
     return this.http.get(this.host + 'manager/secure/warehouse/products', {headers});
   }
 
+  public postAddProduct(body: any) {
+    let headers = this.getHeader(this.managerToken);
+    headers = this.addContentTypeToHeader(headers);
+    return this.http.post(this.host + 'manager/secure/warehouse/products/add', body, {headers});
+  }
+
+  public getFillPorducts() {
+    let headers = this.getHeader(this.managerToken);
+    //headers = this.addContentTypeToHeader(headers);
+    return this.http.post(this.host + '/manager/secure/warehouse/products/fill', {headers});
+  }
+
   private getHeader(token: string): HttpHeaders {
     let headers = new HttpHeaders();
     headers = headers.append(
@@ -50,6 +62,7 @@ export class ManagerService {
     );
     return headers;
   }
+
 
   private addContentTypeToHeader(headers: HttpHeaders): HttpHeaders {
     headers = headers.append('Content-Type', 'application/json');

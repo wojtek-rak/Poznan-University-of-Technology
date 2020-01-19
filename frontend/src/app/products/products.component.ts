@@ -36,6 +36,15 @@ export class ProductsComponent implements OnInit {
   }
 
   addToWarehouses() {
+    this.managerService.getFillPorducts().subscribe(
+      res => {
+        console.log(res);
+        window.location.reload();
+      },
+      err => {
+        console.log('ERROR DURING REQUEST');
 
+      }
+    );
   }
 }

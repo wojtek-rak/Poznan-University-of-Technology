@@ -16,6 +16,7 @@ import { ShopOrdersComponent } from './shop-orders/shop-orders.component';
 import { SignManagerComponent } from './sign-manager/sign-manager.component';
 import { ProductsComponent } from './products/products.component';
 import { UpbarComponent } from './upbar/upbar.component';
+import { AddPrductComponent } from './add-prduct/add-prduct.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { UpbarComponent } from './upbar/upbar.component';
     ShopOrdersComponent,
     SignManagerComponent,
     ProductsComponent,
-    UpbarComponent
+    UpbarComponent,
+    AddPrductComponent
   ],
   imports: [
     BrowserModule,
