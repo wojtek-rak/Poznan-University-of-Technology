@@ -41,12 +41,12 @@ export class AddPrductComponent implements OnInit {
 
     const category: Category = {
       name: value.categoryName,
-      supplier: supplier
+      supplier
     };
     const sale: Sales = {
       percentDiscount: value.percentDiscount
     };
-    let  sales: Sales[] = [];
+    const  sales: Sales[] = [];
     sales.push(sale);
 
     const product: Product = {
@@ -54,12 +54,12 @@ export class AddPrductComponent implements OnInit {
       ean: value.ean,
       price: value.price,
       vat: value.vat,
-      category: category,
-      sales: sales
+      category,
+      sales
     };
 
-    const warehousePRoduct: WarehousePRoduct = {
-      product: product,
+    const warehousePRoduct: WarehouseProduct = {
+      product,
       count: value.count,
       warehouseCode: value.warehouseCode
       }
