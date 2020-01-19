@@ -1,0 +1,12 @@
+.header {
+  background: #7a7b7b;
+  height: 20px;
+  position: relative;
+  z-index: 16777271;
+}
+
+.content {
+  position: relative;
+  padding-top: 20px;
+}
+

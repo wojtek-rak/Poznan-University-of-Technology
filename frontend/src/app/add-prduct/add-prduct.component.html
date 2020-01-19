@@ -1,0 +1,74 @@
+<h1>Add product</h1>
+
+
+
+<h3>Sign up</h3>
+
+<form [formGroup]="addProductForm" (ngSubmit)="onSubmitSignUp(addProductForm.value)">
+
+  <div>
+    <label for="name">
+      Name
+    </label>
+    <input id="name" type="text" formControlName="name">
+  </div>
+
+  <div>
+    <label for="ean">
+      Ean
+    </label>
+    <input id="ean" type="number" formControlName="ean">
+  </div>
+
+  <div>
+    <label for="price">
+      Price
+    </label>
+    <input id="price" type="number" formControlName="price">
+  </div>
+
+  <div>
+    <label for="vat">
+      Vat
+    </label>
+    <input id="vat" type="number" formControlName="vat">
+  </div>
+  <div>
+    <label for="percentDiscount">
+      Percent Discount
+    </label>
+    <input id="percentDiscount" type="number" formControlName="percentDiscount">
+  </div>
+
+  <div>
+    <label for="categoryName">
+      Category
+    </label>
+    <input id="categoryName" type="text" formControlName="categoryName">
+  </div>
+
+  <div>
+    <label for="supplierName">
+      Supplier
+    </label>
+    <input id="supplierName" type="text" formControlName="supplierName">
+  </div>
+
+  <div>
+    <label for="count">
+      Count
+    </label>
+    <input id="count" type="number" formControlName="count">
+  </div>
+  <div>
+    <label for="warehouseCode">
+      Warehouse Code
+    </label>
+    <input id="warehouseCode" type="number" formControlName="warehouseCode">
+  </div>
+
+
+  <button class="button" type="submit">Add</button>
+
+</form>
+

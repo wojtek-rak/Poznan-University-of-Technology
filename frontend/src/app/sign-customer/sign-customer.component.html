@@ -1,0 +1,78 @@
+<h3>Sign in</h3>
+
+<!--<div class="cart-item" *ngFor="let item of items">-->
+<!--  <span>{{ item.name }} </span>-->
+<!--  <span>{{ item.price | currency }}</span>-->
+<!--</div>-->
+
+<form [formGroup]="signinForm" (ngSubmit)="onSubmit(signinForm.value)">
+
+  <div>
+    <label for="name">
+      Name
+    </label>
+    <input id="name" type="text" formControlName="name">
+  </div>
+
+  <button class="button" type="submit">Sign in</button>
+
+</form>
+
+<h3>Sign up</h3>
+
+<form [formGroup]="signupForm" (ngSubmit)="onSubmitSignUp(signupForm.value)">
+
+  <div>
+    <label for="userName">
+      Name
+    </label>
+    <input id="userName" type="text" formControlName="name">
+  </div>
+
+  <div>
+    <label for="street">
+      Street
+    </label>
+    <input id="street" type="text" formControlName="street">
+  </div>
+
+  <div>
+    <label for="homeNumber">
+      HomeNumber
+    </label>
+    <input id="homeNumber" type="text" formControlName="homeNumber">
+  </div>
+
+  <div>
+    <label for="postcode">
+      Postcode
+    </label>
+    <input id="postcode" type="text" formControlName="postcode">
+  </div>
+
+  <div>
+    <label for="city">
+      City
+    </label>
+    <input id="city" type="text" formControlName="city">
+  </div>
+
+  <div>
+    <label for="email">
+      Email
+    </label>
+    <input id="email" type="text" formControlName="email">
+  </div>
+
+  <div>
+    <label for="phone">
+      Phone
+    </label>
+    <input id="phone" type="text" formControlName="phone">
+  </div>
+
+
+  <button class="button" type="submit">Sign up</button>
+
+</form>
+

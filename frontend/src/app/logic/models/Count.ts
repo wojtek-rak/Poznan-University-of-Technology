@@ -1,0 +1,3 @@
+interface Count {
+  count: number;
+}

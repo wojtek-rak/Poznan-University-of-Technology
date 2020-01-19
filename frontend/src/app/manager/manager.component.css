@@ -1,0 +1,24 @@
+.cart-element .cart-author {
+  font-size: 18px;
+
+  text-align: center;
+  align-content: center;
+}
+
+.cart-title {
+  margin-block-start: 0.2em;
+  margin-block-end: 0.2em;
+}
+
+.buttonProd{
+  margin: 20px;
+}
+
+.buttonProd:hover{
+  background-color: #666767;
+}
+
+.buttonProd img{
+  margin: 20px;
+  max-width: 200px;
+}
