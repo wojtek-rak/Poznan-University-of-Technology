@@ -50,8 +50,8 @@ export class ManagerService {
 
   public getFillPorducts() {
     let headers = this.getHeader(this.managerToken);
-    //headers = this.addContentTypeToHeader(headers);
-    return this.http.post(this.host + '/manager/secure/warehouse/products/fill', {headers});
+    headers = this.addContentTypeToHeader(headers);
+    return this.http.post(this.host + 'manager/secure/warehouse/products/fill', [],{headers});
   }
 
   private getHeader(token: string): HttpHeaders {
