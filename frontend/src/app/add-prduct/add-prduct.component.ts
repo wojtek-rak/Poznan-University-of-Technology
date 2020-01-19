@@ -35,21 +35,21 @@ export class AddPrductComponent implements OnInit {
   onSubmitSignUp(value: any) {
     console.warn('Your order has been submitted', value);
 
-    const supplier: Supplier = {
+    const supplier: any = {
       name: value.supplierName
     };
 
-    const category: Category = {
+    const category: any = {
       name: value.categoryName,
       supplier
     };
-    const sale: Sales = {
+    const sale: any = {
       percentDiscount: value.percentDiscount
     };
     const  sales: Sales[] = [];
     sales.push(sale);
 
-    const product: Product = {
+    const product: any = {
       name: value.name,
       ean: value.ean,
       price: value.price,
