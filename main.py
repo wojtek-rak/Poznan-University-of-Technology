@@ -11,7 +11,7 @@ GPIO.setwarnings(False)
 
 
 
-GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
+GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
 
 # Raspberry Pi pin setup
 lcd_rs = 2
@@ -49,7 +49,7 @@ def mainMenu():
     digit = 10# waitForMenu()
     print('wait for button')
     while True:
-        if GPIO.input(40) == GPIO.HIGH:
+        if GPIO.input(21) == GPIO.HIGH:
             print("Button was pushed!")
 
     if(digit == 1):
