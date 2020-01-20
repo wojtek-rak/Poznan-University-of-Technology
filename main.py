@@ -220,18 +220,22 @@ def showMainMenu():
     return
 
 def runHighscore():
+    global button1
+    global button2
+    global button3
+    global button4
     time.sleep(0.5)
     global highScoreState
     showHighscore()
     waitForMenu()
     if (button1 == 1):
         if(highScoreState == 0):
-            highScoreState == 1
+            highScoreState = 1
         else:
             highScoreState = 0
     elif (button2 == 1):
         if(highScoreState == 0):
-            highScoreState == 1
+            highScoreState = 1
         else:
             highScoreState = 0
     elif (button4 == 1):
@@ -282,7 +286,7 @@ def runGameDifficulty():
 def showGameDifficulty():
     global gameDifficult
     lcd.clear()
-    lcd.message('Game difficult: '+ str(gameDifficult))
+    lcd.message('Game difficult:\n'+ str(gameDifficult))
     # wyswietlanie na lcd
     return
 
@@ -295,7 +299,7 @@ def setHighScore(number):
     highScore = number
     print("HighScore set to " + str(number))
 
-def road(num):
+def getRoad(num):
     lev = []
     for i in range(num):
         rand = random.uniform(0, 1)
@@ -345,7 +349,7 @@ def startGame():
     end = 0
 
     while(end == 0):
-        road = road(level)
+        road = getRoad(level)
         showRoad(road)
         end = 1
 
