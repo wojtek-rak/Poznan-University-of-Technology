@@ -298,6 +298,12 @@ def road(num):
 def startGame():
     level = 4
     global gameDifficult
+    end = 0
+
+    while(end == 0):
+
+        #showRoad()
+
 
 
 
