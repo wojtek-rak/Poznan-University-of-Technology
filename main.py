@@ -1,7 +1,7 @@
 import time
 import Adafruit_CharLCD as LCD
 
-
+import sqlite3
 
 
 import RPi.GPIO as GPIO
@@ -288,12 +288,24 @@ def showGameDifficulty():
     return
 
 def getHighScore():
-    global highScore
+    db = sqlite3.connect('highScore.db')
+    cur = db.cursor()
+    cur.execute("SELECT * FROM highScore")
+
+    rows = cur.fetchall()
+    highScore = -1
+    for row in rows:
+        highScore = row[0]
+        print(row[0])
+
+    db.close()
     return highScore
 
 def setHighScore(number):
-    global highScore
-    highScore = number
+    db = sqlite3.connect('highScore.db')
+    cur = db.cursor()
+    cur.execute("UPDATE highScore SET data =" + str(number))
+    db.close()
     print("HighScore set to " + str(number))
 
 def getRoad(num):
