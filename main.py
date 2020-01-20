@@ -45,7 +45,7 @@ lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_c
 
 # ZMIENNE GLOBALNE
 
-gameDifficult = 1
+gameDifficult = 4
 highScore = 0
 
 # ZMIENNE GLOBALNE
@@ -96,8 +96,8 @@ def removeFromDifficulty():
 
 def addToDifficulty():
     global gameDifficult
-    if (gameDifficult == 6):
-        gameDifficult = 6
+    if (gameDifficult == 8):
+        gameDifficult = 8
     else:
         gameDifficult += 1
 
@@ -261,10 +261,6 @@ def showHighscore():
     # wyswietlanie na lcd
     return
 
-
-def resetHighScore():
-    setHighScore(0)
-    return
 
 def runGameDifficulty():
     time.sleep(0.5)
@@ -432,6 +428,7 @@ def enterRoad(count):
 def startGame():
     level = 4
     global gameDifficult
+    global highScore
     end = 0
 
     while(end == 0):
@@ -484,7 +481,8 @@ def startGame():
             lcd.clear()
             if(level > 4):
                 lcd.message('You lost\nScore:' + str(level - 1))
-                setHighScore(level - 1)
+                if(highScore < level - 1):
+                    setHighScore(level - 1)
             else:
                 lcd.message('You lost\nScore:' + str(0))
 
@@ -492,15 +490,10 @@ def startGame():
             GPIO.output(buzzer, GPIO.HIGH)
             time.sleep(1)  # Delay in seconds
             GPIO.output(buzzer, GPIO.LOW)
-            time.sleep(1)
+            time.sleep(3)
             dioda6.ChangeDutyCycle(0)
-            time.sleep(2)
+            time.sleep(0.5)
 
-
-
-
-
-    setHighScore(10)
     return
 
 
