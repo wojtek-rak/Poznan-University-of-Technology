@@ -49,6 +49,12 @@ highScore = 0
 
 # ZMIENNE GLOBALNE
 
+GPIO.setup(26, GPIO.OUT)
+GPIO.setup(19, GPIO.OUT)
+GPIO.setup(13, GPIO.OUT)
+GPIO.setup(6, GPIO.OUT)
+GPIO.setup(5, GPIO.OUT)
+GPIO.setup(22, GPIO.OUT)
 
 dioda1 = GPIO.PWM(26, 50)
 dioda2 = GPIO.PWM(19, 50)
@@ -63,7 +69,6 @@ dioda3.start(0)
 dioda4.start(0)
 dioda5.start(0)
 dioda6.start(0)
-
 
 
 
