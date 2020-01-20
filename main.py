@@ -308,7 +308,7 @@ def startGame():
     global gameDifficult
     end = 0
 
-    while(end == 0):
+    #while(end == 0):
 
         #showRoad()
 
