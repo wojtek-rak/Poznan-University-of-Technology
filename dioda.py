@@ -5,9 +5,9 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 GPIO.setup(19, GPIO.OUT)
 
-dioda = GPIO.PWM(19, 50)  # Nowa instancja PWM
-wypelnienie = 0  # Wypełnienie sygnału PWM
-dioda.start(wypelnienie)  # Uruchomienie sygnału PWM
+dioda = GPIO.PWM(19, 50)
+wypelnienie = 0
+dioda.start(wypelnienie)
 
 try:
     while True:
