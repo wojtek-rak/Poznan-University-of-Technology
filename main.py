@@ -356,6 +356,10 @@ def startGame():
         road = getRoad(level)
         showRoad(road)
         end = 1
+        dioda6.ChangeDutyCycle(100)
+        time.sleep(getTime())
+        dioda6g.ChangeDutyCycle(0)
+        time.sleep(getTime())
 
 
 
