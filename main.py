@@ -346,6 +346,65 @@ def showRoad(road):
             dioda4.ChangeDutyCycle(0)
             time.sleep(getTime())
 
+def enterRoad(count):
+    global buttonPress
+    global button1
+    global button2
+    global button3
+    global button4
+    buttonPress = 0
+    enteredRoad = []
+    while count != 0:
+        if (buttonPress == 0):
+            if GPIO.input(21) == GPIO.HIGH:
+                dioda1.ChangeDutyCycle(100)
+                button1 = 1
+                buttonPress = 1
+            if GPIO.input(20) == GPIO.HIGH:
+                dioda2.ChangeDutyCycle(100)
+                button2 = 1
+                buttonPress = 1
+            if GPIO.input(16) == GPIO.HIGH:
+                dioda3.ChangeDutyCycle(100)
+                button3 = 1
+                buttonPress = 1
+            if GPIO.input(12) == GPIO.HIGH:
+                dioda4.ChangeDutyCycle(100)
+                button4 = 1
+                buttonPress = 1
+
+        if(buttonPress == 1):
+            if(button1 == 1):
+                if(GPIO.input(21) == GPIO.LOW):
+                    dioda1.ChangeDutyCycle(0)
+                    button1 = 0
+                    buttonPress = 0
+                    count -= 1
+                    enteredRoad.append(1)
+            if(button2 == 1):
+                if (GPIO.input(20) == GPIO.LOW):
+                    dioda2.ChangeDutyCycle(0)
+                    button2 = 0
+                    buttonPress = 0
+                    count -= 1
+                    enteredRoad.append(2)
+
+            if (button3 == 1):
+                if (GPIO.input(16) == GPIO.LOW):
+                    dioda3.ChangeDutyCycle(0)
+                    button3 = 0
+                    buttonPress = 0
+                    count -= 1
+                    enteredRoad.append(3)
+
+            if (button4 == 1):
+                if (GPIO.input(12) == GPIO.LOW):
+                    dioda4.ChangeDutyCycle(0)
+                    button4 = 0
+                    buttonPress = 0
+                    count -= 1
+                    enteredRoad.append(4)
+    return enteredRoad
 
 def startGame():
     level = 4
@@ -355,11 +414,43 @@ def startGame():
     while(end == 0):
         road = getRoad(level)
         showRoad(road)
-        end = 1
-        dioda6.ChangeDutyCycle(100)
-        time.sleep(getTime())
-        dioda6g.ChangeDutyCycle(0)
-        time.sleep(getTime())
+
+        enteredRoad = enterRoad(len(road))
+
+        if(enteredRoad == road):
+            dioda6.ChangeDutyCycle(100)
+            time.sleep(2)
+            dioda6.ChangeDutyCycle(0)
+            level += 1
+
+            loop = False
+            lcd.clear()
+            lcd.message('Press to\nnext game')
+            while (loop == False):
+                if GPIO.input(12) == GPIO.HIGH:
+                    loop = True
+                if GPIO.input(20) == GPIO.HIGH:
+                    loop = True
+                if GPIO.input(16) == GPIO.HIGH:
+                    loop = True
+                if GPIO.input(21) == GPIO.HIGH:
+                    loop = True
+
+
+
+        else:
+            end = 1
+            lcd.clear()
+            if(level > 4):
+                lcd.message('You lost\nScore:' + str(level - 1))
+                setHighScore(level - 1)gs
+            else:
+                lcd.message('You lost\nScore:' + str(0))
+
+            dioda6.ChangeDutyCycle(100)
+            time.sleep(2)
+            dioda6.ChangeDutyCycle(0)
+            time.sleep(2)
 
 
 
