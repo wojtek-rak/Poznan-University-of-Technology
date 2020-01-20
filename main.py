@@ -33,7 +33,7 @@ button4 = 0
 buttonPress = 0
 
 menuState = 0
-
+highScoreState = 0
 # Define LCD column and row size for 16x2 LCD.
 lcd_columns = 16
 lcd_rows = 2
@@ -61,6 +61,16 @@ def removeFromMenuState():
     else:
         menuState -=1
 
+def zeroButtons():
+    global button1
+    global button2
+    global button3
+    global button4
+    button1 = 0
+    button2 = 0
+    button3 = 0
+    button4 = 0
+
 def waitForMenu():
     global buttonPress
     global button1
@@ -84,6 +94,7 @@ def waitForMenu():
 
 
 def mainMenu():
+    time.sleep(0.5)
     global menuState
     global buttonPress
     global button1
@@ -112,7 +123,10 @@ def mainMenu():
         elif (menuState == 3):
             return
 
-    time.sleep(1)
+    zeroButtons()
+
+
+
     mainMenu()
 
 
@@ -131,19 +145,39 @@ def showMainMenu():
     return
 
 def runHighscore():
+    time.sleep(0.5)
+    global highScoreState
     showHighscore()
-    digit = waitForMenu()
+    waitForMenu()
+    if (button1 == 1):
+        if(highScoreState == 0):
+            highScoreState == 1
+        else:
+            highScoreState = 0
+    elif (button2 == 1):
+        if(highScoreState == 0):
+            highScoreState == 1
+        else:
+            highScoreState = 0
+    elif (button4 == 1):
+        if (highScoreState == 0):
+            mainMenu()
+        elif (highScoreState == 1):
+            setHighScore(0)
 
-    if (digit == 4):
-        mainMenu()
-    elif (digit == 5):
-        resetHighScore()
-    else:
-        time.sleep(1)
-        runHighscore()
+
+
+
+    zeroButtons()
+    runHighscore()
 
 def showHighscore():
-    print("Highscore: " + str(getHighScore()) + "\nPress 4 to go back, \n Press 5 reset high score")
+    global highScoreState
+
+    if(highScoreState == 0):
+        lcd.message('HighScore: ' + str(getHighScore()) + '\n' + 'Go back')
+    elif(highScoreState == 1):
+        lcd.message('HighScore: ' + str(getHighScore()) + '\n' + 'Reset high score')
     # wyswietlanie na lcd
     return
 
