@@ -180,8 +180,8 @@ def mainMenu():
             dioda2.ChangeDutyCycle(0)
             dioda3.ChangeDutyCycle(0)
             dioda4.ChangeDutyCycle(0)
-            dioda5.ChangeDutyCycle(0)
-            dioda6.ChangeDutyCycle(0)
+            #dioda5.ChangeDutyCycle(0)
+            #dioda6.ChangeDutyCycle(0)
             startGame()
         elif (menuState == 1):
             runHighscore()
@@ -326,21 +326,25 @@ def showRoad(road):
             dioda1.ChangeDutyCycle(100)
             time.sleep(getTime())
             dioda1.ChangeDutyCycle(0)
+            time.sleep(getTime())
 
         elif(i == 2):
             dioda2.ChangeDutyCycle(100)
             time.sleep(getTime())
             dioda2.ChangeDutyCycle(0)
+            time.sleep(getTime())
 
         elif (i == 3):
             dioda3.ChangeDutyCycle(100)
             time.sleep(getTime())
             dioda3.ChangeDutyCycle(0)
+            time.sleep(getTime())
 
         elif (i == 4):
             dioda4.ChangeDutyCycle(100)
             time.sleep(getTime())
             dioda4.ChangeDutyCycle(0)
+            time.sleep(getTime())
 
 
 def startGame():
