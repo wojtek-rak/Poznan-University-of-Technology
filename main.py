@@ -347,6 +347,7 @@ def showRoad(road):
             time.sleep(getTime())
 
 def enterRoad(count):
+    count += 1
     global buttonPress
     global button1
     global button2
