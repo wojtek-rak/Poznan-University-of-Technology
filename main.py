@@ -382,6 +382,8 @@ def enterRoad(count):
                     buttonPress = 0
                     count -= 1
                     enteredRoad.append(1)
+                    print('append1')
+
             if(button2 == 1):
                 if (GPIO.input(20) == GPIO.LOW):
                     dioda2.ChangeDutyCycle(0)
@@ -389,6 +391,7 @@ def enterRoad(count):
                     buttonPress = 0
                     count -= 1
                     enteredRoad.append(2)
+                    print('append2')
 
             if (button3 == 1):
                 if (GPIO.input(16) == GPIO.LOW):
@@ -397,6 +400,7 @@ def enterRoad(count):
                     buttonPress = 0
                     count -= 1
                     enteredRoad.append(3)
+                    print('append3')
 
             if (button4 == 1):
                 if (GPIO.input(12) == GPIO.LOW):
@@ -405,6 +409,8 @@ def enterRoad(count):
                     buttonPress = 0
                     count -= 1
                     enteredRoad.append(4)
+                    print('append4')
+
     return enteredRoad
 
 def startGame():
@@ -418,7 +424,13 @@ def startGame():
 
         enteredRoad = enterRoad(len(road))
 
-        if(enteredRoad == road):
+        identical = True
+
+        for i in range(level):
+            if(enteredRoad[i] != road[i]):
+                identical = False
+
+        if(identical):
             dioda6.ChangeDutyCycle(100)
             time.sleep(2)
             dioda6.ChangeDutyCycle(0)
