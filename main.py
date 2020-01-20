@@ -47,6 +47,18 @@ gameDifficult = 1
 highScore = 0
 
 # ZMIENNE GLOBALNE
+
+# KURWA DIODA
+
+GPIO.setup(19, GPIO.OUT)
+
+dioda = GPIO.PWM(19, 50)
+wypelnienie = 0
+dioda.start(wypelnienie)
+
+# KURWA DIODA
+
+
 def addToMenuState():
     global menuState
     if(menuState == 3):
@@ -108,6 +120,22 @@ def waitForMenu():
 
 
 def mainMenu():
+    try:
+        while True:
+            wypelnienie += 5
+            if wypelnienie > 100:
+                wypelnienie = 0
+            print('Run forest run')
+            dioda.ChangeDutyCycle(wypelnienie)
+            time.sleep(0.05)
+    except KeyboardInterrupt:
+        print('Koniec')
+
+    dioda.stop()
+    GPIO.cleanup()
+
+    return
+
     time.sleep(0.5)
     global menuState
     global buttonPress
