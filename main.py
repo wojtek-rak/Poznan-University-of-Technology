@@ -133,6 +133,14 @@ def waitForMenu():
 
 
 def mainMenu():
+    buzzer = 27
+    GPIO.setup(buzzer, GPIO.OUT)
+    GPIO.output(buzzer, GPIO.HIGH)
+    print("Beep")
+    time.sleep(0.5)  # Delay in seconds
+    GPIO.output(buzzer, GPIO.LOW)
+    print("No Beep")
+    time.sleep(0.5)
 
     dioda1.ChangeDutyCycle(100)
     dioda2.ChangeDutyCycle(100)
