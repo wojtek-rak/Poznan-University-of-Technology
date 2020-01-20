@@ -130,7 +130,7 @@ public class DataLoader implements ApplicationRunner
         saleRepository.save(sale);
 
         Manager manager = new Manager();
-        manager.setName("Jarosław Kaczyński");
+        manager.setName("Administrator");
         manager.setPassword("123456");
         manager.setUsername("prezes123");
         managerRepository.save(manager);

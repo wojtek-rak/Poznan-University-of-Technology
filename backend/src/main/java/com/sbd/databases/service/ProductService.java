@@ -6,6 +6,7 @@ import com.sbd.databases.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,5 +42,15 @@ public class ProductService
     public void save(Product product)
     {
         repository.save(product);
+    }
+
+    public Product findByEan(BigDecimal ean)
+    {
+        return repository.findByEan(ean);
+    }
+
+    public boolean existByEan(BigDecimal ean)
+    {
+        return repository.existsByEan(ean);
     }
 }

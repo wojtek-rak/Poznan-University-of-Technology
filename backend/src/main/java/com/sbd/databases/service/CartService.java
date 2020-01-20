@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,7 +102,7 @@ public class CartService
 
         for (CartProduct cartProduct : cartProducts)
         {
-            if (cartProduct.getProduct().getId().equals(id))
+            if (cartProduct.getId().equals(id))
             {
                 cartProduct.setCount(addProductDTO.getCount());
                 cartProductService.save(cartProduct);
@@ -122,7 +123,7 @@ public class CartService
     }
 
     @Transactional
-    public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, Integer productId)
+    public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, Integer cartProductId)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
         List<CartProduct> cartProducts = cart.getCartProducts();
@@ -131,7 +132,7 @@ public class CartService
         while (iterator.hasNext())
         {
             CartProduct cartProduct = iterator.next();
-            if (cartProduct.getProduct().getId().equals(productId))
+            if (cartProduct.getId().equals(cartProductId))
             {
                 cartProductService.delete(cartProduct);
                 iterator.remove();
@@ -142,5 +143,10 @@ public class CartService
         cart.setCartProducts(cartProducts);
 
         return new CartWithProductsDTO(cart);
+    }
+
+    public BigDecimal calculateCart(Cart cart)
+    {
+        return cartRepository.calculateCart(cart.getId());
     }
 }

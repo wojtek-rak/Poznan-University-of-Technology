@@ -3,6 +3,7 @@ package com.sbd.databases.service;
 import com.sbd.databases.filter.JwtTokenUtil;
 import com.sbd.databases.model.Cart;
 import com.sbd.databases.model.Customer;
+import com.sbd.databases.model.DTO.AddressDTO;
 import com.sbd.databases.model.DTO.CustomerLoginDTO;
 import com.sbd.databases.model.DTO.CustomerSignUpDTO;
 import com.sbd.databases.repository.CartRepository;
@@ -37,22 +38,27 @@ public class CustomerService
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Customer with such name exists.");
         }
-        else
+        try
         {
             Customer customer = new Customer();
             customer.setName(customerSignUpDTO.getName());
 
-            String address = customerSignUpDTO.getStreet()
-                    + " "
-                    + customerSignUpDTO.getHomeNumber()
-                    + ", "
-                    + customerSignUpDTO.getPostcode()
-                    + " "
-                    + customerSignUpDTO.getCity()
-                    + ", "
-                    + customerSignUpDTO.getEmail();
+            AddressDTO addressDTO = customerSignUpDTO.getAddress();
+            if (addressDTO != null)
+            {
+                String address = addressDTO.getStreet()
+                        + " "
+                        + addressDTO.getHomeNumber()
+                        + ", "
+                        + addressDTO.getPostcode()
+                        + " "
+                        + addressDTO.getCity()
+                        + ", "
+                        + addressDTO.getEmail();
 
-            customer.setAddress(address);
+                customer.setAddress(address);
+            }
+
             customer.setPhone(customerSignUpDTO.getPhone());
             String token = jwtTokenUtil.generateToken(customer);
             customer.setToken(token);
@@ -66,6 +72,10 @@ public class CustomerService
             cartRepository.save(cart);
 
             return customerSignUpDTO;
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong request.");
         }
     }
 

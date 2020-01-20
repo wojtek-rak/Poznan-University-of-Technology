@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,19 +41,44 @@ public class WarehouseProductService
     @Transactional
     public WarehouseProductDTO addProductToWarehouse(WarehouseProductDTO warehouseProductDTO)
     {
+        if (productService.existByEan(warehouseProductDTO.getProduct().getEan())
+                || warehouseProductRepository.existsByWarehouseCode(warehouseProductDTO.getWarehouseCode()))
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Product with such ean or warehouse code exists.");
+        }
+
         ProductDTO productDTO = warehouseProductDTO.getProduct();
         CategoryDTO categoryDTO = productDTO.getCategory();
         SupplierDTO supplierDTO = categoryDTO.getSupplier();
         List<SaleDTO> saleDTOS = productDTO.getSales();
 
-        Supplier supplier = new Supplier();
-        supplier.setName(supplierDTO.getName());
-        supplierService.save(supplier);
+        Optional<Category> categoryOptional = categoryService.findByName(categoryDTO.getName());
+        Category category;
 
-        Category category = new Category();
-        category.setName(categoryDTO.getName());
-        category.setSupplier(supplier);
-        categoryService.save(category);
+        if (categoryOptional.isPresent())
+        {
+            category = categoryOptional.get();
+        }
+        else
+        {
+            Optional<Supplier> supplierOptional = supplierService.findByName(supplierDTO.getName());
+            Supplier supplier;
+            if (supplierOptional.isPresent())
+            {
+                supplier = supplierOptional.get();
+            }
+            else
+            {
+                supplier = new Supplier();
+                supplier.setName(supplierDTO.getName());
+                supplierService.save(supplier);
+            }
+
+            category = new Category();
+            category.setName(categoryDTO.getName());
+            category.setSupplier(supplier);
+            categoryService.save(category);
+        }
 
         Product product = new Product();
         product.setName(productDTO.getName());
@@ -107,5 +133,11 @@ public class WarehouseProductService
         }
 
         warehouseProductRepository.save(warehouseProduct);
+    }
+
+    public List<WarehouseProductDTO> remove(Integer id)
+    {
+        warehouseProductRepository.deleteById(id);
+        return warehouseProductRepository.findAll().stream().map(WarehouseProductDTO::new).collect(Collectors.toList());
     }
 }

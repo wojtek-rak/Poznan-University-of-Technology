@@ -12,4 +12,5 @@ public interface WarehouseProductRepository extends JpaRepository<WarehouseProdu
     @Procedure(name = "fillWarehouse")
     void fillWarehouse();
 
+    boolean existsByWarehouseCode(Integer warehouseCode);
 }

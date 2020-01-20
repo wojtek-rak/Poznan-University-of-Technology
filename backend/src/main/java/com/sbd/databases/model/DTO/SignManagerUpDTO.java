@@ -15,6 +15,6 @@ public class SignManagerUpDTO
     @Size(min = 2, max = 20, message = "Username should be between 2 and 20 characters long.")
     private String username;
     @NotNull(message = "Can't be empty")
-    @Size(min = 8, max = 20, message = "Password should be between 2 and 20 characters long.")
+    @Size(min = 8, max = 20, message = "Password should be between 8 and 20 characters long.")
     private String password;
 }

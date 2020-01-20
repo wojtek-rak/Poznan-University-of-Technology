@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,11 +47,19 @@ public class ShopOrderService
 
     public ManagerShopOrderDTO assignManager(Manager manager, Integer id)
     {
-        ShopOrder shopOrder = shopOrderRepository.getFirstByManagerAndId(manager, id);
-        shopOrder.setManager(manager);
-        shopOrderRepository.save(shopOrder);
+        Optional<ShopOrder> shopOrderOptional = shopOrderRepository.findById(id);
+        if (shopOrderOptional.isPresent())
+        {
+            ShopOrder shopOrder = shopOrderOptional.get();
+            shopOrder.setManager(manager);
+            shopOrderRepository.save(shopOrder);
 
-        return new ManagerShopOrderDTO(shopOrder);
+            return new ManagerShopOrderDTO(shopOrder);
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Can't find such shop order.");
+        }
     }
 
     public ManagerShopOrderDTO getManagerShopOrderById(Integer id)
@@ -60,6 +69,10 @@ public class ShopOrderService
 
     public ManagerShopOrderDTO confirmShopOrder(Manager manager, Integer id)
     {
-        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Implement this"); // TODO: 22.12.2019 call procedure on database
+        ShopOrder shopOrder = shopOrderRepository.getFirstByManagerAndId(manager, id);
+        shopOrder.setConfirmed(true);
+        shopOrderRepository.save(shopOrder);
+
+        return new ManagerShopOrderDTO(shopOrderRepository.getOne(id));
     }
 }

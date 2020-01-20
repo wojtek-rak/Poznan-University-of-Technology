@@ -41,4 +41,11 @@ public class WarehouseController
     {
         return warehouseProductService.fillWarehouse();
     }
+
+    @DeleteMapping("/products/{id}")
+    @ResponseBody
+    public List<WarehouseProductDTO> removeProductFromWarehouse(@PathVariable Integer id)
+    {
+        return warehouseProductService.remove(id);
+    }
 }

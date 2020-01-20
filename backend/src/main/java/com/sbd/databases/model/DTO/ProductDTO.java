@@ -19,6 +19,7 @@ public class ProductDTO
     @Size(min = 1, max = 255)
     private String name;
     @NotNull
+    @Digits(integer = 13, fraction = 0)
     private BigDecimal ean;
     @NotNull
     @Positive
@@ -27,6 +28,7 @@ public class ProductDTO
     @NotNull
     @Max(value = 100)
     @Min(value = 0)
+    @Digits(integer = 2, fraction = 0)
     private BigDecimal vat;
     @Valid
     @NotNull
