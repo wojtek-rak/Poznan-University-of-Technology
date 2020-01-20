@@ -114,11 +114,9 @@ def zeroButtons():
 def buzz():
     global buzzer
     GPIO.output(buzzer, GPIO.HIGH)
-    print("Beep")
-    time.sleep(0.25)  # Delay in seconds
+    time.sleep(0.15)  # Delay in seconds
     GPIO.output(buzzer, GPIO.LOW)
-    print("No Beep")
-    time.sleep(0.25)
+    time.sleep(0.15)
 
 def waitForMenu():
     global buttonPress
@@ -323,6 +321,17 @@ def getTime():
 
     return 1
 
+def preStart():
+    for i in range(3):
+        GPIO.output(buzzer, GPIO.HIGH)
+        dioda5.ChangeDutyCycle(100)
+        dioda6.ChangeDutyCycle(100)
+        time.sleep(0.15)  # Delay in seconds
+        dioda5.ChangeDutyCycle(0)
+        dioda6.ChangeDutyCycle(0)
+        GPIO.output(buzzer, GPIO.LOW)
+        time.sleep(0.15)
+
 def showRoad(road):
     for i in road:
         if(i == 1):
@@ -385,6 +394,7 @@ def enterRoad(count):
                     count -= 1
                     enteredRoad.append(1)
                     print('append1')
+                    time.sleep(0.25)
 
             if(button2 == 1):
                 if (GPIO.input(20) == GPIO.LOW):
@@ -394,6 +404,7 @@ def enterRoad(count):
                     count -= 1
                     enteredRoad.append(2)
                     print('append2')
+                    time.sleep(0.25)
 
             if (button3 == 1):
                 if (GPIO.input(16) == GPIO.LOW):
@@ -403,6 +414,7 @@ def enterRoad(count):
                     count -= 1
                     enteredRoad.append(3)
                     print('append3')
+                    time.sleep(0.25)
 
             if (button4 == 1):
                 if (GPIO.input(12) == GPIO.LOW):
@@ -412,6 +424,7 @@ def enterRoad(count):
                     count -= 1
                     enteredRoad.append(4)
                     print('append4')
+                    time.sleep(0.25)
 
     return enteredRoad
 
@@ -422,6 +435,7 @@ def startGame():
 
     while(end == 0):
         road = getRoad(level)
+        preStart()
         showRoad(road)
 
         enteredRoad = enterRoad(len(road))
@@ -433,9 +447,20 @@ def startGame():
                 identical = False
 
         if(identical):
-            dioda6.ChangeDutyCycle(100)
-            time.sleep(2)
-            dioda6.ChangeDutyCycle(0)
+            dioda5.ChangeDutyCycle(100)
+            GPIO.output(buzzer, GPIO.HIGH)
+            time.sleep(0.15)  # Delay in seconds
+            GPIO.output(buzzer, GPIO.LOW)
+            time.sleep(0.15)
+
+            GPIO.output(buzzer, GPIO.HIGH)
+            time.sleep(0.15)  # Delay in seconds
+            GPIO.output(buzzer, GPIO.LOW)
+            time.sleep(0.15)
+
+
+            time.sleep(1.4)
+            dioda5.ChangeDutyCycle(0)
             level += 1
 
             loop = False
@@ -461,9 +486,12 @@ def startGame():
                 setHighScore(level - 1)
             else:
                 lcd.message('You lost\nScore:' + str(0))
-
+                
             dioda6.ChangeDutyCycle(100)
-            time.sleep(2)
+            GPIO.output(buzzer, GPIO.HIGH)
+            time.sleep(1)  # Delay in seconds
+            GPIO.output(buzzer, GPIO.LOW)
+            time.sleep(1)
             dioda6.ChangeDutyCycle(0)
             time.sleep(2)
 
