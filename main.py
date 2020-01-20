@@ -182,10 +182,13 @@ def mainMenu():
             dioda4.ChangeDutyCycle(0)
             dioda5.ChangeDutyCycle(0)
             dioda6.ChangeDutyCycle(0)
+            zeroButtons()
             startGame()
         elif (menuState == 1):
+            zeroButtons()
             runHighscore()
         elif (menuState == 2):
+            zeroButtons()
             runGameDifficulty()
         elif (menuState == 3):
             dioda1.stop()
@@ -347,7 +350,6 @@ def showRoad(road):
             time.sleep(getTime())
 
 def enterRoad(count):
-    count += 1
     global buttonPress
     global button1
     global button2
