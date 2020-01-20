@@ -12,6 +12,9 @@ GPIO.setwarnings(False)
 
 
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
+GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
+GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
+GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
 
 # Raspberry Pi pin setup
 lcd_rs = 2
@@ -50,7 +53,13 @@ def mainMenu():
     print('wait for button')
     while True:
         if GPIO.input(21) == GPIO.HIGH:
-            print("Button was pushed!")
+            print("Button 21 was pushed!")
+        if GPIO.input(20) == GPIO.HIGH:
+            print("Button 20  was pushed!")
+        if GPIO.input(16) == GPIO.HIGH:
+            print("Button 16 was pushed!")
+        if GPIO.input(12) == GPIO.HIGH:
+            print("Button 12 was pushed!")
 
     if(digit == 1):
         startGame()
