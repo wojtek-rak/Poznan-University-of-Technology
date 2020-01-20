@@ -318,8 +318,9 @@ def getRoad(num):
     return lev
 
 def getTime():
+    global gameDifficult
 
-    return 1
+    return 2.0 / float(gameDifficult)
 
 def preStart():
     for i in range(3):
@@ -486,7 +487,7 @@ def startGame():
                 setHighScore(level - 1)
             else:
                 lcd.message('You lost\nScore:' + str(0))
-                
+
             dioda6.ChangeDutyCycle(100)
             GPIO.output(buzzer, GPIO.HIGH)
             time.sleep(1)  # Delay in seconds
