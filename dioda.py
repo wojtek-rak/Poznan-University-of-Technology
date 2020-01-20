@@ -14,7 +14,8 @@ try:
         wypelnienie += 5
         if wypelnienie > 100:
             wypelnienie = 0
-        dioda.ChangeDutyCycle(wypelnienie) 
+        print('Run forest run')
+        dioda.ChangeDutyCycle(wypelnienie)
         time.sleep(0.05)
 except KeyboardInterrupt:
     print('Koniec')
