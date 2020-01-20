@@ -3,9 +3,9 @@ import Adafruit_CharLCD as LCD
 
 
 import RPi.GPIO as GPIO
-from keypad import keypad
+#from keypad import keypad
 GPIO.setwarnings(False)
-kp = keypad(columnCount=3)
+#kp = keypad(columnCount=3)
 
 
 # Raspberry Pi pin setup
