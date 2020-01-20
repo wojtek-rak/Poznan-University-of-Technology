@@ -142,9 +142,6 @@ def mainMenu():
     dioda6.ChangeDutyCycle(100)
 
 
-
-    return
-
     time.sleep(0.5)
     global menuState
     global buttonPress
