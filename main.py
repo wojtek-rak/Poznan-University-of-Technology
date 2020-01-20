@@ -443,7 +443,7 @@ def startGame():
             lcd.clear()
             if(level > 4):
                 lcd.message('You lost\nScore:' + str(level - 1))
-                setHighScore(level - 1)gs
+                setHighScore(level - 1)
             else:
                 lcd.message('You lost\nScore:' + str(0))
 
