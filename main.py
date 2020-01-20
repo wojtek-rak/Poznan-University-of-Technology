@@ -61,6 +61,20 @@ def removeFromMenuState():
     else:
         menuState -=1
 
+def removeFromDifficulty():
+    global gameDifficult
+    if(gameDifficult == 1):
+        gameDifficult = 1
+    else:
+        gameDifficult -= 1
+
+def addToDifficulty():
+    global gameDifficult
+    if (gameDifficult == 6):
+        gameDifficult = 6
+    else:
+        gameDifficult += 1
+
 def zeroButtons():
     global button1
     global button2
@@ -108,9 +122,11 @@ def mainMenu():
 
 
     if(button1 == 1):
-        addToMenuState()
-    elif(button2 == 1):
         removeFromMenuState()
+
+    elif(button2 == 1):
+        addToMenuState()
+
     #elif (button3 == 1):
     #    runGameDifficulty()
     elif (button4 == 1):
@@ -173,7 +189,7 @@ def runHighscore():
 
 def showHighscore():
     global highScoreState
-
+    lcd.clear()
     if(highScoreState == 0):
         lcd.message('HighScore: ' + str(getHighScore()) + '\n' + 'Go back')
     elif(highScoreState == 1):
@@ -190,21 +206,27 @@ def resetHighScore():
     return
 
 def runGameDifficulty():
+    time.sleep(0.5)
     global gameDifficult
     showGameDifficulty()
-    digit = waitForMenu()
-    if (digit in [1, 2, 3, 4, 5, 6]):
-        gameDifficult = digit
-        return
-    else:
-        time.sleep(1)
-        runGameDifficulty()
+    waitForMenu()
+
+    if (button1 == 1):
+        removeFromDifficulty()
+    elif (button2 == 1):
+        addToDifficulty()
+    elif (button4 == 1):
+        mainMenu()
+
+
+    zeroButtons()
+    runGameDifficulty()
 
 
 def showGameDifficulty():
     global gameDifficult
-    print("Actual game difficult is: " + str(gameDifficult) + "\nPress 1-6 to set game difficult")
-
+    lcd.clear()
+    lcd.message('Game difficult: '+ str(gameDifficult))
     # wyswietlanie na lcd
     return
 
