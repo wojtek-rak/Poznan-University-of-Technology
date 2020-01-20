@@ -2,11 +2,16 @@ import time
 import Adafruit_CharLCD as LCD
 
 
+
+
 import RPi.GPIO as GPIO
 #from keypad import keypad
 GPIO.setwarnings(False)
 #kp = keypad(columnCount=3)
 
+
+
+GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
 
 # Raspberry Pi pin setup
 lcd_rs = 2
@@ -41,7 +46,9 @@ def waitForMenu():
 
 def mainMenu():
     showMainMenu()
-    digit = waitForMenu()
+    digit = 10# waitForMenu()
+    if GPIO.input(40) == GPIO.HIGH:
+        print("Button was pushed!")
 
     if(digit == 1):
         startGame()
