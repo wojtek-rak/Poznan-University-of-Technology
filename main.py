@@ -176,11 +176,11 @@ def mainMenu():
     #    runGameDifficulty()
     elif (button4 == 1):
         if (menuState == 0):
-            dioda1.ChangeDutyCycle(0)
-            dioda2.ChangeDutyCycle(0)
-            dioda3.ChangeDutyCycle(0)
-            dioda4.ChangeDutyCycle(0)
-            #dioda5.ChangeDutyCycle(0)
+            #dioda1.ChangeDutyCycle(0)
+            #dioda2.ChangeDutyCycle(0)
+            #dioda3.ChangeDutyCycle(0)
+            #dioda4.ChangeDutyCycle(0)
+            dioda5.ChangeDutyCycle(0)
             #dioda6.ChangeDutyCycle(0)
             startGame()
         elif (menuState == 1):
