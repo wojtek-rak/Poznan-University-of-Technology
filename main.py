@@ -25,6 +25,15 @@ lcd_d6 = 23
 lcd_d7 = 18
 #lcd_backlight = 2
 
+button1 = 0
+button2 = 0
+button3 = 0
+button4 = 0
+
+buttonPress = 0
+
+menuState = 0
+highScoreState = 0
 # Define LCD column and row size for 16x2 LCD.
 lcd_columns = 16
 lcd_rows = 2
@@ -38,62 +47,153 @@ gameDifficult = 1
 highScore = 0
 
 # ZMIENNE GLOBALNE
+def addToMenuState():
+    global menuState
+    if(menuState == 3):
+        menuState = 0
+    else:
+        menuState +=1
+
+def removeFromMenuState():
+    global menuState
+    if(menuState == 0):
+        menuState = 3
+    else:
+        menuState -=1
+
+def removeFromDifficulty():
+    global gameDifficult
+    if(gameDifficult == 1):
+        gameDifficult = 1
+    else:
+        gameDifficult -= 1
+
+def addToDifficulty():
+    global gameDifficult
+    if (gameDifficult == 6):
+        gameDifficult = 6
+    else:
+        gameDifficult += 1
+
+def zeroButtons():
+    global button1
+    global button2
+    global button3
+    global button4
+    button1 = 0
+    button2 = 0
+    button3 = 0
+    button4 = 0
 
 def waitForMenu():
-    digit = None
-    while digit == None:
-        #digit = kp.getKey()
-        digit = int(input())
+    global buttonPress
+    global button1
+    global button2
+    global button3
+    global button4
+    while buttonPress == 0:
+        if GPIO.input(21) == GPIO.HIGH:
+            button1 = 1
+            buttonPress = 1
+        if GPIO.input(20) == GPIO.HIGH:
+            button2 = 1
+            buttonPress = 1
+        if GPIO.input(16) == GPIO.HIGH:
+            button3 = 1
+            buttonPress = 1
+        if GPIO.input(12) == GPIO.HIGH:
+            button4 = 1
+            buttonPress = 1
+    buttonPress = 0
 
-    return digit
 
 def mainMenu():
+    time.sleep(0.5)
+    global menuState
+    global buttonPress
+    global button1
+    global button2
+    global button3
+    global button4
+
     showMainMenu()
-    digit = 10# waitForMenu()
+    waitForMenu()
     print('wait for button')
-    while True:
-        if GPIO.input(21) == GPIO.HIGH:
-            print("Button 21 was pushed!")
-        if GPIO.input(20) == GPIO.HIGH:
-            print("Button 20  was pushed!")
-        if GPIO.input(16) == GPIO.HIGH:
-            print("Button 16 was pushed!")
-        if GPIO.input(12) == GPIO.HIGH:
-            print("Button 12 was pushed!")
 
-    if(digit == 1):
-        startGame()
-    elif(digit == 2):
-        runHighscore()
-    elif (digit == 7):
-        runGameDifficulty()
-    elif (digit == 8):
-        return
 
-    time.sleep(1)
+    if(button1 == 1):
+        removeFromMenuState()
+
+    elif(button2 == 1):
+        addToMenuState()
+
+    #elif (button3 == 1):
+    #    runGameDifficulty()
+    elif (button4 == 1):
+        if (menuState == 0):
+            startGame()
+        elif (menuState == 1):
+            runHighscore()
+        elif (menuState == 2):
+            runGameDifficulty()
+        elif (menuState == 3):
+            return
+
+    zeroButtons()
+
+
+
     mainMenu()
 
 
 def showMainMenu():
     lcd.clear()
-    lcd.message('Main menu!')
-    print("Press 1 to start game, \nPress 2 to show highscore \nPress 7 to change difficult\nPress 8 to quit")
+    global menuState
+    if (menuState == 0):
+        lcd.message('Start game')
+    elif (menuState == 1):
+        lcd.message('Show highscore!')
+    elif (menuState == 2):
+        lcd.message('Change difficult')
+    elif (menuState == 3):
+        lcd.message('Quit')
+
     return
 
 def runHighscore():
+    time.sleep(0.5)
+    global highScoreState
     showHighscore()
-    digit = waitForMenu()
+    waitForMenu()
+    if (button1 == 1):
+        if(highScoreState == 0):
+            highScoreState == 1
+        else:
+            highScoreState = 0
+    elif (button2 == 1):
+        if(highScoreState == 0):
+            highScoreState == 1
+        else:
+            highScoreState = 0
+    elif (button4 == 1):
+        if (highScoreState == 0):
+            mainMenu()
+        elif (highScoreState == 1):
+            setHighScore(0)
 
-    if (digit == 4):
-        mainMenu()
-    elif (digit == 5):
-        resetHighScore()
-    else:
-        time.sleep(1)
-        runHighscore()
+
+
+
+    zeroButtons()
+    runHighscore()
 
 def showHighscore():
-    print("Highscore: " + str(getHighScore()) + "\nPress 4 to go back, \n Press 5 reset high score")
+    global highScoreState
+    lcd.clear()
+    if(highScoreState == 0):
+        lcd.message('HighScore: ' + str(getHighScore()) + '\n' + 'Go back')
+    elif(highScoreState == 1):
+        lcd.message('HighScore: ' + str(getHighScore()) + '\n' + 'Reset high score')
     # wyswietlanie na lcd
     return
 
@@ -106,21 +206,27 @@ def resetHighScore():
     return
 
 def runGameDifficulty():
+    time.sleep(0.5)
     global gameDifficult
     showGameDifficulty()
-    digit = waitForMenu()
-    if (digit in [1, 2, 3, 4, 5, 6]):
-        gameDifficult = digit
-        return
-    else:
-        time.sleep(1)
-        runGameDifficulty()
+    waitForMenu()
+
+    if (button1 == 1):
+        removeFromDifficulty()
+    elif (button2 == 1):
+        addToDifficulty()
+    elif (button4 == 1):
+        mainMenu()
+
+
+    zeroButtons()
+    runGameDifficulty()
 
 
 def showGameDifficulty():
     global gameDifficult
-    print("Actual game difficult is: " + str(gameDifficult) + "\nPress 1-6 to set game difficult")
-
+    lcd.clear()
+    lcd.message('Game difficult: '+ str(gameDifficult))
     # wyswietlanie na lcd
     return
 
