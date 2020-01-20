@@ -52,13 +52,20 @@ highScore = 0
 
 GPIO.setup(19, GPIO.OUT)
 
-dioda1 = GPIO.PWM(19, 50)
+dioda1 = GPIO.PWM(26, 50)
 dioda2 = GPIO.PWM(19, 50)
-dioda3 = GPIO.PWM(19, 50)
-dioda4 = GPIO.PWM(19, 50)
+dioda3 = GPIO.PWM(13, 50)
+dioda4 = GPIO.PWM(6, 50)
+dioda5 = GPIO.PWM(5, 50)
+dioda6 = GPIO.PWM(22, 50)
 
-wypelnienie = 0
-dioda.start(wypelnienie)
+dioda1.start(0)
+dioda2.start(0)
+dioda3.start(0)
+dioda4.start(0)
+dioda5.start(0)
+dioda6.start(0)
+
 
 # KURWA DIODA
 
@@ -124,20 +131,15 @@ def waitForMenu():
 
 
 def mainMenu():
-    try:
-        global wypelnienie
-        while True:
-            wypelnienie += 5
-            if wypelnienie > 100:
-                wypelnienie = 0
-            print('Run forest run')
-            dioda.ChangeDutyCycle(wypelnienie)
-            time.sleep(0.05)
-    except KeyboardInterrupt:
-        print('Koniec')
 
-    dioda.stop()
-    GPIO.cleanup()
+    dioda1.ChangeDutyCycle(100)
+    dioda2.ChangeDutyCycle(100)
+    dioda3.ChangeDutyCycle(100)
+    dioda4.ChangeDutyCycle(100)
+    dioda5.ChangeDutyCycle(100)
+    dioda6.ChangeDutyCycle(100)
+
+
 
     return
 
@@ -170,6 +172,14 @@ def mainMenu():
         elif (menuState == 2):
             runGameDifficulty()
         elif (menuState == 3):
+            dioda1.stop()
+            dioda2.stop()
+            dioda3.stop()
+            dioda4.stop()
+            dioda5.stop()
+            dioda6.stop()
+
+            GPIO.cleanup()
             return
 
     zeroButtons()
