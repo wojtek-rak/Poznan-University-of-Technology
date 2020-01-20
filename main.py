@@ -1,14 +1,12 @@
 import time
 import Adafruit_CharLCD as LCD
-
 import sqlite3
-
-
 import RPi.GPIO as GPIO
+import random
 #from keypad import keypad
 GPIO.setwarnings(False)
 #kp = keypad(columnCount=3)
-import random
+
 
 buzzer = 27
 GPIO.setup(buzzer, GPIO.OUT)
@@ -494,7 +492,7 @@ def startGame():
             lcd.clear()
             if(level > 4):
                 lcd.message('You lost\nScore:' + str(level - 1))
-                if(highScore < level - 1):
+                if(getHighScore() < level - 1):
                     setHighScore(level - 1)
             else:
                 lcd.message('You lost\nScore:' + str(0))
