@@ -121,6 +121,7 @@ def waitForMenu():
 
 def mainMenu():
     try:
+        global wypelnienie
         while True:
             wypelnienie += 5
             if wypelnienie > 100:
