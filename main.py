@@ -8,6 +8,7 @@ import RPi.GPIO as GPIO
 #from keypad import keypad
 GPIO.setwarnings(False)
 #kp = keypad(columnCount=3)
+import random
 
 
 
@@ -48,9 +49,6 @@ highScore = 0
 
 # ZMIENNE GLOBALNE
 
-# KURWA DIODA
-
-GPIO.setup(19, GPIO.OUT)
 
 dioda1 = GPIO.PWM(26, 50)
 dioda2 = GPIO.PWM(19, 50)
@@ -67,7 +65,6 @@ dioda5.start(0)
 dioda6.start(0)
 
 
-# KURWA DIODA
 
 
 def addToMenuState():
@@ -240,9 +237,6 @@ def showHighscore():
     # wyswietlanie na lcd
     return
 
-def startGame():
-    setHighScore(10)
-    return
 
 def resetHighScore():
     setHighScore(0)
@@ -281,6 +275,57 @@ def setHighScore(number):
     global highScore
     highScore = number
     print("HighScore set to " + str(number))
+
+def road(num):
+    lev = []
+    for i in range(num):
+        rand = random.uniform(0, 1)
+        if(rand < 0.25):
+            lev.append(1)
+
+        elif(rand >= 0.25 and rand < 0.5):
+            lev.append(2)
+
+        elif(rand >= 0.5 and rand < 0.75):
+            lev.append(3)
+
+        elif (rand >= 0.75):
+            lev.append(4)
+    return lev
+
+def startGame():
+    level = 4
+    global gameDifficult
+
+
+
+
+
+    setHighScore(10)
+    return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__== "__main__":
