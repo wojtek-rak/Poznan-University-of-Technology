@@ -10,7 +10,8 @@ GPIO.setwarnings(False)
 #kp = keypad(columnCount=3)
 import random
 
-
+buzzer = 27
+GPIO.setup(buzzer, GPIO.OUT)
 
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
 GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
@@ -110,6 +111,15 @@ def zeroButtons():
     button3 = 0
     button4 = 0
 
+def buzz():
+    global buzzer
+    GPIO.output(buzzer, GPIO.HIGH)
+    print("Beep")
+    time.sleep(0.25)  # Delay in seconds
+    GPIO.output(buzzer, GPIO.LOW)
+    print("No Beep")
+    time.sleep(0.25)
+
 def waitForMenu():
     global buttonPress
     global button1
@@ -133,14 +143,7 @@ def waitForMenu():
 
 
 def mainMenu():
-    buzzer = 27
-    GPIO.setup(buzzer, GPIO.OUT)
-    GPIO.output(buzzer, GPIO.HIGH)
-    print("Beep")
-    time.sleep(0.5)  # Delay in seconds
-    GPIO.output(buzzer, GPIO.LOW)
-    print("No Beep")
-    time.sleep(0.5)
+    buzz()
 
     dioda1.ChangeDutyCycle(100)
     dioda2.ChangeDutyCycle(100)
@@ -173,6 +176,12 @@ def mainMenu():
     #    runGameDifficulty()
     elif (button4 == 1):
         if (menuState == 0):
+            dioda1.ChangeDutyCycle(0)
+            dioda2.ChangeDutyCycle(0)
+            dioda3.ChangeDutyCycle(0)
+            dioda4.ChangeDutyCycle(0)
+            dioda5.ChangeDutyCycle(0)
+            dioda6.ChangeDutyCycle(0)
             startGame()
         elif (menuState == 1):
             runHighscore()
@@ -303,15 +312,42 @@ def road(num):
             lev.append(4)
     return lev
 
+def getTime():
+
+    return 1
+
+def showRoad(road):
+    for i in road:
+        if(i == 1):
+            dioda1.ChangeDutyCycle(100)
+            time.sleep(getTime())
+            dioda1.ChangeDutyCycle(0)
+
+        elif(i == 2):
+            dioda2.ChangeDutyCycle(100)
+            time.sleep(getTime())
+            dioda2.ChangeDutyCycle(0)
+
+        elif (i == 3):
+            dioda3.ChangeDutyCycle(100)
+            time.sleep(getTime())
+            dioda3.ChangeDutyCycle(0)
+
+        elif (i == 4):
+            dioda4.ChangeDutyCycle(100)
+            time.sleep(getTime())
+            dioda4.ChangeDutyCycle(0)
+
+
 def startGame():
     level = 4
     global gameDifficult
     end = 0
 
-    #while(end == 0):
-
-        #showRoad()
-
+    while(end == 0):
+        road = road(level)
+        showRoad(road)
+        end = 1
 
 
 
@@ -321,10 +357,8 @@ def startGame():
     return
 
 
-
-
-
-
+#dioda5.ChangeDutyCycle(100)
+#dioda6.ChangeDutyCycle(100)
 
 
 
