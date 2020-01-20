@@ -47,6 +47,7 @@ def waitForMenu():
 def mainMenu():
     showMainMenu()
     digit = 10# waitForMenu()
+    print('wait for button')
     while True:
         if GPIO.input(40) == GPIO.HIGH:
             print("Button was pushed!")
