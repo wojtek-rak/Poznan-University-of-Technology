@@ -21,3 +21,9 @@ for row in rows:
     print(row[0])
 
 db.close()
+
+db = sqlite3.connect('highScore.db')
+cur = db.cursor()
+cur.execute("UPDATE highScore SET data =" + str(5))
+db.commit()
+db.close()

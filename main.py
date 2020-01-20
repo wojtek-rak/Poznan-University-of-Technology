@@ -195,7 +195,7 @@ def mainMenu():
             dioda4.stop()
             dioda5.stop()
             dioda6.stop()
-
+            lcd.clear()
             GPIO.cleanup()
             return
 
@@ -305,6 +305,7 @@ def setHighScore(number):
     db = sqlite3.connect('highScore.db')
     cur = db.cursor()
     cur.execute("UPDATE highScore SET data =" + str(number))
+    db.commit()
     db.close()
     print("HighScore set to " + str(number))
 
