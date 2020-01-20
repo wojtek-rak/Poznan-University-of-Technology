@@ -52,7 +52,11 @@ highScore = 0
 
 GPIO.setup(19, GPIO.OUT)
 
-dioda = GPIO.PWM(19, 50)
+dioda1 = GPIO.PWM(19, 50)
+dioda2 = GPIO.PWM(19, 50)
+dioda3 = GPIO.PWM(19, 50)
+dioda4 = GPIO.PWM(19, 50)
+
 wypelnienie = 0
 dioda.start(wypelnienie)
 
