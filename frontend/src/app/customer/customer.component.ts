@@ -16,6 +16,7 @@ export class CustomerComponent implements OnInit {
   private cart: Cart;
   private loading = false;
   private fail = false;
+  private failCart = false;
 
   constructor(private customerService: CustomerService, private router: Router) { }
 
@@ -69,6 +70,11 @@ export class CustomerComponent implements OnInit {
     this.fail = true;
   }
 
+  showErrorMsgCart() {
+    this.failCart = true;
+  }
+
+
   removeProduct(index) {
     this.products[index].count -= 1;
     if(this.products[index].count < 0){
@@ -118,6 +124,10 @@ export class CustomerComponent implements OnInit {
       },
       err => {
         this.showErrorMsg();
+        if(err.statusCode == 409)
+        {
+          this.showErrorMsgCart();
+        }
       }
     );
   }

@@ -12,6 +12,7 @@ import {Address, Customer} from '../logic/models/Customer';
 })
 export class AddPrductComponent implements OnInit {
   addProductForm;
+  private fail = false;
 
   constructor(private managerService: ManagerService,
               private formBuilder: FormBuilder,
@@ -72,7 +73,15 @@ export class AddPrductComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
+        if(err.statusCode == 409)
+        {
+          this.showErrorDup();
+        }
       }
     );
+  }
+
+  showErrorDup() {
+    this.fail = true;
   }
 }

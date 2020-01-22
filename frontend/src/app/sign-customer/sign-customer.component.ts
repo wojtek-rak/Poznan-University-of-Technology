@@ -11,6 +11,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./sign-customer.component.css']
 })
 export class SignCustomerComponent implements OnInit {
+  private fail = false;
   signinForm;
   signupForm;
   private customer: Customer;
@@ -76,7 +77,15 @@ export class SignCustomerComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
+        if(err.statusCode == 409)
+        {
+          this.showErrorDup();
+        }
       }
     );
+  }
+
+  showErrorDup() {
+    this.fail = true;
   }
 }

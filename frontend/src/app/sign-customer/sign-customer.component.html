@@ -21,7 +21,9 @@
 <h3>Sign up</h3>
 
 <form [formGroup]="signupForm" (ngSubmit)="onSubmitSignUp(signupForm.value)">
-
+  <div class="fail" *ngIf="fail === true" style="color: red">
+    Customer with such name exists.
+  </div>
   <div>
     <label for="userName">
       Name

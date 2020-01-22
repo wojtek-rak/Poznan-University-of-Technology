@@ -13,6 +13,7 @@ import {FormBuilder} from '@angular/forms';
 export class ManagerComponent implements OnInit {
 
   signupForm;
+  private fail = false;
   private managerOrder: ManagerOrder[] = [];
 
   constructor(private managerService: ManagerService, private router: Router, private formBuilder: FormBuilder) {
@@ -54,7 +55,15 @@ export class ManagerComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
+        if(err.statusCode == 409)
+        {
+          this.showErrorDup();
+        }
       }
     );
+  }
+
+  showErrorDup() {
+    this.fail = true;
   }
 }
