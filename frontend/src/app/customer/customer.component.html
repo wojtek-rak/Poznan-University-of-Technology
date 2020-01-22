@@ -7,6 +7,27 @@
 </div>
 
 
+
+<div class="product-wrapper split left">
+  <div
+    *ngFor="let category of (categories);"
+  >
+    <div class="product-author">
+      <div class="buttons">
+        <button (click)="categoryFilter(category)"{{category.name}}</button>
+      </div>
+    </div>
+  </div>
+  <div class="product-author">
+    <div class="buttons">
+      <button (click)="getAllCategories()" >All</button>
+    </div>
+  </div>
+</div>
+
+
+
+
 <div class="product-wrapper split left">
   <div
     *ngFor="let product of (products); let i = index"

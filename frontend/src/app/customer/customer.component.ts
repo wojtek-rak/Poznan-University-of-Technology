@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 export class CustomerComponent implements OnInit {
 
   private products: Product[] = [];
+  private categories: Category[] = [];
   private cart: Cart;
   private loading = false;
   private fail = false;
@@ -52,6 +53,15 @@ export class CustomerComponent implements OnInit {
         this.showErrorMsg();
       }
     );
+    this.customerService.getStoreCategories().subscribe(
+      res => {
+        this.categories = res as Category[];
+        console.log(res);
+      },
+      err => {
+        this.showErrorMsg();
+      }
+    );
   }
 
   showErrorMsg() {
@@ -68,6 +78,36 @@ export class CustomerComponent implements OnInit {
 
   addProduct(index) {
     this.products[index].count += 1;
+  }
+
+  categoryFilter(category: Category) {
+    this.customerService.getStoreProductsCategories(category.id).subscribe(
+      res => {
+        this.products = res as Product[];
+        this.products.forEach(value => {
+          value.count = 0;
+        });
+        console.log(res);
+      },
+      err => {
+        this.showErrorMsg();
+      }
+    );
+  }
+
+  getAllCategories() {
+    this.customerService.getStoreProducts().subscribe(
+      res => {
+        this.products = res as Product[];
+        this.products.forEach(value => {
+          value.count = 0;
+        });
+        console.log(res);
+      },
+      err => {
+        this.showErrorMsg();
+      }
+    );
   }
 
   addToCart(index: number) {
