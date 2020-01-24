@@ -73,7 +73,8 @@ export class AddPrductComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
-        if(err.statusCode == 409)
+        console.log(err);
+        if(err.status === 409)
         {
           this.showErrorDup();
         }

@@ -55,7 +55,7 @@ export class ManagerComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
-        if(err.statusCode == 409)
+        if(err.status === 409)
         {
           this.showErrorDup();
         }

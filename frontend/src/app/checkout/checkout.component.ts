@@ -10,6 +10,7 @@ import {FormBuilder} from '@angular/forms';
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
+  private fail = false;
   checkoutForm;
   private cart: Cart;
   private order: Order;
@@ -66,8 +67,16 @@ export class CheckoutComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
+        if(err.status === 409)
+        {
+          this.showErrorDup();
+        }
       }
     );
 
+  }
+
+  showErrorDup() {
+    this.fail = true;
   }
 }

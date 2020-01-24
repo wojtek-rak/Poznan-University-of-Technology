@@ -124,7 +124,7 @@ export class CustomerComponent implements OnInit {
       },
       err => {
         this.showErrorMsg();
-        if(err.statusCode == 409)
+        if(err.status === 409)
         {
           this.showErrorMsgCart();
         }

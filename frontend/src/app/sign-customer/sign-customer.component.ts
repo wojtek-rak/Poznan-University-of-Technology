@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 })
 export class SignCustomerComponent implements OnInit {
   private fail = false;
+  private nameFail = false;
   signinForm;
   signupForm;
   private customer: Customer;
@@ -46,6 +47,10 @@ export class SignCustomerComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
+        if(err.status === 403)
+        {
+          this.showErrorName();
+        }
       }
     );
   }
@@ -76,8 +81,8 @@ export class SignCustomerComponent implements OnInit {
         this.router.navigate(['/customer']);
       },
       err => {
-        console.log('ERROR DURING REQUEST');
-        if(err.statusCode == 409)
+        console.log(err);
+        if(err.status === 409)
         {
           this.showErrorDup();
         }
@@ -87,5 +92,8 @@ export class SignCustomerComponent implements OnInit {
 
   showErrorDup() {
     this.fail = true;
+  }
+  showErrorName() {
+    this.nameFail = true;
   }
 }

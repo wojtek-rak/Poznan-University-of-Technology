@@ -6,11 +6,13 @@
 
 <form [formGroup]="addProductForm" (ngSubmit)="onSubmitSignUp(addProductForm.value)">
 
+
   <div>
     <label for="name">
       Name
     </label>
-    <input id="name" type="text" formControlName="name">
+    <input id="name" type="text" formControlName="name" >
+
   </div>
   <div class="fail" *ngIf="fail === true" style="color: red">
     Product with such ean or Warehouse Code exists.
