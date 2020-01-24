@@ -5,10 +5,12 @@ import com.sbd.databases.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Profile("development")
 @Component
 public class DataLoader implements ApplicationRunner
 {
@@ -102,13 +104,11 @@ public class DataLoader implements ApplicationRunner
 
         Cart cart1 = new Cart();
         cart1.setConfirmed(false);
-        cart1.setCount(7);
         cart1.setCustomer(wojtek);
         cartRepository.save(cart1);
 
         Cart cart2 = new Cart();
         cart2.setConfirmed(false);
-        cart2.setCount(0);
         cart2.setCustomer(blazej);
         cartRepository.save(cart2);
 

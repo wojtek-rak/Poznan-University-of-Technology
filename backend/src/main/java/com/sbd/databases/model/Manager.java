@@ -19,10 +19,12 @@ public class Manager
     private Integer id;
     @Column(name = "Name", nullable = false)
     private String name;
-    @Column(name = "Username", nullable = false)
+    @Column(name = "Username", nullable = false, unique = true)
     private String username;
     @Column(name = "Password", nullable = false)
     private String password;
+    @Column(name = "Token")
+    private String token;
     @OneToMany(mappedBy = "manager")
     @JsonManagedReference
     private List<ShopOrder> shopOrders;

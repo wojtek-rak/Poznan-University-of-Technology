@@ -25,6 +25,8 @@ public class Customer
     private String address;
     @Column(name = "Phone")
     private String phone;
+    @Column(name = "Token")
+    private String token;
     @OneToMany(mappedBy = "customer")
     @JsonBackReference("carts")
     private List<Cart> carts;

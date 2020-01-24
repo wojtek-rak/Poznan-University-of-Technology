@@ -7,58 +7,75 @@
     <h3 class="cart-title">
       <span>{{ product.name }}</span>
     </h3>
-    <span>Ilość: {{ product.count }} <i class="icon-heart-1"></i></span>
+    <span>Amount: {{ product.count }} <i class="icon-heart-1"></i></span>
     <div class="cart-author">
-      <span>Cena: {{ product.price * product.count }} <i class="icon-comment"></i></span>
+      <div *ngIf="product.priceWithDiscounts == product.price">
+        <span>Price: {{ product.price }} <i class="icon-comment"></i></span>
+      </div>
+      <div *ngIf="product.priceWithDiscounts != product.price">
+        <span>Price: <s>{{ product.price }}<i class="icon-comment"></i></s></span>
+        <span>&nbsp;{{ product.priceWithDiscounts }} <i class="icon-comment"></i></span>
+      </div>
     </div>
   </div>
-  <h2>Cena łączna: {{cart.totalPrice}}</h2>
+  <h2>Total price: {{cart.totalPrice}}</h2>
 
 </div>
-<form [formGroup]="checkoutForm" (ngSubmit)="checkout(checkoutForm.value)">
+
+<div class="fail" *ngIf="fail === true" style="color: red">
+  There are not so many goods in stock.
+</div>
+
+<form [formGroup]="checkoutForm" (ngSubmit)="checkout(checkoutForm.value)" ngNativeValidate>
 
   <div>
     <label for="street">
       Street
     </label>
-    <input id="street" type="text" formControlName="street">
+    <input id="street" type="text" formControlName="street" required>
   </div>
 
   <div>
     <label for="homeNumber">
       HomeNumber
     </label>
-    <input id="homeNumber" type="text" formControlName="homeNumber">
+    <input id="homeNumber" type="text" formControlName="homeNumber" required>
   </div>
 
   <div>
     <label for="postcode">
       Postcode
     </label>
-    <input id="postcode" type="text" formControlName="postcode">
+    <input id="postcode" type="text" formControlName="postcode" required>
   </div>
 
   <div>
     <label for="city">
       City
     </label>
-    <input id="city" type="text" formControlName="city">
+    <input id="city" type="text" formControlName="city" required>
   </div>
 
   <div>
     <label for="email">
       Email
     </label>
-    <input id="email" type="text" formControlName="email">
+    <input id="email" type="email" formControlName="email" required>
   </div>
 
   <div>
     <label for="phone">
       Phone
     </label>
-    <input id="phone" type="text" formControlName="phone">
+    <input id="phone" type="text" formControlName="phone" required>
   </div>
+  <br />
 
+  <div *ngIf="cart.totalPrice == 0">
+    <button class="button" type="submit" disabled>Checkout</button>
 
-  <button class="button" type="submit">Checkout</button>
+  </div>
+  <div *ngIf="cart.totalPrice != 0">
+    <button class="button" type="submit" >Checkout</button>
+  </div>
 </form>

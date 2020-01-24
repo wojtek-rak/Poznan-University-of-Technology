@@ -4,8 +4,11 @@ import com.sbd.databases.model.*;
 import com.sbd.databases.model.DTO.*;
 import com.sbd.databases.repository.WarehouseProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,7 @@ public class WarehouseProductService
         return collect.stream().map(WarehouseProductDTO::new).collect(Collectors.toList());
     }
 
+    @Transactional
     public WarehouseProductDTO addProductToWarehouse(WarehouseProductDTO warehouseProductDTO)
     {
         ProductDTO productDTO = warehouseProductDTO.getProduct();
@@ -54,18 +58,54 @@ public class WarehouseProductService
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());
         product.setVat(productDTO.getVat());
+        product.setEan(productDTO.getEan());
         product.setCategory(category);
         productService.save(product);
 
-        List<Sale> sales = saleDTOS.stream().map(SaleDTO::getPercentDiscount).map(Sale::new).collect(Collectors.toList());
-        sales.forEach(sale -> sale.setProduct(product));
-        saleService.saveAll(sales);
+        if (saleDTOS != null)
+        {
+            List<Sale> sales = saleDTOS.stream().map(SaleDTO::getPercentDiscount).map(Sale::new).collect(Collectors.toList());
+            sales.forEach(sale -> sale.setProduct(product));
+            saleService.saveAll(sales);
+        }
 
         WarehouseProduct warehouseProduct = new WarehouseProduct();
         warehouseProduct.setCount(warehouseProductDTO.getCount());
         warehouseProduct.setProduct(product);
+        warehouseProduct.setWarehouseCode(warehouseProductDTO.getWarehouseCode());
         warehouseProductRepository.save(warehouseProduct);
 
         return warehouseProductDTO;
+    }
+
+    public List<WarehouseProductDTO> fillWarehouse()
+    {
+        try
+        {
+            warehouseProductRepository.fillWarehouse();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getClass());
+        }
+
+        return warehouseProductRepository.findAll().stream().map(WarehouseProductDTO::new).collect(Collectors.toList());
+    }
+
+    public void updateProduct(CartProduct cartProduct)
+    {
+        WarehouseProduct warehouseProduct = cartProduct.getProduct().getWarehouseProduct();
+        int newCount = warehouseProduct.getCount() - cartProduct.getCount();
+
+        if (newCount >= 0)
+        {
+            warehouseProduct.setCount(newCount);
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There is too small amount of products in a warehouse!");
+        }
+
+        warehouseProductRepository.save(warehouseProduct);
     }
 }

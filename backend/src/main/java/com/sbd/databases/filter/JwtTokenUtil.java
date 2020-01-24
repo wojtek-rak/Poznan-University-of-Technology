@@ -24,14 +24,14 @@ public class JwtTokenUtil implements Serializable
         return request.getHeader("Authorization").replace("Bearer ", "");
     }
 
-    public Integer getIdFromRequest(HttpServletRequest request)
+    public String getNameFromRequest(HttpServletRequest request)
     {
-        return getIdFromToken(getTokenFromRequest(request));
+        return getNameFromToken(getTokenFromRequest(request));
     }
 
-    public Integer getIdFromToken(String token)
+    public String getNameFromToken(String token)
     {
-        return Integer.valueOf(getClaimFromToken(token, Claims::getSubject));
+        return getClaimFromToken(token, Claims::getSubject);
     }
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver)
@@ -48,25 +48,14 @@ public class JwtTokenUtil implements Serializable
                 .getBody();
     }
 
-    public Date getExpirationDateFromToken(String token)
-    {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    private Boolean isTokenExpired(String token)
-    {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
     public String generateToken(Manager manager)
     {
-        return doGenerateToken(manager.getId().toString(), RolesEnum.MANAGER);
+        return doGenerateToken(manager.getUsername(), RolesEnum.MANAGER);
     }
 
     public String generateToken(Customer customer)
     {
-        return doGenerateToken(customer.getId().toString(), RolesEnum.CUSTOMER);
+        return doGenerateToken(customer.getName(), RolesEnum.CUSTOMER);
     }
 
     private String doGenerateToken(String subject, RolesEnum role)
@@ -76,20 +65,7 @@ public class JwtTokenUtil implements Serializable
                 .setSubject(subject)
                 .claim("roles", role)
                 .setIssuedAt(new Date(currentTimeMillis))
-                .setExpiration(new Date(currentTimeMillis + 1000 * 60 * 60))
                 .signWith(SignatureAlgorithm.HS384, SECRET)
                 .compact();
-    }
-
-    public Boolean validateToken(String token, Customer customer)
-    {
-        final Integer id = getIdFromToken(token);
-        return (id.equals(customer.getId()) && !isTokenExpired(token));
-    }
-
-    public Boolean validateToken(String token, Manager manager)
-    {
-        final Integer id = getIdFromToken(token);
-        return (id.equals(manager.getId()) && !isTokenExpired(token));
     }
 }

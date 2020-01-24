@@ -20,12 +20,21 @@
     </div>
 
   </div>
-  <p></p>
-  <div class="buttons">
-    <button (click)="addToWarehouses()">Fill products to warehouses</button>
-  </div>
+
   <br />
 
+  <form [formGroup]="fillForm" (ngSubmit)="onSubmitFillForm(fillForm.value)" ngNativeValidate>
+    <div>
+      <label for="amount">
+        Liczba:
+      </label>
+      <input id="amount" type="number" formControlName="amount" ngModel required >
+    </div>
+    <br />
+    <button class="button" type="submit">Fill products</button>
+
+  </form>
+  <br />
     <a  routerLink="/add-product"  class="headerButon">
       <i class="material-icons">Add-product</i>
     </a>

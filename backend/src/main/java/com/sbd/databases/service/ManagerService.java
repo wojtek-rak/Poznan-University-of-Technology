@@ -29,11 +29,6 @@ public class ManagerService
         return managerRepository.getOne(1);
     }
 
-    public Boolean existsByUsername(String username)
-    {
-        return managerRepository.existsByUsername(username);
-    }
-
     public void save(Manager manager)
     {
         managerRepository.save(manager);
@@ -41,23 +36,73 @@ public class ManagerService
 
     public Manager getManagerFromRequest(HttpServletRequest request)
     {
-        Integer managerId = jwtTokenUtil.getIdFromRequest(request);
-        Manager manager = managerRepository.getOne(managerId);
+        String name;
 
-        return manager;
+        String token = jwtTokenUtil.getTokenFromRequest(request);
+
+        try
+        {
+            name = jwtTokenUtil.getNameFromToken(token);
+            Manager manager = managerRepository.getByUsername(name);
+
+            if (manager.getToken().equals(token))
+            {
+                return manager;
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not view this page.");
+        }
     }
 
-    public String loginManager(ManagerLoginDTO managerLoginDTO)
+    @SuppressWarnings("Duplicates")
+    public String loginManager(ManagerLoginDTO managerLoginDTO) throws ResponseStatusException
     {
-        Manager manager = managerRepository.getByUsername(managerLoginDTO.getUsername());
+        Manager manager;
 
-        if (manager != null && manager.getPassword().equals(managerLoginDTO.getPassword()))
+        if (existsByUsername(managerLoginDTO.getUsername()))
         {
-            return jwtTokenUtil.generateToken(manager);
+            manager = managerRepository.getByUsername(managerLoginDTO.getUsername());
         }
         else
         {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid username or password.");
         }
+
+        if (manager != null && manager.getPassword().equals(managerLoginDTO.getPassword()))
+        {
+            if (manager.getToken() != null)
+            {
+                return manager.getToken();
+            }
+            else
+            {
+                String token = jwtTokenUtil.generateToken(manager);
+                manager.setToken(token);
+                managerRepository.save(manager);
+                return token;
+            }
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid username or password.");
+        }
+    }
+
+    public Boolean existsByUsername(String username)
+    {
+        return managerRepository.existsByUsername(username);
+    }
+
+    public String logoutManager(Manager manager)
+    {
+        manager.setToken(null);
+
+        return manager.getUsername();
     }
 }

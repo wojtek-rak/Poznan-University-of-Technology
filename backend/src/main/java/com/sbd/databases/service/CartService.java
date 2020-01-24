@@ -26,9 +26,10 @@ public class CartService
     private final ShopOrderRepository shopOrderRepository;
     private final ProductService productService;
     private final CartProductService cartProductService;
+    private final WarehouseProductService warehouseProductService;
 
     @Autowired
-    public CartService(CartRepository cartRepository, ProductService productService, CustomerService customerService, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService1, CartProductService cartProductService)
+    public CartService(CartRepository cartRepository, ProductService productService, CustomerService customerService, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService1, CartProductService cartProductService, WarehouseProductService warehouseProductService)
     {
         this.cartRepository = cartRepository;
         this.customerService = customerService;
@@ -36,6 +37,7 @@ public class CartService
         this.shopOrderRepository = shopOrderRepository;
         this.productService = productService1;
         this.cartProductService = cartProductService;
+        this.warehouseProductService = warehouseProductService;
     }
 
     public CartWithProductsDTO getNotConfirmedCartOfCustomer(Customer customer)
@@ -57,7 +59,6 @@ public class CartService
             Cart cartNew = new Cart();
             cartNew.setConfirmed(false);
             cartNew.setCustomer(customer);
-            cartNew.setCount(0);
             cartRepository.save(cartNew);
 
             ShopOrder shopOrder = new ShopOrder();
@@ -65,7 +66,12 @@ public class CartService
             shopOrder.setManager(managerService.getAvailableManager());
             shopOrder.setCustomer(customer);
             shopOrder.setCart(cart);
+            shopOrder.setConfirmed(false);
             shopOrderRepository.save(shopOrder);
+
+            cart.getCartProducts()
+                    .forEach(warehouseProductService::updateProduct);
+
 
             CartWithProductsDTO cartWithProductsDTO = new CartWithProductsDTO(cart);
             ShopOrderDTO shopOrderDTO = new ShopOrderDTO(shopOrder);
@@ -74,7 +80,7 @@ public class CartService
         }
         else
         {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cart is empty.");
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Cart is empty.");
         }
     }
 
@@ -87,6 +93,7 @@ public class CartService
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public CartWithProductsDTO addProductToCart(Integer id, AddProductDTO addProductDTO, Customer customer)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
@@ -96,7 +103,7 @@ public class CartService
         {
             if (cartProduct.getProduct().getId().equals(id))
             {
-                cartProduct.setCount(cartProduct.getCount() + addProductDTO.getCount());
+                cartProduct.setCount(addProductDTO.getCount());
                 cartProductService.save(cartProduct);
 
                 return new CartWithProductsDTO(cart);
@@ -114,6 +121,7 @@ public class CartService
         return new CartWithProductsDTO(cart);
     }
 
+    @Transactional
     public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, Integer productId)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
@@ -127,28 +135,6 @@ public class CartService
             {
                 cartProductService.delete(cartProduct);
                 iterator.remove();
-                break;
-            }
-        }
-
-        cart.setCartProducts(cartProducts);
-
-        return new CartWithProductsDTO(cart);
-    }
-
-    public CartWithProductsDTO updateProductCountInCartOfCustomer(Customer customer, Integer cartProductId, Integer count)
-    {
-        Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
-        List<CartProduct> cartProducts = cart.getCartProducts();
-
-        Iterator<CartProduct> iterator = cartProducts.iterator();
-        while (iterator.hasNext())
-        {
-            CartProduct cartProduct = iterator.next();
-            if (cartProduct.getId().equals(cartProductId))
-            {
-                cartProduct.setCount(count);
-                cartProductService.save(cartProduct);
                 break;
             }
         }

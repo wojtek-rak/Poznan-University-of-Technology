@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 @Service
 public class CustomerService
@@ -29,26 +30,42 @@ public class CustomerService
         this.cartRepository = cartRepository;
     }
 
-    public void createCustomer(CustomerSignUpDTO customerSignUpDTO)
+    @Transactional
+    public CustomerSignUpDTO createCustomer(CustomerSignUpDTO customerSignUpDTO) throws ResponseStatusException
     {
         if (existCustomerByName(customerSignUpDTO.getName()))
         {
-            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "Customer with such name exists.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Customer with such name exists.");
         }
         else
         {
             Customer customer = new Customer();
             customer.setName(customerSignUpDTO.getName());
-            customer.setAddress(customerSignUpDTO.getAddress() == null ? null : customerSignUpDTO.getAddress().toString());
+
+            String address = customerSignUpDTO.getStreet()
+                    + " "
+                    + customerSignUpDTO.getHomeNumber()
+                    + ", "
+                    + customerSignUpDTO.getPostcode()
+                    + " "
+                    + customerSignUpDTO.getCity()
+                    + ", "
+                    + customerSignUpDTO.getEmail();
+
+            customer.setAddress(address);
             customer.setPhone(customerSignUpDTO.getPhone());
+            String token = jwtTokenUtil.generateToken(customer);
+            customer.setToken(token);
+            customerSignUpDTO.setToken(token);
 
             Cart cart = new Cart();
-            cart.setCount(0);
             cart.setCustomer(customer);
             cart.setConfirmed(false);
 
             customerRepository.save(customer);
             cartRepository.save(cart);
+
+            return customerSignUpDTO;
         }
     }
 
@@ -59,31 +76,60 @@ public class CustomerService
 
     public Customer getCustomerFromRequest(HttpServletRequest request) throws ResponseStatusException
     {
-        Integer customerId;
+        String customerName;
+
+        String token = jwtTokenUtil.getTokenFromRequest(request);
 
         try
         {
-            customerId = jwtTokenUtil.getIdFromRequest(request);
+            customerName = jwtTokenUtil.getNameFromToken(token);
+            Customer customer = customerRepository.getCustomerByName(customerName);
+
+            if (customer.getToken().equals(token))
+            {
+                return customer;
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can not view this page.");
         }
-
-        return customerRepository.getOne(customerId);
     }
 
-    public String loginCustomer(CustomerLoginDTO customerLoginDTO)
+    @SuppressWarnings("Duplicates")
+    public String loginCustomer(CustomerLoginDTO customerLoginDTO) throws ResponseStatusException
     {
         Customer customer = customerRepository.getCustomerByName(customerLoginDTO.getName());
 
         if (customer != null)
         {
-            return jwtTokenUtil.generateToken(customer);
+            if (customer.getToken() != null)
+            {
+                return customer.getToken();
+            }
+            else
+            {
+                String token = jwtTokenUtil.generateToken(customer);
+                customer.setToken(token);
+                customerRepository.save(customer);
+                return token;
+            }
         }
         else
         {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid username or password.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid customer name.");
         }
+    }
+
+    public String logoutCustomer(Customer customer)
+    {
+        customer.setToken(null);
+        customerRepository.save(customer);
+        return customer.getName();
+
     }
 }

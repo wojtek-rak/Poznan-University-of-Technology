@@ -5,13 +5,15 @@
 <!--  <span>{{ item.price | currency }}</span>-->
 <!--</div>-->
 
-<form [formGroup]="signinForm" (ngSubmit)="onSubmit(signinForm.value)">
-
+<form [formGroup]="signinForm" (ngSubmit)="onSubmit(signinForm.value)" ngNativeValidate>
+  <div class="fail" *ngIf="nameFail === true" style="color: red">
+    Bad Name.
+  </div>
   <div>
     <label for="name">
       Name
     </label>
-    <input id="name" type="text" formControlName="name">
+    <input id="name" type="text" formControlName="name" ngModel required >
   </div>
 
   <button class="button" type="submit">Sign in</button>
@@ -20,13 +22,15 @@
 
 <h3>Sign up</h3>
 
-<form [formGroup]="signupForm" (ngSubmit)="onSubmitSignUp(signupForm.value)">
-
+<form [formGroup]="signupForm" (ngSubmit)="onSubmitSignUp(signupForm.value)" ngNativeValidate>
+  <div class="fail" *ngIf="fail === true" style="color: red">
+    Customer with such name exists.
+  </div>
   <div>
     <label for="userName">
       Name
     </label>
-    <input id="userName" type="text" formControlName="name">
+    <input id="userName" type="text" formControlName="name" required>
   </div>
 
   <div>

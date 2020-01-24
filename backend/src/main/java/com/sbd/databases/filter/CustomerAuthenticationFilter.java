@@ -4,32 +4,35 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
 @Component
-public class ManagerAuthenticationFilter implements Filter
+public class CustomerAuthenticationFilter implements Filter
 {
     private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public ManagerAuthenticationFilter(JwtTokenUtil jwtTokenUtil)
+    public CustomerAuthenticationFilter(JwtTokenUtil jwtTokenUtil)
     {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException
     {
         try
         {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
 
             Claims claims = jwtTokenUtil.getAllClaimsFromToken(jwtTokenUtil.getTokenFromRequest(request));
-            if (claims.get("roles", String.class).equals(RolesEnum.MANAGER.name()))
+            if (claims.get("roles", String.class).equals(RolesEnum.CUSTOMER.name()))
             {
                 servletRequest.setAttribute("claims", claims);
                 filterChain.doFilter(servletRequest, servletResponse);

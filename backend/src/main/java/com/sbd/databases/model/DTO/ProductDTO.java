@@ -22,6 +22,7 @@ public class ProductDTO
     private BigDecimal ean;
     @NotNull
     @Positive
+    @Digits(integer = 5, fraction = 2)
     private BigDecimal price;
     @NotNull
     @Max(value = 100)

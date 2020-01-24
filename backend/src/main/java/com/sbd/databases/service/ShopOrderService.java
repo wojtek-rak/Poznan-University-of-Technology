@@ -29,6 +29,11 @@ public class ShopOrderService
     {
         ShopOrder shopOrder = shopOrderRepository.getFirstByCustomerAndId(customer, id);
 
+        if (shopOrder == null)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Such shop order does not exists.");
+        }
+
         return new CartWithShopOrderDTO(shopOrder.getCart());
     }
 

@@ -29,6 +29,14 @@ export class CustomerService {
     return this.http.get(this.host + 'store/products' );
   }
 
+  public getStoreProductsCategories(id: number) {
+    return this.http.get(this.host + 'store/products?categoryId=' + id );
+  }
+
+  public getStoreCategories() {
+    return this.http.get(this.host + 'store/categories' );
+  }
+
   public getStoreProductsByCategoryId(id: number) {
     return this.http.get(this.host + 'store/products?categoryId=' + id);
   }
@@ -38,6 +46,13 @@ export class CustomerService {
     const headers = this.getHeader(token);
 
     return this.http.get(this.host + 'my-profile/cart', { headers });
+  }
+
+  public deleteCartProducts(id: number) {
+    const token = this.token;
+    let headers = this.getHeader(token);
+    headers = this.addContentTypeToHeader(headers);
+    return this.http.delete(this.host + 'my-profile/cart/' + id, { headers });
   }
 
   public postSignUp(body: any) {

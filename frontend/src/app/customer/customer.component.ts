@@ -12,9 +12,11 @@ import {Router} from '@angular/router';
 export class CustomerComponent implements OnInit {
 
   private products: Product[] = [];
+  private categories: Category[] = [];
   private cart: Cart;
   private loading = false;
   private fail = false;
+  private failCart = false;
 
   constructor(private customerService: CustomerService, private router: Router) { }
 
@@ -52,12 +54,26 @@ export class CustomerComponent implements OnInit {
         this.showErrorMsg();
       }
     );
+    this.customerService.getStoreCategories().subscribe(
+      res => {
+        this.categories = res as Category[];
+        console.log(res);
+      },
+      err => {
+        this.showErrorMsg();
+      }
+    );
   }
 
   showErrorMsg() {
     this.loading = false;
     this.fail = true;
   }
+
+  showErrorMsgCart() {
+    this.failCart = true;
+  }
+
 
   removeProduct(index) {
     this.products[index].count -= 1;
@@ -70,6 +86,37 @@ export class CustomerComponent implements OnInit {
     this.products[index].count += 1;
   }
 
+  categoryFilter(category: Category) {
+    console.log(category.id)
+    this.customerService.getStoreProductsCategories(category.id).subscribe(
+      res => {
+        this.products = res as Product[];
+        this.products.forEach(value => {
+          value.count = 0;
+        });
+        console.log(res);
+      },
+      err => {
+        this.showErrorMsg();
+      }
+    );
+  }
+
+  getAllCategories() {
+    this.customerService.getStoreProducts().subscribe(
+      res => {
+        this.products = res as Product[];
+        this.products.forEach(value => {
+          value.count = 0;
+        });
+        console.log(res);
+      },
+      err => {
+        this.showErrorMsg();
+      }
+    );
+  }
+
   addToCart(index: number) {
     this.customerService.putProductToCart(this.products[index].id, this.products[index].count).subscribe(
       res => {
@@ -78,6 +125,10 @@ export class CustomerComponent implements OnInit {
       },
       err => {
         this.showErrorMsg();
+        if(err.status === 409)
+        {
+          this.showErrorMsgCart();
+        }
       }
     );
   }
@@ -85,5 +136,18 @@ export class CustomerComponent implements OnInit {
 
   checkout() {
     this.router.navigate(['/checkout']);
+  }
+
+  removeProductFromCart(id: number) {
+    this.customerService.deleteCartProducts(id).subscribe(
+      res => {
+        console.log(res);
+        this.cart = res as Cart;
+      },
+      err => {
+        this.showErrorMsg();
+        console.log(err);
+      }
+    );
   }
 }

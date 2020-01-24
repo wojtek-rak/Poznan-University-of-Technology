@@ -13,7 +13,7 @@ import {ManagerService} from '../Services/manager.service';
 export class SignManagerComponent implements OnInit {
 
   signinForm;
-
+  private fail = false;
   constructor(private managerService: ManagerService,
               private formBuilder: FormBuilder,
               private router: Router) {
@@ -36,7 +36,15 @@ export class SignManagerComponent implements OnInit {
       },
       err => {
         console.log('ERROR DURING REQUEST');
+        if(err.status === 403)
+        {
+          this.showErrorDup();
+        }
       }
     );
+  }
+
+  showErrorDup() {
+    this.fail = true;
   }
 }

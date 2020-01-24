@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/manager/secure/warehouse")
 public class WarehouseController
@@ -32,5 +33,12 @@ public class WarehouseController
     public WarehouseProductDTO addProductToWarehouse(@RequestBody @Validated WarehouseProductDTO warehouseProductDTO)
     {
         return warehouseProductService.addProductToWarehouse(warehouseProductDTO);
+    }
+
+    @PostMapping("/products/fill")
+    @ResponseBody
+    public List<WarehouseProductDTO> fillWarehouse()
+    {
+        return warehouseProductService.fillWarehouse();
     }
 }
