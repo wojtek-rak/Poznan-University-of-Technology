@@ -5,4 +5,5 @@ interface CartProduct {
   name: string;
   price: number;
   calculatedPrice: number;
+  priceWithDiscounts: number;
 }

@@ -48,6 +48,13 @@ export class CustomerService {
     return this.http.get(this.host + 'my-profile/cart', { headers });
   }
 
+  public deleteCartProducts(id: number) {
+    const token = this.token;
+    let headers = this.getHeader(token);
+    headers = this.addContentTypeToHeader(headers);
+    return this.http.delete(this.host + 'my-profile/cart/' + id, { headers });
+  }
+
   public postSignUp(body: any) {
     let headers = new HttpHeaders();
     headers = this.addContentTypeToHeader(headers);

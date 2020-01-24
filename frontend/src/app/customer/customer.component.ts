@@ -137,4 +137,17 @@ export class CustomerComponent implements OnInit {
   checkout() {
     this.router.navigate(['/checkout']);
   }
+
+  removeProductFromCart(id: number) {
+    this.customerService.deleteCartProducts(id).subscribe(
+      res => {
+        console.log(res);
+        this.cart = res as Cart;
+      },
+      err => {
+        this.showErrorMsg();
+        console.log(err);
+      }
+    );
+  }
 }
