@@ -60,7 +60,7 @@
     <label for="email">
       Email
     </label>
-    <input id="email" type="text" formControlName="email" required>
+    <input id="email" type="email" formControlName="email" required>
   </div>
 
   <div>
@@ -69,7 +69,13 @@
     </label>
     <input id="phone" type="text" formControlName="phone" required>
   </div>
+  <br />
 
+  <div *ngIf="cart.totalPrice == 0">
+    <button class="button" type="submit" disabled>Checkout</button>
 
-  <button class="button" type="submit">Checkout</button>
+  </div>
+  <div *ngIf="cart.totalPrice != 0">
+    <button class="button" type="submit" >Checkout</button>
+  </div>
 </form>
