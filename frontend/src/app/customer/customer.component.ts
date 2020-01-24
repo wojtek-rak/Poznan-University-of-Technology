@@ -87,6 +87,7 @@ export class CustomerComponent implements OnInit {
   }
 
   categoryFilter(category: Category) {
+    console.log(category.id)
     this.customerService.getStoreProductsCategories(category.id).subscribe(
       res => {
         this.products = res as Product[];

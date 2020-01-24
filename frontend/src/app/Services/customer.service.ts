@@ -30,7 +30,7 @@ export class CustomerService {
   }
 
   public getStoreProductsCategories(id: number) {
-    return this.http.get(this.host + 'store/products?category=' + id );
+    return this.http.get(this.host + 'store/products?categoryId=' + id );
   }
 
   public getStoreCategories() {

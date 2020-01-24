@@ -4,59 +4,55 @@
 
 <div class="fail" *ngIf="fail === true">
   An error occured. Try again later.
-</div>
+</div>*
 
+<div class=" split left">
+  <div class="button-wrapper">
+    <div
+      *ngFor="let category of (categories);"
+    >
 
+        <div class="button-element">
+          <button (click)="categoryFilter(category)">{{category.name}}</button>
+        </div>
 
-<div class="product-wrapper split left">
-  <div
-    *ngFor="let category of (categories);"
-  >
-    <div class="product-author">
+    </div>
+    <div>
+      <div class="button-element" >
+        <div class="buttons" style="padding: inherit">
+          <button (click)="getAllCategories()" >All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-wrapper">
+    <div
+      *ngFor="let product of (products); let i = index"
+      class="product-element"
+    >
+      <h3 class="product-title">
+        <span>{{ product.name }}</span>
+      </h3>
+      <span>{{ product.category.name }} <i class="icon-heart-1"></i></span>
+      <div class="product-author">
+        <div *ngIf="product.calculatedPrice == product.price">
+          <span>{{ product.price }} <i class="icon-comment"></i></span>
+        </div>
+        <div *ngIf="product.calculatedPrice != product.price">
+          <s><span>{{ product.price }}<i class="icon-comment"></i></span></s>
+          <span>&nbsp;&nbsp;{{ product.calculatedPrice }} <i class="icon-comment"></i></span>
+        </div>
+      </div>
       <div class="buttons">
-        <button (click)="categoryFilter(category)">{{category.name}}</button>
+        <button (click)="removeProduct(i)">-</button>
+        &nbsp;
+        <button (click)="addProduct(i)">+</button>
+        &nbsp;
+        <span>{{ product.count }}<i class="icon-comment"></i></span>
       </div>
-    </div>
-  </div>
-  <div class="product-author">
-    <div class="buttons">
-      <button (click)="getAllCategories()" >All</button>
-    </div>
-  </div>
-</div>
-
-<div class="failCart" *ngIf="failCart === true">
-  There is no such product in a warehouse.
-</div>
-
-
-<div class="product-wrapper split left">
-  <div
-    *ngFor="let product of (products); let i = index"
-    class="product-element"
-  >
-    <h3 class="product-title">
-      <span>{{ product.name }}</span>
-    </h3>
-    <span>{{ product.category.name }} <i class="icon-heart-1"></i></span>
-    <div class="product-author">
-      <div *ngIf="product.calculatedPrice == product.price">
-        <span>{{ product.price }} <i class="icon-comment"></i></span>
+      <div class="buttons">
+        <button (click)="addToCart(i)">Add to Cart</button>
       </div>
-      <div *ngIf="product.calculatedPrice != product.price">
-        <s><span>{{ product.price }}<i class="icon-comment"></i></span></s>
-        <span>&nbsp;&nbsp;{{ product.calculatedPrice }} <i class="icon-comment"></i></span>
-      </div>
-    </div>
-    <div class="buttons">
-      <button (click)="removeProduct(i)">-</button>
-      &nbsp;
-      <button (click)="addProduct(i)">+</button>
-      &nbsp;
-      <span>{{ product.count }}<i class="icon-comment"></i></span>
-    </div>
-    <div class="buttons">
-      <button (click)="addToCart(i)">Add to Cart</button>
     </div>
   </div>
 </div>
@@ -73,7 +69,7 @@
       </h3>
       <span>Amount: {{ product.count }} <i class="icon-heart-1"></i></span>
       <div class="cart-author">
-        <span>Price: {{ product.calculatedPrice }} <i class="icon-comment"></i></span>
+        <span>Price: {{ product.price }} <i class="icon-comment"></i></span>
       </div>
     </div>
     <h2>Total price: {{cart.totalPrice}}</h2>
