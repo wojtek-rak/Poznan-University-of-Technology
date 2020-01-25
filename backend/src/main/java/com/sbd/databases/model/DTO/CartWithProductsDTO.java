@@ -3,6 +3,7 @@ package com.sbd.databases.model.DTO;
 import com.sbd.databases.model.Cart;
 import lombok.Data;
 
+import javax.validation.constraints.Digits;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -13,7 +14,10 @@ public class CartWithProductsDTO
 {
     private Integer id;
     private List<CartProductDTO> cartProducts;
+    @Digits(integer = 10, fraction = 2)
     private BigDecimal totalPrice;
+    @Digits(integer = 10, fraction = 2)
+    private BigDecimal totalPriceWithDiscounts;
 
     public CartWithProductsDTO(Cart cart)
     {
@@ -22,9 +26,9 @@ public class CartWithProductsDTO
                 .stream()
                 .map(CartProductDTO::new)
                 .collect(Collectors.toList());
-        this.totalPrice = cartProducts // // TODO: 21.12.2019 use procedure in database NIE UWZGLĘDNIA PROMOCJI
+        this.totalPrice = cartProducts
                 .stream()
-                .map(cartProduct -> cartProduct.getPrice().multiply(new BigDecimal(cartProduct.getCount())))
+                .map(CartProductDTO::getPriceWithDiscounts)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
         .setScale(2, RoundingMode.CEILING);
     }

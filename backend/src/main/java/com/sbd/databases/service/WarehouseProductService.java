@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +21,8 @@ import java.util.stream.Collectors;
 public class WarehouseProductService
 {
     private final WarehouseProductRepository warehouseProductRepository;
+    @PersistenceContext
+    EntityManager entityManager;
     private SupplierService supplierService;
     private CategoryService categoryService;
     private ProductService productService;
@@ -104,11 +110,11 @@ public class WarehouseProductService
         return warehouseProductDTO;
     }
 
-    public List<WarehouseProductDTO> fillWarehouse()
+    public List<WarehouseProductDTO> fillWarehouse(Integer count)
     {
         try
         {
-            warehouseProductRepository.fillWarehouse();
+            fill(count);
         }
         catch (Exception e)
         {
@@ -116,6 +122,18 @@ public class WarehouseProductService
         }
 
         return warehouseProductRepository.findAll().stream().map(WarehouseProductDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional
+    protected void fill(Integer count)
+    {
+        StoredProcedureQuery query = entityManager
+                .createStoredProcedureQuery("fillWarehouse")
+                .registerStoredProcedureParameter(
+                        "Amount", Integer.class, ParameterMode.IN)
+                .setParameter("Amount", count);
+
+        query.execute();
     }
 
     public void updateProduct(CartProduct cartProduct)
