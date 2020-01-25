@@ -83,8 +83,22 @@
       </div>
     </div>
     <h2>Total price: {{cart.totalPrice}}</h2>
+
     <div class="buttons">
       <button (click)="checkout()">Checkout</button>
     </div>
+    <div *ngIf="calculatedCart.calculatedPrice != -1">
+      <h2>Brutto price: {{calculatedCart.calculatedPrice}}</h2>
+      <div class="buttons">
+        <button (click)="calculateBrutto()">Recalculate</button>
+      </div>
+    </div>
+    <div *ngIf="calculatedCart.calculatedPrice == -1">
+      <div class="buttons">
+        <button (click)="calculateBrutto()">Calculate brutto price</button>
+      </div>
+    </div>
+
+
   </div>
 </div>

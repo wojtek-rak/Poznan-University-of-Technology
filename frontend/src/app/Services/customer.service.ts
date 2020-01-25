@@ -89,6 +89,15 @@ export class CustomerService {
     return this.http.put(this.host + 'my-profile/cart/checkout', body, {headers});
   }
 
+  public putCalculateCart() {
+    const token = this.token;
+    let headers = this.getHeader(token);
+
+    headers = this.addContentTypeToHeader(headers);
+
+    return this.http.put(this.host + 'my-profile/cart/calculate', [], {headers});
+  }
+
   public getOrders() {
     const token = this.token;
     const headers = this.getHeader(token);

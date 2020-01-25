@@ -14,6 +14,7 @@ export class CustomerComponent implements OnInit {
   private products: Product[] = [];
   private categories: Category[] = [];
   private cart: Cart;
+  private calculatedCart: CalculatedCart;
   private loading = false;
   private fail = false;
   private failCart = false;
@@ -27,6 +28,12 @@ export class CustomerComponent implements OnInit {
     } else {
       this.getData();
     }
+
+    const calculatedCartTemp: CalculatedCart = {
+      calculatedPrice: -1
+    };
+
+    this.calculatedCart = calculatedCartTemp;
 
   }
 
@@ -143,6 +150,19 @@ export class CustomerComponent implements OnInit {
       res => {
         console.log(res);
         this.cart = res as Cart;
+      },
+      err => {
+        this.showErrorMsg();
+        console.log(err);
+      }
+    );
+  }
+
+  calculateBrutto() {
+    this.customerService.putCalculateCart().subscribe(
+      res => {
+        console.log(res);
+        this.calculatedCart = res as CalculatedCart;
       },
       err => {
         this.showErrorMsg();
