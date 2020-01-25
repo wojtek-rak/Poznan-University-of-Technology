@@ -12,6 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -22,21 +26,21 @@ import java.util.stream.Collectors;
 public class CartService
 {
     private final CartRepository cartRepository;
-    private final CustomerService customerService;
     private final ManagerService managerService;
     private final ShopOrderRepository shopOrderRepository;
     private final ProductService productService;
     private final CartProductService cartProductService;
     private final WarehouseProductService warehouseProductService;
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Autowired
-    public CartService(CartRepository cartRepository, ProductService productService, CustomerService customerService, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService1, CartProductService cartProductService, WarehouseProductService warehouseProductService)
+    public CartService(CartRepository cartRepository, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService, CartProductService cartProductService, WarehouseProductService warehouseProductService)
     {
         this.cartRepository = cartRepository;
-        this.customerService = customerService;
         this.managerService = managerService;
         this.shopOrderRepository = shopOrderRepository;
-        this.productService = productService1;
+        this.productService = productService;
         this.cartProductService = cartProductService;
         this.warehouseProductService = warehouseProductService;
     }
@@ -72,7 +76,6 @@ public class CartService
 
             cart.getCartProducts()
                     .forEach(warehouseProductService::updateProduct);
-
 
             CartWithProductsDTO cartWithProductsDTO = new CartWithProductsDTO(cart);
             ShopOrderDTO shopOrderDTO = new ShopOrderDTO(shopOrder);
@@ -145,8 +148,24 @@ public class CartService
         return new CartWithProductsDTO(cart);
     }
 
-    public BigDecimal calculateCart(Cart cart)
+    public BigDecimal calculateCart(Integer id)
     {
-        return cartRepository.calculateCart(cart.getId());
+        StoredProcedureQuery query = entityManager
+                .createStoredProcedureQuery("CalculateCart")
+                .registerStoredProcedureParameter(
+                        "id", Integer.class, ParameterMode.IN)
+                .setParameter("id", id);
+
+        query.execute();
+
+        List results = query.getResultList();
+        if (!results.isEmpty())
+        {
+            return (BigDecimal) results.get(0);
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find cart with id = " + id.toString());
+        }
     }
 }
