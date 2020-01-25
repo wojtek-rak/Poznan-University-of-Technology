@@ -102,9 +102,9 @@ public class CartService
 
         for (CartProduct cartProduct : cartProducts)
         {
-            if (cartProduct.getId().equals(id))
+            if (cartProduct.getProduct().getId().equals(id))
             {
-                cartProduct.setCount(addProductDTO.getCount());
+                cartProduct.setCount(cartProduct.getCount() + addProductDTO.getCount());
                 cartProductService.save(cartProduct);
 
                 return new CartWithProductsDTO(cart);

@@ -102,7 +102,7 @@ public class CustomerProfileController
 
     @PutMapping("/cart/{cartProductId}")
     @ResponseBody
-    public CartWithProductsDTO changeProductCount(HttpServletRequest request, @RequestBody @Validated AddProductDTO addProductDTO, @PathVariable Integer cartProductId)
+    public CartWithProductsDTO addProductToCart(HttpServletRequest request, @RequestBody @Validated AddProductDTO addProductDTO, @PathVariable Integer cartProductId)
     {
         try
         {

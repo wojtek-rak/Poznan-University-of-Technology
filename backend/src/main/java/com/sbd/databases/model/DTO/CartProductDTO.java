@@ -43,6 +43,5 @@ public class CartProductDTO
                 .reduce(BigDecimal::add)
                 .orElseGet(() -> new BigDecimal(0)))
                 .setScale(2, RoundingMode.CEILING);
-        ;
     }
 }
