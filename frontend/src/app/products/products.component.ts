@@ -48,7 +48,7 @@ export class ProductsComponent implements OnInit {
 
 
 
-    this.managerService.getFillPorducts(value.amount).subscribe(
+    this.managerService.getFillPorducts(value).subscribe(
       res => {
         this.wareHouseCodes = res as WareHouseCode[];
         console.log(res);
