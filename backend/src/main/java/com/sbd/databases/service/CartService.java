@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -150,22 +150,17 @@ public class CartService
 
     public BigDecimal calculateCart(Integer id)
     {
-        StoredProcedureQuery query = entityManager
-                .createStoredProcedureQuery("CalculateCart")
-                .registerStoredProcedureParameter(
-                        "id", Integer.class, ParameterMode.IN)
-                .setParameter("id", id);
+        Query query = entityManager.createNativeQuery("SELECT dbo.CalculateCart(?)");
+        query.setParameter(1, id);
 
-        query.execute();
-
-        List results = query.getResultList();
-        if (!results.isEmpty())
+        try
         {
-            return (BigDecimal) results.get(0);
+            BigDecimal res = (BigDecimal) query.getSingleResult();
+            return res;
         }
-        else
+        catch (NoResultException e)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find cart with id = " + id.toString());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot calculate value for cart with id = " + id.toString());
         }
     }
 }

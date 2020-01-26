@@ -57,22 +57,11 @@ public class ProductDTO
         this.vat = product.getVat();
         this.category = new CategoryDTO(product.getCategory());
         this.sales = product.getSales().stream().map(SaleDTO::new).collect(Collectors.toList());
-        this.calculatedPrice = calculatePrice();
-    }
-
-    private BigDecimal calculatePrice()
-    {
-        BigDecimal calculatedPrice = new BigDecimal(String.valueOf(price));
-
-        for (SaleDTO sale : sales)
-        {
-            BigDecimal discountMultiplier = new BigDecimal(String.valueOf((new BigDecimal("100.00")
-                    .subtract(new BigDecimal(
-                            String.valueOf(sale.getPercentDiscount()))))
-                    .divide(new BigDecimal("100.00"), BigDecimal.ROUND_CEILING)));
-            calculatedPrice = calculatedPrice.multiply(discountMultiplier);
-        }
-
-        return calculatedPrice.setScale(2, RoundingMode.CEILING);
+        this.calculatedPrice = this.price.subtract(this.price.multiply(sales
+                .stream()
+                .map(sale -> new BigDecimal((sale.getPercentDiscount()) / 100.0))
+                .reduce(BigDecimal::add)
+                .orElseGet(() -> new BigDecimal(0)))
+                .setScale(2, RoundingMode.CEILING));
     }
 }

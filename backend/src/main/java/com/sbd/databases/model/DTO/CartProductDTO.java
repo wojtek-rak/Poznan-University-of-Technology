@@ -35,13 +35,13 @@ public class CartProductDTO
         List<Sale> saleList = cartProduct
                 .getProduct()
                 .getSales();
-        this.priceWithDiscounts = this.price.subtract(cartProduct
+        this.priceWithDiscounts = this.price.subtract(this.price.multiply(cartProduct
                 .getProduct()
                 .getSales()
                 .stream()
-                .map(sale -> this.price.multiply(new BigDecimal((sale.getPercentDiscount()) / 100.0)))
+                .map(sale -> new BigDecimal((sale.getPercentDiscount()) / 100.0))
                 .reduce(BigDecimal::add)
                 .orElseGet(() -> new BigDecimal(0)))
-                .setScale(2, RoundingMode.CEILING);
+                .setScale(2, RoundingMode.CEILING));
     }
 }
