@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ManagerService} from '../Services/manager.service';
 import {Router} from '@angular/router';
+import {FormBuilder} from '@angular/forms';
+import {Address, Customer} from '../logic/models/Customer';
 
 @Component({
   selector: 'app-products',
@@ -11,7 +13,12 @@ export class ProductsComponent implements OnInit {
 
   private wareHouseCodes: WareHouseCode[] = [];
 
-  constructor(private managerService: ManagerService, private router: Router) { }
+  fillForm;
+  constructor(private managerService: ManagerService, private router: Router, private formBuilder: FormBuilder) {
+    this.fillForm = this.formBuilder.group({
+      amount: 0
+    });
+  }
 
   ngOnInit() {
     console.log(this.managerService.managerToken);
@@ -35,14 +42,20 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  addToWarehouses() {
-    this.managerService.getFillPorducts().subscribe(
+
+  onSubmitFillForm(value: any) {
+    console.warn('Your order has been submitted', value);
+
+
+
+    this.managerService.getFillPorducts(value).subscribe(
       res => {
+        this.wareHouseCodes = res as WareHouseCode[];
         console.log(res);
+
       },
       err => {
-        console.log('ERROR DURING REQUEST');
-
+        console.log(err);
       }
     );
   }

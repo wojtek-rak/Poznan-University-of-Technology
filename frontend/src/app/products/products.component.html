@@ -18,16 +18,31 @@
         <span>&nbsp;&nbsp;{{ wareHouseCode.product.calculatedPrice }} <i class="icon-comment"></i></span>
       </div>
     </div>
+    <div class="buttons">
+      <button (click)="onSubmitFillForm(wareHouseCode.product.category.supplier.id)">Fill products from supplier</button>
+    </div>
 
   </div>
-  <p></p>
-  <div class="buttons">
-    <button (click)="addToWarehouses()">Fill products to warehouses</button>
-  </div>
+
   <br />
 
+
+  <br />
     <a  routerLink="/add-product"  class="headerButon">
       <i class="material-icons">Add-product</i>
     </a>
 
 </div>
+
+
+<!--<form [formGroup]="fillForm" (ngSubmit)="onSubmitFillForm(fillForm.value)" ngNativeValidate>-->
+<!--  <div>-->
+<!--    <label for="amount">-->
+<!--      Liczba:-->
+<!--    </label>-->
+<!--    <input id="amount" type="number" formControlName="amount" ngModel required >-->
+<!--  </div>-->
+<!--  <br />-->
+<!--  <button class="button" type="submit">Fill products</button>-->
+
+<!--</form>-->

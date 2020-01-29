@@ -6,13 +6,17 @@
 
 <form [formGroup]="addProductForm" (ngSubmit)="onSubmitSignUp(addProductForm.value)">
 
+
   <div>
     <label for="name">
       Name
     </label>
-    <input id="name" type="text" formControlName="name">
-  </div>
+    <input id="name" type="text" formControlName="name" >
 
+  </div>
+  <div class="fail" *ngIf="fail === true" style="color: red">
+    Product with such ean or Warehouse Code exists.
+  </div>
   <div>
     <label for="ean">
       Ean
@@ -59,6 +63,9 @@
       Count
     </label>
     <input id="count" type="number" formControlName="count">
+  </div>
+  <div class="fail" *ngIf="fail === true" style="color: red">
+    Product with such ean or Warehouse Code exists.
   </div>
   <div>
     <label for="warehouseCode">

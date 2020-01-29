@@ -10,6 +10,9 @@
   </div>
 
   <div>
+    <div class="fail" *ngIf="fail === true" style="color: red">
+      Customer with such userName exists.
+    </div>
     <label for="username">
       Username
     </label>
