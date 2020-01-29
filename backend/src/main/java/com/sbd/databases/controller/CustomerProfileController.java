@@ -1,10 +1,7 @@
 package com.sbd.databases.controller;
 
 import com.sbd.databases.model.Customer;
-import com.sbd.databases.model.DTO.AddProductDTO;
-import com.sbd.databases.model.DTO.AddressDTO;
-import com.sbd.databases.model.DTO.CartWithProductsDTO;
-import com.sbd.databases.model.DTO.CartWithShopOrderDTO;
+import com.sbd.databases.model.DTO.*;
 import com.sbd.databases.service.CartService;
 import com.sbd.databases.service.CustomerService;
 import com.sbd.databases.service.ShopOrderService;
@@ -79,6 +76,29 @@ public class CustomerProfileController
         }
     }
 
+    @PutMapping("/cart/calculate")
+    @ResponseBody
+    public CalculatedPriceDTO calculateTotalPriceOfCart(HttpServletRequest request)
+    {
+        try
+        {
+            Customer customer = customerService.getCustomerFromRequest(request);
+            Integer id = cartService.getNotConfirmedCartOfCustomer(customer).getId();
+
+            return new CalculatedPriceDTO(cartService.calculateCart(id));
+        }
+        catch (Exception e)
+        {
+            if (e.getClass().equals(ResponseStatusException.class))
+            {
+                throw e;
+            }
+
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something happened, but it's not your fault.");
+        }
+    }
+
     @DeleteMapping("/cart/{cartProductId}")
     @ResponseBody
     public CartWithProductsDTO deleteProductFromCart(HttpServletRequest request, @PathVariable Integer cartProductId)
@@ -102,7 +122,7 @@ public class CustomerProfileController
 
     @PutMapping("/cart/{cartProductId}")
     @ResponseBody
-    public CartWithProductsDTO changeProductCount(HttpServletRequest request, @RequestBody @Validated AddProductDTO addProductDTO, @PathVariable Integer cartProductId)
+    public CartWithProductsDTO addProductToCart(HttpServletRequest request, @RequestBody @Validated AddProductDTO addProductDTO, @PathVariable Integer cartProductId)
     {
         try
         {

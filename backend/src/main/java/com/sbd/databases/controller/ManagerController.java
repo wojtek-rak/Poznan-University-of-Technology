@@ -53,7 +53,7 @@ public class ManagerController
         }
         else
         {
-            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "Manager with such name exists.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Manager with such name exists.");
         }
     }
 
@@ -66,6 +66,7 @@ public class ManagerController
         return managerService.logoutManager(manager);
     }
 
+    @SuppressWarnings("Duplicates")
     @GetMapping("/secure/shop-orders")
     @ResponseBody
     public List<ManagerShopOrderDTO> getShopOrders()

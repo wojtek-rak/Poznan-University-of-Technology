@@ -35,10 +35,17 @@ public class WarehouseController
         return warehouseProductService.addProductToWarehouse(warehouseProductDTO);
     }
 
-    @PostMapping("/products/fill")
+    @PostMapping("/products/fill/{count}")
     @ResponseBody
-    public List<WarehouseProductDTO> fillWarehouse()
+    public List<WarehouseProductDTO> fillWarehouse(@PathVariable Integer count)
     {
-        return warehouseProductService.fillWarehouse();
+        return warehouseProductService.fillWarehouse(count);
+    }
+
+    @DeleteMapping("/products/{id}")
+    @ResponseBody
+    public List<WarehouseProductDTO> removeProductFromWarehouse(@PathVariable Integer id)
+    {
+        return warehouseProductService.remove(id);
     }
 }

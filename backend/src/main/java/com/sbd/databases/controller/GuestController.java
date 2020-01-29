@@ -44,7 +44,7 @@ public class GuestController
     }
 
     @PostMapping("/sign-up")
-    public CustomerSignUpDTO signUp(@RequestBody @Validated CustomerSignUpDTO customer)
+    public CustomerSignUpDTO signUp(@RequestBody CustomerSignUpDTO customer)
     {
         try
         {

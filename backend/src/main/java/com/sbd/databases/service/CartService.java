@@ -12,7 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,21 +26,21 @@ import java.util.stream.Collectors;
 public class CartService
 {
     private final CartRepository cartRepository;
-    private final CustomerService customerService;
     private final ManagerService managerService;
     private final ShopOrderRepository shopOrderRepository;
     private final ProductService productService;
     private final CartProductService cartProductService;
     private final WarehouseProductService warehouseProductService;
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Autowired
-    public CartService(CartRepository cartRepository, ProductService productService, CustomerService customerService, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService1, CartProductService cartProductService, WarehouseProductService warehouseProductService)
+    public CartService(CartRepository cartRepository, ManagerService managerService, ShopOrderRepository shopOrderRepository, ProductService productService, CartProductService cartProductService, WarehouseProductService warehouseProductService)
     {
         this.cartRepository = cartRepository;
-        this.customerService = customerService;
         this.managerService = managerService;
         this.shopOrderRepository = shopOrderRepository;
-        this.productService = productService1;
+        this.productService = productService;
         this.cartProductService = cartProductService;
         this.warehouseProductService = warehouseProductService;
     }
@@ -72,7 +77,6 @@ public class CartService
             cart.getCartProducts()
                     .forEach(warehouseProductService::updateProduct);
 
-
             CartWithProductsDTO cartWithProductsDTO = new CartWithProductsDTO(cart);
             ShopOrderDTO shopOrderDTO = new ShopOrderDTO(shopOrder);
 
@@ -103,7 +107,7 @@ public class CartService
         {
             if (cartProduct.getProduct().getId().equals(id))
             {
-                cartProduct.setCount(addProductDTO.getCount());
+                cartProduct.setCount(cartProduct.getCount() + addProductDTO.getCount());
                 cartProductService.save(cartProduct);
 
                 return new CartWithProductsDTO(cart);
@@ -122,7 +126,7 @@ public class CartService
     }
 
     @Transactional
-    public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, Integer productId)
+    public CartWithProductsDTO deleteProductFromCartOfCustomer(Customer customer, Integer cartProductId)
     {
         Cart cart = cartRepository.getFirstByCustomerAndConfirmed(customer, false);
         List<CartProduct> cartProducts = cart.getCartProducts();
@@ -131,7 +135,7 @@ public class CartService
         while (iterator.hasNext())
         {
             CartProduct cartProduct = iterator.next();
-            if (cartProduct.getProduct().getId().equals(productId))
+            if (cartProduct.getId().equals(cartProductId))
             {
                 cartProductService.delete(cartProduct);
                 iterator.remove();
@@ -142,5 +146,21 @@ public class CartService
         cart.setCartProducts(cartProducts);
 
         return new CartWithProductsDTO(cart);
+    }
+
+    public BigDecimal calculateCart(Integer id)
+    {
+        Query query = entityManager.createNativeQuery("SELECT dbo.CalculateCart(?)");
+        query.setParameter(1, id);
+
+        try
+        {
+            BigDecimal res = (BigDecimal) query.getSingleResult();
+            return res;
+        }
+        catch (NoResultException e)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot calculate value for cart with id = " + id.toString());
+        }
     }
 }
