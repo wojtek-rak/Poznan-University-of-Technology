@@ -50,9 +50,9 @@ public class OpenNLP {
 		// sentenceDetection();
 		// posTagging();
 		// lemmatization();
-		// stemming();
+		stemming();
 		// chunking();
-		nameFinding();
+		// nameFinding();
 	}
 
 	private void languageDetection() throws IOException
