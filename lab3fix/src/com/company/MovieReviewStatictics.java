@@ -12,6 +12,7 @@ import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.Span;
+import sun.lwawt.macosx.CPrinterDevice;
 import sun.util.resources.cldr.lo.CurrencyNames_lo;
 
 import java.io.File;
@@ -127,44 +128,25 @@ public class MovieReviewStatictics
         // TODO: process the text to find the following statistics:
         // For each movie derive:
         //    - number of sentences
-        SentenceDetectorME sentenceDetectorME = new SentenceDetectorME(_sentenceModel);
-        int noSentences = sentenceDetectorME.sentDetect(text).length;
+
 
         //    - number of tokens
-        TokenizerME tokenizer = new TokenizerME(_tokenizerModel);
-        String[] tokens = tokenizer.tokenize(text);
-        int noTokens = tokens.length;
+
 
         //    - number of (unique) stemmed forms
-        Set<String> uniqStem = new HashSet<String>();
-        for(String s: tokens) {
-            uniqStem.add(_stemmer.stem(s));
-        }
-        int noStemmed = uniqStem.size();
+
 
         //    - number of (unique) words from a dictionary (lemmatization)
 
-        POSTaggerME tagger = new POSTaggerME(_posModel);
-        Set<String> uniqLem = new HashSet<String>();
-        for(String s: _lemmatizer.lemmatize(tokens, tagger.tag(tokens))){
-            uniqLem.add(s);
-        }
 
-        int noWords = uniqLem.size();
         //    -  people
 
 
-        Span people[] = new Span[] { };
-        NameFinderME nameFinder = new NameFinderME(_peopleModel);
-        people = nameFinder.find(tokens);
+
         //    - locations
-        Span locations[] = new Span[] { };
-        NameFinderME locFinder = new NameFinderME(_placesModel);
-        locations = locFinder.find(tokens);
+
         //    - organisations
-        Span organisations[] = new Span[] { };
-        NameFinderME orgFinder = new NameFinderME(_organizationsModel);
-        organisations = orgFinder.find(tokens);
+
 
         // TODO + compute the following overall (for all movies) POS tagging statistics:
         //    - percentage number of adverbs (class variable, private int _verbCount = 0)
@@ -176,12 +158,23 @@ public class MovieReviewStatictics
         // ------------------------------------------------------------------
 
         // TODO derive sentences (update noSentences variable)
-
+        SentenceDetectorME sentenceDetectorME = new SentenceDetectorME(_sentenceModel);
+        int noSentences = sentenceDetectorME.sentDetect(text).length;
 
         // TODO derive tokens and POS tags from text
-        // (update noTokens and _totalTokensCount)
+        TokenizerME tokenizer = new TokenizerME(_tokenizerModel);
+        String[] tokens = tokenizer.tokenize(text);
+        int noTokens = tokens.length;
+        _totalTokensCount += tokens.length;
 
         // TODO perform stemming (use derived tokens)
+
+        Set<String> uniqStem = new HashSet<String>();
+        for(String s: tokens) {
+            uniqStem.add(_stemmer.stem(s.toLowerCase().replaceAll("[^a-z0-9]", "")));
+        }
+        int noStemmed = uniqStem.size();
+
         // (update noStemmed)
         //Set <String> stems = new HashSet <>();
 
@@ -194,12 +187,53 @@ public class MovieReviewStatictics
         // TODO perform lemmatization (use derived tokens)
         // (remove "O" from results - non-dictionary forms, update noWords)
 
+        POSTaggerME tagger = new POSTaggerME(_posModel);
+        Set<String> uniqLem = new HashSet<String>();
+        for(String s: _lemmatizer.lemmatize(tokens, tagger.tag(tokens))){
+            if(s == "O") continue;
+            uniqLem.add(s);
+        }
+
+        int noWords = uniqLem.size();
+
 
         // TODO derive people, locations, organisations (use tokens),
         // (update people, locations, organisations lists).
+        Span people[] = new Span[] { };
+        NameFinderME nameFinder = new NameFinderME(_peopleModel);
+        people = nameFinder.find(tokens);
 
+        Span locations[] = new Span[] { };
+        NameFinderME locFinder = new NameFinderME(_placesModel);
+        locations = locFinder.find(tokens);
+
+        Span organisations[] = new Span[] { };
+        NameFinderME orgFinder = new NameFinderME(_organizationsModel);
+        organisations = orgFinder.find(tokens);
         // TODO update overall statistics - use tags and check first letters
         // (see https://www.clips.uantwerpen.be/pages/mbsp-tags; first letter = "V" = verb?)
+
+
+        for (String tag:
+        tagger.tag(tokens)) {
+            if(tag.charAt(0) == 'V')
+            {
+                _verbCount += 1;
+            }
+            if(tag.charAt(0) == 'N')
+            {
+                _nounCount += 1;
+            }
+            if(tag.charAt(0) == 'J')
+            {
+                _adjectiveCount += 1;
+            }
+            if(tag.charAt(0) == 'R')
+            {
+                _adverbCount += 1;
+            }
+        }
+
 
         // ------------------------------------------------------------------
 
