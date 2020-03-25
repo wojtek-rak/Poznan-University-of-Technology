@@ -3,3 +3,51 @@ $base-font-size: 16px;
 body{
   font-size: $base-font-size;
 }
+
+
+
+.article-lorem {
+  grid-area: article-lorem;
+}
+
+.article-ipsum {
+  grid-area: article-ipsum;
+}
+
+.article-dolor {
+  grid-area: article-dolor;
+}
+
+
+
+
+
+
+@media (min-width: 1024px) {
+  .grid {
+    display: grid;
+    grid-template-areas:
+            'article-lorem article-ipsum article-dolor';
+  }
+}
+
+@media (max-width: 1024px) and (min-width:600px){
+  .grid {
+    display: grid;
+    grid-template-areas:
+            'article-lorem article-lorem'
+            'article-ipsum article-dolor';
+  }
+}
+
+@media (max-width: 600px){
+  .grid {
+    display: grid;
+    grid-template-areas:
+            'article-lorem'
+            'article-ipsum'
+            'article-dolor';
+  }
+}
+
+
