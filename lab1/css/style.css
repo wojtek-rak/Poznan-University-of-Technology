@@ -10,6 +10,22 @@ body {
 .article-dolor {
   grid-area: article-dolor; }
 
+.article {
+  border: medium solid black; }
+  .article .article-title {
+    display: flex;
+    justify-content: flex-end; }
+    .article .article-title .article-title-content {
+      display: flex;
+      justify-content: center;
+      width: 150px;
+      border-bottom: medium solid black;
+      border-left: medium solid black; }
+  .article .article-content {
+    padding: 30px;
+    display: flex;
+    justify-content: center; }
+
 @media (min-width: 1024px) {
   .grid {
     display: grid;
@@ -24,3 +40,8 @@ body {
   .grid {
     display: grid;
     grid-template-areas: 'article-lorem' 'article-ipsum' 'article-dolor'; } }
+
+.grid {
+  grid-gap: 30px;
+  padding-left: 30px;
+  padding-right: 30px; }

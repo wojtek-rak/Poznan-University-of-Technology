@@ -1,4 +1,5 @@
 $base-font-size: 16px;
+$base-gap: 30px;
 
 body{
   font-size: $base-font-size;
@@ -20,7 +21,26 @@ body{
 
 
 
+.article{
+  border: medium solid black;
+  .article-title{
+    display: flex;
+    justify-content: flex-end;
 
+    .article-title-content{
+      display: flex;
+      justify-content: center;
+      width: 5 * $base-gap;
+      border-bottom: medium solid black;
+      border-left: medium solid black;
+    }
+  }
+  .article-content{
+    padding: $base-gap;
+    display: flex;
+    justify-content: center;
+  }
+}
 
 
 @media (min-width: 1024px) {
@@ -48,6 +68,12 @@ body{
             'article-ipsum'
             'article-dolor';
   }
+}
+
+.grid{
+  grid-gap: $base-gap;
+  padding-left: $base-gap;
+  padding-right: $base-gap;
 }
 
 
