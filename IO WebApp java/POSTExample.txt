@@ -1,0 +1,23 @@
+{
+  "Title": "Dodanie ksiązki",
+  "Actors": ["Bibliotekarz", "Student"],
+  "System Actor": "System",
+  "Steps": [
+    {
+      "Keyword": "",
+      "Name": "Krok 1",
+      "Steps": []
+    },
+    {
+      "Keyword": "ELSE",
+      "Name": "Krok 2",
+      "Steps": [
+      	{
+      		"Keyword": "",
+    		  "Name": "Jest w zbiorze",
+    		  "Steps": []
+      	}
+      ]
+    }
+  ]
+}
