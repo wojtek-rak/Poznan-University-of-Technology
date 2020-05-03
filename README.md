@@ -1,2 +1,2 @@
 # Poznan-University-of-Technology
- One Repository
+Most of my projects from my studies
