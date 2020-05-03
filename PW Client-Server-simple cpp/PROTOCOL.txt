@@ -1,0 +1,86 @@
+Client:
+
+Na starcie przy logowaniu
+Funkcja: SendLoggingMessage
+Struktura:  LoggingMessage:
+            typ   = LoggingMessageType (predefiniowany)
+            id    = Id klienta
+            name  = Name klienta
+            
+Oczekiwanie na odpowiedź od serwera:
+Struktura:  PrimaryIdMessage 
+            typ       = PrimaryIdMessageType (predefiniowany)
+            name      = Name klienta
+            primaryID = unikalne Id użytkownika jakie dostaje od serwera, to z niego będzie odbierał wiadomości o typach jakie zasubskrybował
+
+Następnie w pentli użytkownik ma do wyboru następujące akcje przy danych inputach:
+
+'s'
+Zasubskrybowanie danego tematu:
+Funkcja: SendSubscribeMessage
+Struktura:  SubscribeMessage :
+            typ             = SubscribeMessageType (predefiniowany)
+            name            = Name klienta
+            typeToSubscribe = Typ do subskrybowania
+            notification    = Informacja o powiadomieniach
+            transition      = Informacja o okresowości
+
+'t'
+Ogłoszenie nowego typu:
+Funkcja: SendNewTypeMessage
+Struktura:  NewTypeMessage  :
+            typ             = NewTypeMessageType (predefiniowany)
+            typeToCreate    = Typ do stworzenia
+            name            = Name klienta
+
+Oczekiwanie na odpowiedź odnośnie typu:
+Struktura:  NewTypeResponseMessage  :
+            typ             = NewTypeResponseMessageType (predefiniowany)
+            response        = odpowiedź tekstowa czy udało się
+            
+'y'
+Rozgłoszenie nowej wiadomości:
+Funkcja: SendNormalMessage
+Struktura:  NormalMessage   :
+            typ             = NormalMessageType (predefiniowany)
+            typeMessage     = Typ (temat) wiadomości
+            priority        = priorytet wyświtlania
+            text            = tekst wiadomości (może zawierać spacje) max 10 znaków
+            
+'m'
+Odbór wiadomo±ci w sposób synchroniczny:
+Struktura:  NormalMessage   : (to samo co w SendNormalMessage, tylko z innym typem)
+            typ             = primaryId
+            
+'a'
+Odbór wiadomo±ci w sposób asynchroniczny:
+Struktura:  NormalMessage   : (to samo co w SendNormalMessage, tylko z innym typem)
+            typ             = primaryId
+            
+
+Server:
+
+Odbieranie wiadomości o logowaniu
+Struktura:  LoggingMessage: (to samo co u klienta)
+            
+Odpowiedź servera do klienta:
+Funkcja: SendPrimaryIdMessage
+Struktura:  PrimaryIdMessage : (to samo co u klienta)
+            
+Odbieranie wiadomości o subskrybcji
+Struktura:  SubscribeMessage : (to samo co u klienta)
+
+Odbieranie wiadomości o typie
+Struktura:  NewTypeMessage : (to samo co u klienta)
+
+Wysyłanie odpowiedzi o rezultacie o utworzonym typie:
+Funkcja: SendNewTypeResponseMessage
+Struktura: NewTypeResponseMessage: (to samo co u klienta)
+
+Odbbieranie nowej wiadomości do rozgłaszania:
+Struktura: NormalMessage: (to samo co u klienta)
+
+Wysyłanie wiadomości do subskrybentów:
+Funkcja: SendNormalMessage
+Struktura:  NormalMessage:
+            typ = primaryId danych subskrybentów
