@@ -1,0 +1,2 @@
+g++ -Wall server.cpp event.cpp saveManager.cpp -o main
+./main
