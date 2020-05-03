@@ -1,0 +1,34 @@
+<h1>Shop Orders</h1>
+<div class="order-wrapper">
+  <div
+    *ngFor="let order of (orders); let i = index"
+    class="order-element"
+  >
+    <h2 class="order-title">
+      <span>Order number: #{{ order.shopOrder.id}}</span>
+    </h2>
+    <h4>
+      <span>Adress: {{ order.shopOrder.address}}</span>
+    </h4>
+
+<!--    <span>Ilość: {{ product.count }} <i class="icon-heart-1"></i></span>-->
+<!--    <div class="cart-author">-->
+<!--      <span>Cena: {{ product.price * product.count }} <i class="icon-comment"></i></span>-->
+<!--    </div>-->
+    <div class="cart-wrapper">
+      <div
+        *ngFor="let product of (order.cart.cartProducts); let i = index"
+        class="cart-element"
+      >
+        <h5 class="cart-title">
+          <span>{{ product.name }} | Amount: {{ product.count }} | Price: {{ product.price }}</span>
+        </h5>
+        <span> <i class="icon-heart-1"></i></span>
+        <div class="cart-author">
+          <span> <i class="icon-comment"></i></span>
+        </div>
+      </div>
+      <h4>Total price: {{order.cart.totalPrice}}</h4>
+    </div>
+  </div>
+</div>

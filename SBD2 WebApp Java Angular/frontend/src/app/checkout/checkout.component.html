@@ -1,0 +1,81 @@
+<h1>Cart</h1>
+<div class="cart-wrapper">
+  <div
+    *ngFor="let product of (cart.cartProducts); let i = index"
+    class="cart-element"
+  >
+    <h3 class="cart-title">
+      <span>{{ product.name }}</span>
+    </h3>
+    <span>Amount: {{ product.count }} <i class="icon-heart-1"></i></span>
+    <div class="cart-author">
+      <div *ngIf="product.priceWithDiscounts == product.price">
+        <span>Price: {{ product.price }} <i class="icon-comment"></i></span>
+      </div>
+      <div *ngIf="product.priceWithDiscounts != product.price">
+        <span>Price: <s>{{ product.price }}<i class="icon-comment"></i></s></span>
+        <span>&nbsp;{{ product.priceWithDiscounts }} <i class="icon-comment"></i></span>
+      </div>
+    </div>
+  </div>
+  <h2>Total price: {{cart.totalPrice}}</h2>
+
+</div>
+
+<div class="fail" *ngIf="fail === true" style="color: red">
+  There are not so many goods in stock.
+</div>
+
+<form [formGroup]="checkoutForm" (ngSubmit)="checkout(checkoutForm.value)" ngNativeValidate>
+
+  <div>
+    <label for="street">
+      Street
+    </label>
+    <input id="street" type="text" formControlName="street" required>
+  </div>
+
+  <div>
+    <label for="homeNumber">
+      HomeNumber
+    </label>
+    <input id="homeNumber" type="text" formControlName="homeNumber" required>
+  </div>
+
+  <div>
+    <label for="postcode">
+      Postcode
+    </label>
+    <input id="postcode" type="text" formControlName="postcode" required>
+  </div>
+
+  <div>
+    <label for="city">
+      City
+    </label>
+    <input id="city" type="text" formControlName="city" required>
+  </div>
+
+  <div>
+    <label for="email">
+      Email
+    </label>
+    <input id="email" type="email" formControlName="email" required>
+  </div>
+
+  <div>
+    <label for="phone">
+      Phone
+    </label>
+    <input id="phone" type="text" formControlName="phone" required>
+  </div>
+  <br />
+
+  <div *ngIf="cart.totalPrice == 0">
+    <button class="button" type="submit" disabled>Checkout</button>
+
+  </div>
+  <div *ngIf="cart.totalPrice != 0">
+    <button class="button" type="submit" >Checkout</button>
+  </div>
+</form>

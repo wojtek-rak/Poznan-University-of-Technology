@@ -1,0 +1,27 @@
+<h3>Sign in</h3>
+
+<!--<div class="cart-item" *ngFor="let item of items">-->
+<!--  <span>{{ item.name }} </span>-->
+<!--  <span>{{ item.price | currency }}</span>-->
+<!--</div>-->
+
+<form [formGroup]="signinForm" (ngSubmit)="onSubmit(signinForm.value)">
+  <div class="fail" *ngIf="fail === true" style="color: red">
+    Bad username or password.
+  </div>
+  <div>
+    <label for="username">
+      Name
+    </label>
+    <input id="username" type="text" formControlName="username">
+  </div>
+  <div>
+    <label for="password">
+      Password
+    </label>
+    <input id="password" type="password" formControlName="password">
+  </div>
+
+  <button class="button" type="submit">Sign in</button>
+
+</form>

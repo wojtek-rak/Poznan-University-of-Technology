@@ -1,0 +1,77 @@
+<h3>Sign up another manager</h3>
+
+<form [formGroup]="signupForm" (ngSubmit)="onSubmitSignUp(signupForm.value)">
+
+  <div>
+    <label for="name">
+      Name
+    </label>
+    <input id="name" type="text" formControlName="name">
+  </div>
+
+  <div>
+    <div class="fail" *ngIf="fail === true" style="color: red">
+      Customer with such userName exists.
+    </div>
+    <label for="username">
+      Username
+    </label>
+    <input id="username" type="text" formControlName="username">
+  </div>
+
+  <div>
+    <label for="password">
+      Password
+    </label>
+    <input id="password" type="password" formControlName="password">
+  </div>
+
+
+
+  <button class="button" type="submit">Sign up</button>
+
+</form>
+
+<a routerLink="/products" >
+  <div class="buttonProd">
+    <div class="centered">
+      <h1>Products</h1>
+      <img src="https://image.flaticon.com/icons/png/512/76/76171.png" alt="Avatar man">
+    </div>
+  </div>
+</a>
+
+<h1>Shop Orders</h1>
+<div class="order-wrapper">
+  <div
+    *ngFor="let order of (managerOrder); let i = index"
+    class="order-element"
+  >
+    <h2 class="order-title">
+      <span>Order number: #{{ order.id}}</span>
+    </h2>
+    <h4>
+      <span>Adress: {{ order.address}}</span>
+    </h4>
+
+    <!--    <span>Ilość: {{ product.count }} <i class="icon-heart-1"></i></span>-->
+    <!--    <div class="cart-author">-->
+    <!--      <span>Cena: {{ product.price * product.count }} <i class="icon-comment"></i></span>-->
+    <!--    </div>-->
+    <div class="cart-wrapper">
+      <div
+        *ngFor="let product of (order.cart.cartProducts); let i = index"
+        class="cart-element"
+      >
+        <h5 class="cart-title">
+          <span>{{ product.name }} | Amount: {{ product.count }} | Price: {{ product.price * product.count }}</span>
+        </h5>
+        <span> <i class="icon-heart-1"></i></span>
+        <div class="cart-author">
+          <span> <i class="icon-comment"></i></span>
+        </div>
+      </div>
+      <h4>Total price: {{order.cart.totalPrice}}</h4>
+    </div>
+  </div>
+</div>

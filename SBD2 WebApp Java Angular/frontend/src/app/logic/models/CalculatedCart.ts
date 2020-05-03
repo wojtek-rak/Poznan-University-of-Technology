@@ -1,0 +1,3 @@
+interface CalculatedCart {
+  calculatedPrice: number;
+}

@@ -1,0 +1,48 @@
+<div class="product-wrapper split left">
+  <div
+    *ngFor="let wareHouseCode of (wareHouseCodes); let i = index"
+    class="product-element"
+  >
+    <h3 class="product-title">
+      <span>{{ wareHouseCode.product.name }}</span>
+    </h3>
+    <span>Warehouse code: {{ wareHouseCode.warehouseCode }} <i class="icon-heart-1"></i></span><br>
+    <span>Product count: {{ wareHouseCode.count }} <i class="icon-heart-1"></i></span><br>
+    <span>{{ wareHouseCode.product.category.name }} <i class="icon-heart-1"></i></span>
+    <div class="product-author">
+      <div *ngIf="wareHouseCode.product.calculatedPrice == wareHouseCode.product.price">
+        <span>{{ wareHouseCode.product.price }} <i class="icon-comment"></i></span>
+      </div>
+      <div *ngIf="wareHouseCode.product.calculatedPrice != wareHouseCode.product.price">
+        <s><span>{{ wareHouseCode.product.price }}<i class="icon-comment"></i></span></s>
+        <span>&nbsp;&nbsp;{{ wareHouseCode.product.calculatedPrice }} <i class="icon-comment"></i></span>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="onSubmitFillForm(wareHouseCode.product.category.supplier.id)">Fill products from supplier</button>
+    </div>
+
+  </div>
+
+  <br />
+
+
+  <br />
+    <a  routerLink="/add-product"  class="headerButon">
+      <i class="material-icons">Add-product</i>
+    </a>
+
+</div>
+
+
+<!--<form [formGroup]="fillForm" (ngSubmit)="onSubmitFillForm(fillForm.value)" ngNativeValidate>-->
+<!--  <div>-->
+<!--    <label for="amount">-->
+<!--      Liczba:-->
+<!--    </label>-->
+<!--    <input id="amount" type="number" formControlName="amount" ngModel required >-->
+<!--  </div>-->
+<!--  <br />-->
+<!--  <button class="button" type="submit">Fill products</button>-->
+
+<!--</form>-->

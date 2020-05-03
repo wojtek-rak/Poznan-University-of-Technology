@@ -1,0 +1,104 @@
+<div *ngIf="fail === false">
+  <p>customer works!</p>
+</div>
+
+<div class="fail" *ngIf="fail === true">
+  An error occured. Try again later.
+</div>*
+
+<div class=" split left">
+  <div class="button-wrapper">
+    <div
+      *ngFor="let category of (categories);"
+    >
+
+        <div class="button-element">
+          <button (click)="categoryFilter(category)">{{category.name}}</button>
+        </div>
+
+    </div>
+    <div>
+      <div class="button-element" >
+        <div class="buttons" style="padding: inherit">
+          <button (click)="getAllCategories()" >All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-wrapper">
+    <div
+      *ngFor="let product of (products); let i = index"
+      class="product-element"
+    >
+      <h3 class="product-title">
+        <span>{{ product.name }}</span>
+      </h3>
+      <span>{{ product.category.name }} <i class="icon-heart-1"></i></span>
+      <div class="product-author">
+        <div *ngIf="product.calculatedPrice == product.price">
+          <span>{{ product.price }} <i class="icon-comment"></i></span>
+        </div>
+        <div *ngIf="product.calculatedPrice != product.price">
+          <s><span>{{ product.price }}<i class="icon-comment"></i></span></s>
+          <span>&nbsp;&nbsp;{{ product.calculatedPrice }} <i class="icon-comment"></i></span>
+        </div>
+      </div>
+      <div class="buttons">
+        <button (click)="removeProduct(i)">-</button>
+        &nbsp;
+        <button (click)="addProduct(i)">+</button>
+        &nbsp;
+        <span>{{ product.count }}<i class="icon-comment"></i></span>
+      </div>
+      <div class="buttons">
+        <button (click)="addToCart(i)">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="split right">
+  <h1>Cart</h1>
+  <div class="cart-wrapper">
+    <div
+      *ngFor="let product of (cart.cartProducts); let i = index"
+      class="cart-element"
+    >
+      <h3 class="cart-title">
+        <span>{{ product.name }}</span>
+      </h3>
+      <span>Amount: {{ product.count }} <i class="icon-heart-1"></i></span>
+      <div class="cart-author">
+
+        <div *ngIf="product.priceWithDiscounts == product.price">
+          <span>Price: {{ product.price }} <i class="icon-comment"></i></span>
+        </div>
+        <div *ngIf="product.priceWithDiscounts != product.price">
+          <span>Price: <s>{{ product.price }}<i class="icon-comment"></i></s></span>
+          <span>&nbsp;{{ product.priceWithDiscounts }} <i class="icon-comment"></i></span>
+        </div>
+        <div class="buttons">
+          <button (click)="removeProductFromCart(product.id)">Remove from cart</button>
+        </div>
+      </div>
+    </div>
+    <h2>Total price: {{cart.totalPrice}}</h2>
+
+    <div class="buttons">
+      <button (click)="checkout()">Checkout</button>
+    </div>
+    <div *ngIf="calculatedCart.calculatedPrice != -1">
+      <h2>Brutto price: {{calculatedCart.calculatedPrice}}</h2>
+      <div class="buttons">
+        <button (click)="calculateBrutto()">Recalculate</button>
+      </div>
+    </div>
+    <div *ngIf="calculatedCart.calculatedPrice == -1">
+      <div class="buttons">
+        <button (click)="calculateBrutto()">Calculate brutto price</button>
+      </div>
+    </div>
+
+
+  </div>
+</div>
