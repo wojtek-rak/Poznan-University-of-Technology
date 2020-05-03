@@ -1,0 +1,12 @@
+/*
+ * Styles
+ */
+
+.dataLabelRight{
+    -fx-border-color: black;
+    -fx-min-width: 500px;
+}
+.dataLabelLeft {
+    -fx-border-color: black;
+    -fx-min-width: 200px;
+}
